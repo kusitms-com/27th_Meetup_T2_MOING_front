@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">test_google_login</string>
     <string name="server_client_id">453944202403-2valu4dvqtlaiong1f8k3s8ts28mqiga.apps.googleusercontent.com</string>
+
+    <!-- 카카오 Native 앱키-->
+    <string name="kakao_app_key">2595c6013ac700285aab413683c5771d</string>
+    <string name="kakao_app_scheme">kakao2595c6013ac700285aab413683c5771d</string>
 </resources>
