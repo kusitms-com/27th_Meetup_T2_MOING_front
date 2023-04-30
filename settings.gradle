@@ -13,5 +13,5 @@ dependencyResolutionManagement {
         maven { url 'https://devrepo.kakao.com/nexus/content/groups/public/'}
     }
 }
-rootProject.name = "test_google_login"
+rootProject.name = "moing"
 include ':app'
