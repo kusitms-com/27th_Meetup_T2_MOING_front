@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.test_google_login'
+    namespace 'com.example.moing'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.test_google_login"
+        applicationId "com.example.moing"
         minSdk 21
         targetSdk 32
         versionCode 1

@@ -1,4 +1,4 @@
-package com.example.test_google_login;
+package com.example.moing;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,11 +13,5 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button bt = findViewById(R.id.button);
-        bt.setOnClickListener(v -> {
-            Intent intent = new Intent();
-            intent.setClass(this,KakaoLinkActivity.class);
-            startActivity(intent);
-        });
     }
 }

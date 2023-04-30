@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">test_google_login</string>
+    <string name="app_name">모잉</string>
     <string name="server_client_id">453944202403-2valu4dvqtlaiong1f8k3s8ts28mqiga.apps.googleusercontent.com</string>
 
     <!-- 카카오 Native 앱키-->

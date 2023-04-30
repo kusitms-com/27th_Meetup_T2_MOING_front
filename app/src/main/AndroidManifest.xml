@@ -14,26 +14,11 @@
         android:theme="@style/Theme.Test_google_login"
         tools:targetApi="31" >
 
-        <!-- 카카오 링크 Activity -->
-        <activity
-            android:name=".KakaoLinkActivity"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:host="kakaolink"
-                    android:scheme="@string/kakao_app_scheme" />
-            </intent-filter>
-        </activity>
-
         <activity
             android:name=".MainActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

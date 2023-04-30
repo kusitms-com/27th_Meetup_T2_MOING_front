@@ -1,4 +1,4 @@
-package com.example.test_google_login;
+package com.example.moing;
 
 import org.junit.Test;
 
