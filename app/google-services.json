@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "656960308528",
+    "project_id": "moing-affa0",
+    "storage_bucket": "moing-affa0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:656960308528:android:b3a2273e71445b38f074f5",
+        "android_client_info": {
+          "package_name": "com.example.moing"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "656960308528-4i8t3jmrr7lq6up0dhhujh01ndjpj0t6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBg3M4pdX5dnuxwcwQ2k8eHMTkZO8VdDfo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "656960308528-4i8t3jmrr7lq6up0dhhujh01ndjpj0t6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:656960308528:android:f7e910562ca391b9f074f5",
+        "android_client_info": {
+          "package_name": "com.example.moing_front"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "656960308528-4i8t3jmrr7lq6up0dhhujh01ndjpj0t6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBg3M4pdX5dnuxwcwQ2k8eHMTkZO8VdDfo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "656960308528-4i8t3jmrr7lq6up0dhhujh01ndjpj0t6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

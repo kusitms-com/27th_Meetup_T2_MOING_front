@@ -14,11 +14,20 @@
         android:theme="@style/Theme.Test_google_login"
         tools:targetApi="31" >
 
+        <service
+            android:name=".fcm.FCMService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
         <activity
             android:name=".MainActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
