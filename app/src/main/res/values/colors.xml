@@ -1,10 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- 모잉에 사용할 컬러 -->
+
+    <!-- main/dark -->
+    <color name="main_dark_50">#FFF1EF</color>
+    <color name="main_dark_100">#FFD3CD</color>
+    <color name="main_dark_200">#FFBEB5</color>
+    <color name="main_dark_300">#FFA194</color>
+    <color name="main_dark_400">#FF8E7F</color>
+    <color name="main_dark_500">#FF752F</color>
+    <color name="main_dark_600">#E86856</color>
+    <color name="main_dark_700">#B55143</color>
+    <color name="main_dark_800">#8C3F34</color>
+    <color name="main_dark_900">#6B3028</color>
+
+    <!-- secondary/grey -->
+    <color name="secondary_grey_black_1">#FFFFFF</color>
+    <color name="secondary_grey_black_2">#FDFDFD</color>
+    <color name="secondary_grey_black_3">#F6F6F6</color>
+    <color name="secondary_grey_black_4">#F1F1F1</color>
+    <color name="secondary_grey_black_5">#DCDCDD</color>
+    <color name="secondary_grey_black_6">#C4C5C6</color>
+    <color name="secondary_grey_black_7">#959698</color>
+    <color name="secondary_grey_black_8">#66676A</color>
+    <color name="secondary_grey_black_9">#535457</color>
+    <color name="secondary_grey_black_10">#37383C</color>
+    <color name="secondary_grey_black_11">#303135</color>
+    <color name="secondary_grey_black_12">#202020</color>
+    <color name="secondary_grey_black_13">#1A1919</color>
+    <color name="secondary_grey_black_14">#111110</color>
+
+    <!-- main/white -->
+    <color name="main_white_50">#FFEFEC</color>
+    <color name="main_white_100">#FFCCC5</color>
+    <color name="main_white_200">#FFB4A9</color>
+    <color name="main_white_300">#FF9182</color>
+    <color name="main_white_400">#FF7C69</color>
+    <color name="main_white_500">#FF5B44</color>
+    <color name="main_white_600">#E8533E</color>
+    <color name="main_white_700">#B54130</color>
+    <color name="main_white_800">#8C3225</color>
+    <color name="main_white_900">#6B261D</color>
+
 </resources>
