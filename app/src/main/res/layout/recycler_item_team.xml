@@ -3,44 +3,152 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:background="@drawable/secondary_layout_background"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
-        android:id="@+id/ivImage"
+        android:id="@+id/ivTeamImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
-        android:id="@+id/tvTitle"
+        android:id="@+id/tvTeamTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:fontFamily="@font/pretendard_semi_bold"
         android:text="미라말고미라클모닝임"
         android:textColor="@color/secondary_grey_black_2"
         android:textSize="20dp"
+        android:fontFamily="@font/pretendard_semi_bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivImage" />
+        app:layout_constraintTop_toBottomOf="@+id/ivTeamImage" />
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/imgBtnNext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:background="@color/secondary_grey_black_13"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvTitle"
-        app:layout_constraintTop_toBottomOf="@+id/ivImage"
+        app:layout_constraintStart_toEndOf="@+id/tvTeamTitle"
+        app:layout_constraintTop_toBottomOf="@+id/ivTeamImage"
         app:srcCompat="@drawable/baseline_arrow_forward_ios_24"
         app:layout_constraintHorizontal_bias="1"/>
 
+    <LinearLayout
+        android:id="@+id/llNone1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/third_layout_background"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTeamTitle">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/pretendard_semi_bold"
+            android:text="인원"
+            android:textColor="@color/secondary_grey_black_7"
+            android:textSize="14dp" />
+
+        <TextView
+            android:id="@+id/tvTeamMemberNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:fontFamily="@font/pretendard_semi_bold"
+            android:text="0명"
+            android:textColor="@color/secondary_grey_black_6"
+            android:textSize="14dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llNone2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/third_layout_background"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/llNone1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/pretendard_semi_bold"
+            android:text="시작"
+            android:textColor="@color/secondary_grey_black_7"
+            android:textSize="14dp" />
+
+        <TextView
+            android:id="@+id/tvTeamMissionStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:fontFamily="@font/pretendard_semi_bold"
+            android:text="2023.04.05"
+            android:textColor="@color/secondary_grey_black_6"
+            android:textSize="14dp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvNone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="20dp"
+        android:text="~"
+        android:textColor="@color/secondary_grey_black_7"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toStartOf="@+id/llNone3"
+        app:layout_constraintStart_toEndOf="@+id/llNone2"
+        app:layout_constraintTop_toBottomOf="@+id/llNone1" />
+
+    <LinearLayout
+        android:id="@+id/llNone3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/third_layout_background"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+
+        app:layout_constraintTop_toBottomOf="@+id/llNone1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/pretendard_semi_bold"
+            android:text="종료"
+            android:textColor="#CBB9FF"
+            android:textSize="14dp" />
+
+        <TextView
+            android:id="@+id/tvTeamMissionEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:fontFamily="@font/pretendard_semi_bold"
+            android:text="2023.04.05"
+            android:textColor="@color/secondary_grey_black_6"
+            android:textSize="14dp" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
