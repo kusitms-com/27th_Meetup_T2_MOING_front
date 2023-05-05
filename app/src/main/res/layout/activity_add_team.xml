@@ -64,7 +64,7 @@
         android:layout_marginTop="375dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:background="@drawable/button_select"
+        android:background="@drawable/button_press"
         />
 
 
@@ -81,7 +81,7 @@
         android:textSize="18dp"
         android:textColor="@color/secondary_grey_black_7"
         android:fontFamily="@font/pretendard_semi_bold"
-        android:background="@drawable/button_select"
+        android:background="@drawable/button_press"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

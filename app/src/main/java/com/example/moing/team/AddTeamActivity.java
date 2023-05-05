@@ -27,6 +27,7 @@ public class AddTeamActivity extends AppCompatActivity {
         btn_make = (Button)findViewById(R.id.btn_makeTeam);
         btn_back = (ImageButton) findViewById(R.id.btn_back);
 
+
         // 뒤로 가기 버튼 눌렀을 때
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,8 +51,16 @@ public class AddTeamActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 btn_make.setTextColor(Color.WHITE);
-                // Intent 문 필요.
+                Intent intent = new Intent(getApplicationContext(), MakeTeamActivity.class);
+                startActivity(intent);
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        btn_invite.setTextColor(ContextCompat.getColorStateList(AddTeamActivity.this, R.color.secondary_grey_black_7));
+        btn_make.setTextColor(ContextCompat.getColorStateList(AddTeamActivity.this, R.color.secondary_grey_black_7));
     }
 }

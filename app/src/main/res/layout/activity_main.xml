@@ -17,16 +17,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintHorizontal_bias="1"
-        app:srcCompat="@drawable/baseline_account_circle_24" />
+        android:src="@drawable/ic_user" />
 
     <TextView
         android:id="@+id/tvName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="28dp"
         android:text="모닥불"
         android:textColor="@color/main_dark_300"
-        android:textSize="24dp"
+        android:textSize="28dp"
         android:fontFamily="@font/pretendard_semi_bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnMyProfile" />
@@ -34,10 +34,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="28dp"
         android:text="님"
         android:textColor="@color/secondary_grey_black_3"
-        android:textSize="24dp"
+        android:textSize="28dp"
         android:fontFamily="@font/pretendard_semi_bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvName"
@@ -55,16 +55,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvName"
-        app:layout_constraintHorizontal_bias="0"/>
+        app:layout_constraintHorizontal_bias="0"
+        android:layout_marginTop="12dp"/>
 
     <TextView
         android:id="@+id/tvCurTeam"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="72dp"
         android:text="진행 중 모임  0"
         android:textColor="@color/secondary_grey_black_6"
-        android:textSize="14dp"
+        android:textSize="16dp"
         android:fontFamily="@font/pretendard_medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -74,13 +75,11 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvTeamList"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="340dp"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="80dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvCurTeam"/>
+        app:layout_constraintTop_toBottomOf="@+id/tvCurTeam" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
