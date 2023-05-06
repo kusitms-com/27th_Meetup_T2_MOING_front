@@ -90,6 +90,7 @@
                 android:textSize="16dp" />
 
             <EditText
+                android:id="@+id/et_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
@@ -100,9 +101,11 @@
                 android:hint="언제든 변경할 수 있어요"
                 android:textColor="@color/secondary_grey_black_2"
                 android:textColorHint="@color/secondary_grey_black_7"
-                android:textSize="18dp" />
+                android:textSize="18dp"
+                android:maxLength="10"/>
 
             <TextView
+                android:id="@+id/tv_nameCount"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
@@ -125,6 +128,7 @@
                 android:textSize="16dp" />
 
             <EditText
+                android:id="@+id/et_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
@@ -135,7 +139,8 @@
                 android:hint="최대 20명까지 가능해요"
                 android:textColor="@color/secondary_grey_black_2"
                 android:textColorHint="@color/secondary_grey_black_7"
-                android:textSize="18dp" />
+                android:textSize="18dp"
+                android:maxLength="2"/>
 
             <TextView
                 android:id="@+id/tv_startDay"
@@ -149,6 +154,7 @@
                 android:textSize="16dp" />
 
             <android.widget.Button
+                android:id="@+id/btn_start"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"

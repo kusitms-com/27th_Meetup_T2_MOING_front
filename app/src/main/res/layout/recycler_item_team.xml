@@ -7,7 +7,7 @@
     android:paddingBottom="20dp"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:background="@drawable/secondary_layout_background"
+    android:background="@drawable/second_layout_background"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView

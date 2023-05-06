@@ -16,11 +16,11 @@ import com.example.moing.R;
 
 import java.util.List;
 
+/** TeamRecyclerView 의 Adapter**/
 public class TeamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int DEFAULT_TYPE = 0;
     private static final int TEAM_TYPE = 1;
-    private List<Team> teamList;
-    private Context context;
+    private final List<Team> teamList;
 
     public TeamAdapter(List<Team> teamList) {
         this.teamList = teamList;
@@ -29,10 +29,11 @@ public class TeamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
+        // 마지막 DefaultType
         if (position  == getItemCount()-1) {
             return DEFAULT_TYPE;
         }
-
+        // 그 외 TeamType
         return TEAM_TYPE;
     }
 
@@ -41,9 +42,10 @@ public class TeamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         RecyclerView.ViewHolder viewHolder;
-        context = parent.getContext();
+        Context context = parent.getContext();
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
+        // viewType 에 따라 ViewHolder 와 Layout 설정
         if(viewType == DEFAULT_TYPE){
             view = inflater.inflate(R.layout.recycler_item_team_default,parent,false);
             viewHolder = new DefaultViewHolder(view);
@@ -59,6 +61,7 @@ public class TeamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
+        // viewType 에 따라 text 및 image 설정
         Team team = teamList.get(position);
         switch (holder.getItemViewType()) {
             case DEFAULT_TYPE:
@@ -79,7 +82,7 @@ public class TeamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
 
-    public class DefaultViewHolder extends RecyclerView.ViewHolder {
+    public static class DefaultViewHolder extends RecyclerView.ViewHolder {
         Button btnAddTeam;
 
         public DefaultViewHolder(@NonNull View itemView) {
@@ -92,7 +95,7 @@ public class TeamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    public class TeamViewHolder extends RecyclerView.ViewHolder {
+    public static class TeamViewHolder extends RecyclerView.ViewHolder {
         ImageView image;
         TextView title;
         TextView memberNum;
