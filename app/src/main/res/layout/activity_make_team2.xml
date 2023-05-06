@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/secondary_grey_black_14"
+    tools:context=".team.MakeTeamActivity2">
+
+    <LinearLayout
+        android:id="@+id/lin_nav"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:padding="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginLeft="16dp"
+            android:background="@color/secondary_grey_black_14"
+            android:src="@drawable/arrow_left" />
+
+        <TextView
+            android:id="@+id/tv1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="32dp"
+            android:layout_marginTop="11dp"
+            android:fontFamily="@font/pretendard_semi_bold"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="새로운 모임 개설"
+            android:textColor="@color/secondary_grey_black_3"
+            android:textSize="18dp" />
+    </LinearLayout>
+
+    <android.widget.Button
+        android:id="@+id/btn_next"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:background="@drawable/button_round_black12"
+        android:fontFamily="@font/pretendard_semi_bold"
+        android:text="다음으로"
+        android:textColor="@color/secondary_grey_black_10"
+        android:textSize="18dp"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lin_nav"
+        app:layout_constraintBottom_toTopOf="@id/btn_next">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv2"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="32dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:lineSpacingExtra="11sp"
+                android:text="소모임의\n기본 정보를 작성해주세요."
+                android:textColor="@color/secondary_grey_black_2"
+                android:textSize="28dp" />
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="52dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:text="소모임 이름"
+                android:textColor="@color/secondary_grey_black_7"
+                android:textSize="16dp" />
+
+            <EditText
+                android:id="@+id/et_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/edittext_round_corner_rectangle"
+                android:fontFamily="@font/pretendard_medium"
+                android:hint="언제든 변경할 수 있어요"
+                android:textColor="@color/secondary_grey_black_2"
+                android:textColorHint="@color/secondary_grey_black_7"
+                android:textSize="18dp"
+                android:maxLength="10"/>
+
+            <TextView
+                android:id="@+id/tv_nameCount"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginRight="16dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:gravity="right"
+                android:text="(0/10)"
+                android:textColor="@color/secondary_grey_black_7"
+                android:textSize="16dp" />
+
+            <TextView
+                android:id="@+id/tv_member"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="12dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:text="소모임 구성원 수"
+                android:textColor="@color/secondary_grey_black_7"
+                android:textSize="16dp" />
+
+            <EditText
+                android:id="@+id/et_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/edittext_round_corner_rectangle"
+                android:fontFamily="@font/pretendard_medium"
+                android:hint="최대 20명까지 가능해요"
+                android:textColor="@color/secondary_grey_black_2"
+                android:textColorHint="@color/secondary_grey_black_7"
+                android:textSize="18dp"
+                android:maxLength="2"/>
+
+            <TextView
+                android:id="@+id/tv_startDay"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="32dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:text="소모임 시작일"
+                android:textColor="@color/secondary_grey_black_7"
+                android:textSize="16dp" />
+
+            <android.widget.Button
+                android:id="@+id/btn_start"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/edittext_round_corner_rectangle"
+                android:drawableRight="@drawable/ic_calendar"
+                android:fontFamily="@font/pretendard_medium"
+                android:gravity="left"
+                android:hint="날짜를 선택해주세요"
+                android:textColorHint="@color/secondary_grey_black_7"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/tv_predict"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="32dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:text="예상활동 기간"
+                android:textColor="@color/secondary_grey_black_7"
+                android:textSize="16dp" />
+
+
+        </LinearLayout>
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
