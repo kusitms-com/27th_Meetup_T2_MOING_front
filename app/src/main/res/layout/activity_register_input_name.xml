@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#111110"
+    tools:context=".RegisterInputNameActivity"
+    android:layout_weight="1">
+
+    <ImageView
+        android:id="@+id/arrowLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="14dp"
+        android:adjustViewBounds="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/arrow_left" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/pretendard_semi_bold"
+        android:text="회원가입"
+        android:textColor="@color/secondary_grey_black_3"
+        android:textSize="16dp"
+        app:layout_constraintStart_toEndOf="@+id/arrowLeft"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/smallTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="88dp"
+        android:fontFamily="@font/pretendard_semi_bold"
+        android:text="반가워요, 딱 두번만 입력하면 돼요."
+        android:textColor="@color/secondary_grey_black_3"
+        android:textSize="14dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/arrowLeft" />
+
+    <TextView
+        android:id="@+id/tv1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/pretendard_semi_bold"
+        android:text="MOING에서 사용할"
+        android:textColor="@color/secondary_grey_black_3"
+        android:textSize="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/smallTv" />
+
+    <TextView
+        android:id="@+id/tv2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/pretendard_semi_bold"
+        android:text="닉네임을 입력해주세요"
+        android:textColor="@color/secondary_grey_black_3"
+        android:textSize="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv1" />
+
+    <TextView
+        android:id="@+id/nicknameTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="@font/pretendard_semi_bold"
+        android:text="닉네임"
+        android:textColor="#FFBEB5"
+        android:textSize="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/editText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv2"
+        android:visibility="invisible"/>
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/border_all"
+        android:ems="10"
+        android:fontFamily="@font/pretendard_semi_bold"
+        android:hint="나를 드러낼 수 있는 별명을 추천해요"
+        android:inputType="textNoSuggestions|textVisiblePassword"
+        android:maxLength="10"
+        android:padding="15dp"
+        android:textColor="@color/secondary_grey_black_3"
+        android:textColorHint="#959698"
+        android:textSize="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nicknameTv" />
+
+    <TextView
+        android:id="@+id/nickNameTF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/pretendard_semi_bold"
+        android:text="사용 가능한 별명이에요"
+        android:textColor="#88F0BE"
+        android:textSize="14dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/nextDark"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editText"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/editText"
+        app:layout_constraintEnd_toEndOf="@+id/editText"
+        app:layout_constraintHorizontal_bias="0.942"
+        app:layout_constraintStart_toStartOf="@+id/editText"
+        app:layout_constraintTop_toTopOf="@+id/editText">
+        <ImageView
+            android:id="@+id/xIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:visibility="invisible"
+            app:srcCompat="@drawable/x_icon" />
+    </LinearLayout>
+
+
+    <ImageView
+            android:id="@+id/nicknameBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="16dp"
+            android:adjustViewBounds="true"
+            app:srcCompat="@drawable/nickname_btn"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/nextDark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="16dp"
+        android:adjustViewBounds="true"
+        app:srcCompat="@drawable/next_dark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="visible"/>
+
+    <ImageView
+        android:id="@+id/nextLight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="16dp"
+        android:adjustViewBounds="true"
+        app:srcCompat="@drawable/next_light"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="invisible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
