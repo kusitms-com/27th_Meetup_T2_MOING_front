@@ -80,7 +80,7 @@ public class MakeTeamActivity extends AppCompatActivity implements View.OnClickL
                 break;
             // 다음으로 버튼 클릭 시
             case R.id.btn_next:
-                if(major.length() > 0 && count == 1) {
+                if(major.length() > 0 ) {
                     Log.d("MAKETEAMACTIVITY", major);
                     Intent intent = new Intent(getApplicationContext(), MakeTeamActivity2.class);
                     intent.putExtra("major", major);
@@ -98,7 +98,6 @@ public class MakeTeamActivity extends AppCompatActivity implements View.OnClickL
             b.setTextColor(ContextCompat.getColorStateList(MakeTeamActivity.this, R.color.secondary_grey_black_7));
             b.setSelected(false); // 선택 아님으로 변경
             count--;
-            Log.d("MAKETEAMACTIVITY", String.valueOf(count));
         }
 
         // 선택되어 있지 않을 때 버튼을 눌렀다면 ...
@@ -110,39 +109,75 @@ public class MakeTeamActivity extends AppCompatActivity implements View.OnClickL
 
             // 객체의 text 전달
             major = b.getText().toString();
-            // 다음으로 버튼을 하얗게
             count++;
-            Log.d("MAKETEAMACTIVITY", String.valueOf(count));
+
+            if(b.getText().toString().equals("스포츠/운동")) {
+                changeColorDark(btn_life);
+                changeColorDark(btn_test);
+                changeColorDark(btn_study);
+                changeColorDark(btn_book);
+                changeColorDark(btn_proceed);
+            }
+
+            else if (b.getText().toString().equals("생활습관 개선")) {
+                changeColorDark(btn_sports);
+                changeColorDark(btn_test);
+                changeColorDark(btn_study);
+                changeColorDark(btn_book);
+                changeColorDark(btn_proceed);
+            }
+
+            else if (b.getText().toString().equals("시험/취업준비")) {
+                changeColorDark(btn_sports);
+                changeColorDark(btn_life);
+                changeColorDark(btn_study);
+                changeColorDark(btn_book);
+                changeColorDark(btn_proceed);
+            }
+
+            else if (b.getText().toString().equals("스터디/공부")) {
+                changeColorDark(btn_sports);
+                changeColorDark(btn_life);
+                changeColorDark(btn_test);
+                changeColorDark(btn_book);
+                changeColorDark(btn_proceed);
+            }
+
+            else if (b.getText().toString().equals("독서")) {
+                changeColorDark(btn_sports);
+                changeColorDark(btn_life);
+                changeColorDark(btn_test);
+                changeColorDark(btn_study);
+                changeColorDark(btn_proceed);
+            }
+
+            else if (b.getText().toString().equals("그외 자기계발")) {
+                changeColorDark(btn_sports);
+                changeColorDark(btn_life);
+                changeColorDark(btn_test);
+                changeColorDark(btn_study);
+                changeColorDark(btn_book);
+            }
         }
 
         if (count != 1) {
+            // 다음으로 버튼 어둡게
             btn_next.setTextColor(ContextCompat.getColorStateList(MakeTeamActivity.this, R.color.secondary_grey_black_10));
             btn_next.setBackgroundResource(R.drawable.button_round_black12);
+            // 프로그레스 진행버튼 1
             img_pg.setBackgroundResource(R.drawable.maketeam_progress1);
         } else {
+            // 다음으로 버튼을 하얗게
             btn_next.setBackgroundResource(R.drawable.button_round_black1);
-            // 다음으로 버튼 텍스트를 검정색으로!
             btn_next.setTextColor(ContextCompat.getColorStateList(MakeTeamActivity.this, R.color.secondary_grey_black_12));
+            // 프로그레스 진행버튼 2로 변경
             img_pg.setBackgroundResource(R.drawable.maketeam_progress2);
         }
     }
 
-    public void onResume() {
-        super.onResume();
-        count=0;
-        btn_next.setTextColor(ContextCompat.getColorStateList(MakeTeamActivity.this, R.color.secondary_grey_black_10));
-        btn_next.setBackgroundResource(R.drawable.button_round_black12);
-        changeColorDark(btn_sports);
-        changeColorDark(btn_life);
-        changeColorDark(btn_test);
-        changeColorDark(btn_study);
-        changeColorDark(btn_book);
-        changeColorDark(btn_proceed);
-        img_pg.setBackgroundResource(R.drawable.maketeam_progress1);
-    }
-
     public void changeColorDark(Button b) {
         if (b.isSelected()) {
+            count--;
             b.setTextColor(ContextCompat.getColorStateList(MakeTeamActivity.this, R.color.secondary_grey_black_7));
             b.setSelected(false); // 선택 아님으로 변경
         }
