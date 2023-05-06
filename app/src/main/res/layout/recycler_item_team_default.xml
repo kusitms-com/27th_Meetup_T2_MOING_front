@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/secondary_layout_background">
+    android:background="@drawable/second_layout_background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clNone1"
@@ -31,7 +31,7 @@
             android:fontFamily="@font/pretendard_semi_bold"
             android:padding="16dp"
             android:text="모임 추가하기"
-            android:textSize="16dp"
+            android:textSize="18dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
