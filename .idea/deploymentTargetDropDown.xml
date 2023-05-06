@@ -7,30 +7,11 @@
         <deviceKey>
           <Key>
             <type value="VIRTUAL_DEVICE_PATH" />
-<<<<<<< HEAD
-            <value value="C:\Users\fairy\.android\avd\Pixel_5_API_33.avd" />
-=======
-            <value value="$USER_HOME$/.android/avd/Device_API_30.avd" />
->>>>>>> feature/kakao_login
+            <value value="C:\Users\PC\.android\avd\Pixel_4_API_30.avd" />
           </Key>
         </deviceKey>
       </Target>
     </targetSelectedWithDropDown>
-<<<<<<< HEAD
-    <timeTargetWasSelectedWithDropDown value="2023-05-04T17:08:43.167714400Z" />
-=======
-    <timeTargetWasSelectedWithDropDown value="2023-05-05T13:50:45.325039Z" />
-    <targetsSelectedWithDialog>
-      <Target>
-        <type value="QUICK_BOOT_TARGET" />
-        <deviceKey>
-          <Key>
-            <type value="VIRTUAL_DEVICE_PATH" />
-            <value value="$USER_HOME$/.android/avd/Device_API_30.avd" />
-          </Key>
-        </deviceKey>
-      </Target>
-    </targetsSelectedWithDialog>
->>>>>>> feature/kakao_login
+    <timeTargetWasSelectedWithDropDown value="2023-05-06T15:39:43.620265300Z" />
   </component>
 </project>

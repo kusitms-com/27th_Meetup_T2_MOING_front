@@ -28,6 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
+            android:backgroundTint="@color/main_dark_500"
             android:fontFamily="@font/pretendard_semi_bold"
             android:padding="16dp"
             android:text="모임 추가하기"
