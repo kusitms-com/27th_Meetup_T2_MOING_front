@@ -1,7 +1,9 @@
 package com.example.moing.team;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -42,6 +44,7 @@ import java.io.File;
 
 public class MakeTeamActivity3 extends AppCompatActivity {
     private static final int READ_EXTERNAL_STORAGE_REQUEST = 0;
+    private Uri uri;
     private EditText etIntroduce;
     private EditText etResolution;
     private Button btnImageUpload;
@@ -49,6 +52,7 @@ public class MakeTeamActivity3 extends AppCompatActivity {
     private ImageView ivImageUpload;
     private Button btnCreateTeam;
     private ImageView ivProgressBar;
+
 
 
 
@@ -97,13 +101,15 @@ public class MakeTeamActivity3 extends AppCompatActivity {
         // 모임 생성 버튼 비활성화
         btnCreateTeam.setClickable(false);
 
-        // 구현 예정 - S3를 이용한 사진 업로드
-        // 구현 예정 - 생성하기 버튼 및 ProgressBar
     }
 
     /** 버튼 클릭 시 소모임 Data 전송 후 다음 화면 실행 **/
     View.OnClickListener onCreateTeamClickListener = view -> {
         // 구현 예정 - 소모임 Data Retrofit 사용하여 전달
+
+        // S3를 통한 사진 업로드
+        File file = new File((getAbsolutePathFromUri(getApplicationContext(),uri)));
+        uploadWithTransferUtility(file.getName(),file);
 
         // 다음 화면
         Intent intent = new Intent(getApplicationContext(), MakeTeamActivity4.class);
@@ -135,7 +141,7 @@ public class MakeTeamActivity3 extends AppCompatActivity {
                 public void onActivityResult(ActivityResult result) {
                     // 선택된 이미지 처리
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        Uri uri = result.getData().getData();
+                         uri = result.getData().getData();
 
                         // Glide 를 통한 이미지 로딩
                         Glide.with(getApplicationContext())
@@ -205,7 +211,7 @@ public class MakeTeamActivity3 extends AppCompatActivity {
 
     public void uploadWithTransferUtility(String fileName, File file) {
 
-        AWSCredentials awsCredentials = new BasicAWSCredentials("AKA5L3BROCCOLIJS62JQ", "xywH1VJjcAxp0xcEyFuVrOnknLp3XtWsyT2KaFEx");    // IAM 생성하며 받은 것 입력
+        AWSCredentials awsCredentials = new BasicAWSCredentials("AKIA5L3BRFIIWLIJ62JQ", "xywH1VJjcAxp0xcEyFuVrOnknLp3XtWsyT2KaFEx");    // IAM 생성하며 받은 것 입력
         AmazonS3Client s3Client = new AmazonS3Client(awsCredentials, Region.getRegion(Regions.AP_NORTHEAST_2));
 
         TransferUtility transferUtility = TransferUtility.builder().s3Client(s3Client).context(getApplicationContext()).build();
@@ -233,4 +239,30 @@ public class MakeTeamActivity3 extends AppCompatActivity {
             }
         });
     }
+
+    public static String getAbsolutePathFromUri(Context context, Uri uri) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            // Android Q 이상에서는 uri.getPath()가 /document/... 형태로 반환되므로
+            // getContentResolver().query()를 사용하여 실제 경로를 가져와야 합니다.
+            try (Cursor cursor = context.getContentResolver().query(uri, null, null, null)) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    return cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA));
+                }
+            }
+        } else {
+            String[] projection = {MediaStore.Images.Media.DATA};
+            Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
+            if (cursor != null) {
+                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                if (cursor.moveToFirst()) {
+                    String path = cursor.getString(column_index);
+                    cursor.close();
+                    return path;
+                }
+                cursor.close();
+            }
+        }
+        return null;
+    }
+
 }
