@@ -43,7 +43,8 @@
         android:layout_marginRight="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/make_team3_ll_nav_none1">
+        app:layout_constraintTop_toBottomOf="@id/make_team3_ll_nav_none1"
+        app:layout_constraintBottom_toTopOf="@id/make_team3_iv_progress">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -198,7 +199,7 @@
     </ScrollView>
 
     <ImageView
-        android:id="@+id/make_team3_iv_progress4"
+        android:id="@+id/make_team3_iv_progress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -214,13 +215,15 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:background="@drawable/button_round_black12"
+        android:clickable="false"
         android:fontFamily="@font/pretendard_semi_bold"
         android:text="생성하기"
         android:textColor="@color/secondary_grey_black_10"
         android:textSize="18dp"
-        android:clickable="false"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/make_team3_ll_nav_none1"
+        app:layout_constraintVertical_bias="1"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
