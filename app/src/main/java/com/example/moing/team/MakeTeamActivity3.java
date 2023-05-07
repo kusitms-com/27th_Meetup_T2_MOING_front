@@ -43,6 +43,7 @@ import com.example.moing.R;
 import java.io.File;
 
 public class MakeTeamActivity3 extends AppCompatActivity {
+    private static final String TAG = "MakeTeamActivity3";
     private static final int READ_EXTERNAL_STORAGE_REQUEST = 0;
     private Uri uri;
     private EditText etIntroduce;
@@ -209,37 +210,40 @@ public class MakeTeamActivity3 extends AppCompatActivity {
         }
     }
 
+    /** AWS S3에 파일 업로드를 수행하는 메소드  **/
     public void uploadWithTransferUtility(String fileName, File file) {
 
+        // accessKey 와 secretKey 를 사용하는 기본 자격 증명 객체
         AWSCredentials awsCredentials = new BasicAWSCredentials("AKIA5L3BRFIIWLIJ62JQ", "xywH1VJjcAxp0xcEyFuVrOnknLp3XtWsyT2KaFEx");    // IAM 생성하며 받은 것 입력
+
+        // AWS S3 서비스와 상호 작용하기 위한 클라이언트 객체
         AmazonS3Client s3Client = new AmazonS3Client(awsCredentials, Region.getRegion(Regions.AP_NORTHEAST_2));
 
+        // Amazon S3 전송 관리를 쉽게 할 수 있도록 하는 고급 API - for Image File Upload
         TransferUtility transferUtility = TransferUtility.builder().s3Client(s3Client).context(getApplicationContext()).build();
         TransferNetworkLossHandler.getInstance(getApplicationContext());
-
         TransferObserver uploadObserver = transferUtility.upload("moing-images", fileName, file);    // (bucket api, file, file)
 
         uploadObserver.setTransferListener(new TransferListener() {
             @Override
             public void onStateChanged(int id, TransferState state) {
-                if (state == TransferState.COMPLETED) {
-                    // Handle a completed upload
-                }
+                //if (state == TransferState.COMPLETED) { // 업로드 성공 }
             }
 
             @Override
             public void onProgressChanged(int id, long current, long total) {
                 int done = (int) (((double) current / total) * 100.0);
-                Log.d("MY-TAG", "UPLOAD - - ID: $id, percent done = $done");
+                Log.d(TAG, "UPLOAD - - ID: $id, percent done = $done");
             }
 
             @Override
             public void onError(int id, Exception ex) {
-                Log.d("MY-TAG", "UPLOAD ERROR - - ID: $id - - EX:" + ex.toString());
+                Log.d(TAG, "UPLOAD ERROR - - ID: $id - - EX:" + ex.toString());
             }
         });
     }
 
+    /** Uri 에서 절대경로를 get하는 메소드**/
     public static String getAbsolutePathFromUri(Context context, Uri uri) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             // Android Q 이상에서는 uri.getPath()가 /document/... 형태로 반환되므로
