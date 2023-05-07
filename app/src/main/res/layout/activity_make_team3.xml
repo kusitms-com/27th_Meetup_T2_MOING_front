@@ -145,6 +145,16 @@
                 android:textSize="18dp" />
 
 
+            <ImageView
+                android:id="@+id/make_team3_iv_image_upload"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minWidth="330dp"
+                android:minHeight="220dp"
+                android:scaleType="fitXY"
+                android:visibility="gone"
+                app:srcCompat="@drawable/button_round_black12" />
+
             <android.widget.Button
                 android:id="@+id/make_team3_btn_image_upload"
                 android:layout_width="match_parent"
@@ -156,6 +166,7 @@
                 android:minHeight="100dp"
                 android:paddingLeft="100dp"
                 android:paddingRight="100dp"
+                android:fontFamily="@font/pretendard_semi_bold"
                 android:text="사진 업로드하기"
                 android:textColor="@color/secondary_grey_black_6"
                 android:textSize="18dp"/>
@@ -164,12 +175,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:layout_marginBottom="164dp"
                 android:lineSpacingExtra="8dp"
                 android:fontFamily="@font/pretendard_medium"
                 android:text="소모임의 대표 사진은 홈 화면에서의 썸네일로 적용되어요.\n소모임 개설 이후 자유롭게 변경 가능하니 걱정마세요!"
                 android:textColor="@color/secondary_grey_black_7"
                 android:textSize="16dp" />
+
+            <Button
+                android:id="@+id/make_team3_btn_image_upload_re"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:layout_marginBottom="164dp"
+                android:layout_gravity="center"
+                android:fontFamily="@font/pretendard_semi_bold"
+                android:text="다시 선택하기"
+                android:textColor="@color/secondary_grey_black_4"
+                android:textSize="18dp"
+                android:visibility="invisible"/>
 
         </LinearLayout>
     </ScrollView>
