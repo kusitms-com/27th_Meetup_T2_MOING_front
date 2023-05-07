@@ -87,7 +87,7 @@ public class TeamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         public DefaultViewHolder(@NonNull View itemView) {
             super(itemView);
-            btnAddTeam = itemView.findViewById(R.id.btnAddTeam);
+            btnAddTeam = itemView.findViewById(R.id.team_default_btn_add_team);
             btnAddTeam.setOnClickListener(view -> {
                 Intent intent = new Intent(view.getContext(),AddTeamActivity.class);
                 view.getContext().startActivity(intent);
@@ -104,11 +104,11 @@ public class TeamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         public TeamViewHolder(@NonNull View itemView) {
             super(itemView);
-            image = itemView.findViewById(R.id.ivTeamImage);
-            title = itemView.findViewById(R.id.tvTeamTitle);
-            memberNum = itemView.findViewById(R.id.tvTeamMemberNum);
-            missionStart = itemView.findViewById(R.id.tvTeamMissionStart);
-            missionEnd = itemView.findViewById(R.id.tvTeamMissionEnd);
+            image = itemView.findViewById(R.id.team_iv_team_image);
+            title = itemView.findViewById(R.id.team_tv_team_title);
+            memberNum = itemView.findViewById(R.id.team_tv_team_member_num);
+            missionStart = itemView.findViewById(R.id.team_tv_mission_start);
+            missionEnd = itemView.findViewById(R.id.team_tv_team_mission_end);
         }
     }
 }

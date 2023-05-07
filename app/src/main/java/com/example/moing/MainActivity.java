@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         teamList.add(new Team("소모임 이름","소모임 몇명","시작일","종료일"));
 
         // 소모임 목록 리사이클러뷰
-        RecyclerView recyclerView = findViewById(R.id.rvTeamList);
+        RecyclerView recyclerView = findViewById(R.id.main_rv_team_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false));
 
         // adapter 설정
