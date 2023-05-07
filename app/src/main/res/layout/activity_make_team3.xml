@@ -8,7 +8,7 @@
     tools:context=".team.MakeTeamActivity3">
 
     <LinearLayout
-        android:id="@+id/llNav"
+        android:id="@+id/make_team3_ll_nav_none1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
-            android:id="@+id/btnBack"
+            android:id="@+id/make_team3_btn_back"
             android:layout_width="20dp"
             android:layout_height="match_parent"
             android:background="@color/secondary_grey_black_14"
@@ -36,14 +36,14 @@
     </LinearLayout>
 
     <ScrollView
-        android:id="@+id/scrollView3"
+        android:id="@+id/make_team3_sv_none1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/llNav">
+        app:layout_constraintTop_toBottomOf="@id/make_team3_ll_nav_none1">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -51,7 +51,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tv2"
+                android:id="@+id/make_team3_tv_none1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="8dp"
@@ -63,7 +63,7 @@
                 android:textSize="28dp" />
 
             <TextView
-                android:id="@+id/tvExplain"
+                android:id="@+id/make_team3_tv_introduce"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="52dp"
@@ -73,7 +73,7 @@
                 android:textSize="16dp" />
 
             <EditText
-                android:id="@+id/et_name"
+                android:id="@+id/make_team3_et_introduce"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -88,7 +88,7 @@
                 android:gravity="start"/>
 
             <TextView
-                android:id="@+id/tv_nameCount"
+                android:id="@+id/make_team3_tv_introduce_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
@@ -99,7 +99,7 @@
                 android:textSize="16dp" />
 
             <TextView
-                android:id="@+id/tv_member"
+                android:id="@+id/make_team3_tv_resolution"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
@@ -109,7 +109,7 @@
                 android:textSize="16dp" />
 
             <EditText
-                android:id="@+id/et_number"
+                android:id="@+id/make_team3_et_resolution"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -124,7 +124,7 @@
                 android:gravity="start"/>
 
             <TextView
-                android:id="@+id/tvMinded"
+                android:id="@+id/make_team3_tv_resolution_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
@@ -135,7 +135,7 @@
                 android:textSize="16dp" />
 
             <TextView
-                android:id="@+id/tvImage"
+                android:id="@+id/make_team3_tv_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
@@ -146,6 +146,7 @@
 
 
             <android.widget.Button
+                android:id="@+id/make_team3_btn_image_upload"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -174,17 +175,17 @@
     </ScrollView>
 
     <ImageView
-        android:id="@+id/ivPBMakeTeam3"
+        android:id="@+id/make_team3_iv_progress4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:background="@drawable/maketeam_progress4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/btnCreateTeam"/>
+        app:layout_constraintBottom_toTopOf="@+id/make_team3_btn_create_team"/>
 
     <android.widget.Button
-        android:id="@+id/btnCreateTeam"
+        android:id="@+id/make_team3_btn_create_team"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
@@ -194,6 +195,7 @@
         android:text="생성하기"
         android:textColor="@color/secondary_grey_black_10"
         android:textSize="18dp"
+        android:clickable="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />

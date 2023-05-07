@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/second_layout_background">
+    android:background="@drawable/layout_round_black13">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clNone1"
@@ -13,7 +13,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="20dp"
-        android:background="@drawable/third_layout_background"
+        android:background="@drawable/layout_round_black12"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/btnAddTeam"
         app:layout_constraintEnd_toEndOf="parent"
