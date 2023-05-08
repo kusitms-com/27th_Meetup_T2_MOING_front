@@ -56,4 +56,10 @@ dependencies {
 
     // CardView
     //implementation 'androidx.cardView:cardView:1.0.0'
+
+    // Amazon S3 - image upload
+    implementation 'com.amazonaws:aws-android-sdk-mobile-client:2.13.5'
+    implementation 'com.amazonaws:aws-android-sdk-cognito:2.13.5'
+    implementation 'com.amazonaws:aws-android-sdk-s3:2.13.5'
+
 }

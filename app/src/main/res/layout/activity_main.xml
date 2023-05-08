@@ -9,7 +9,7 @@
     tools:context=".MainActivity">
 
     <ImageButton
-        android:id="@+id/btnMyProfile"
+        android:id="@+id/main_btm_my_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/black"
@@ -20,7 +20,7 @@
         android:src="@drawable/ic_user" />
 
     <TextView
-        android:id="@+id/tvName"
+        android:id="@+id/main_tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
@@ -29,7 +29,7 @@
         android:textSize="28dp"
         android:fontFamily="@font/pretendard_semi_bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnMyProfile" />
+        app:layout_constraintTop_toBottomOf="@+id/main_btm_my_profile" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -40,12 +40,12 @@
         android:textSize="28dp"
         android:fontFamily="@font/pretendard_semi_bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvName"
-        app:layout_constraintTop_toBottomOf="@+id/btnMyProfile"
+        app:layout_constraintStart_toEndOf="@+id/main_tv_name"
+        app:layout_constraintTop_toBottomOf="@+id/main_btm_my_profile"
         app:layout_constraintHorizontal_bias="0"/>
 
     <TextView
-        android:id="@+id/tvStatement"
+        android:id="@+id/main_tv_statement"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
@@ -55,11 +55,11 @@
         android:fontFamily="@font/pretendard_semi_bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvName"
+        app:layout_constraintTop_toBottomOf="@+id/main_tv_name"
         app:layout_constraintHorizontal_bias="0" />
 
     <TextView
-        android:id="@+id/tvCurTeam"
+        android:id="@+id/main_tv_cur_team"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="72dp"
@@ -69,17 +69,17 @@
         android:fontFamily="@font/pretendard_medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvStatement"
+        app:layout_constraintTop_toBottomOf="@+id/main_tv_statement"
         app:layout_constraintHorizontal_bias="0"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvTeamList"
+        android:id="@+id/main_rv_team_list"
         android:layout_width="match_parent"
         android:layout_height="340dp"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvCurTeam" />
+        app:layout_constraintTop_toBottomOf="@+id/main_tv_cur_team" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

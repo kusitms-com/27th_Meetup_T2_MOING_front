@@ -7,11 +7,11 @@
     android:paddingBottom="20dp"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:background="@drawable/second_layout_background"
+    android:background="@drawable/layout_round_black13"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
-        android:id="@+id/ivTeamImage"
+        android:id="@+id/team_iv_team_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,7 +20,7 @@
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
-        android:id="@+id/tvTeamTitle"
+        android:id="@+id/team_tv_team_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -29,32 +29,32 @@
         android:textSize="20dp"
         android:fontFamily="@font/pretendard_semi_bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivTeamImage" />
+        app:layout_constraintTop_toBottomOf="@+id/team_iv_team_image" />
 
     <ImageButton
-        android:id="@+id/imgBtnNext"
+        android:id="@+id/team_img_btn_next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:background="@color/secondary_grey_black_13"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvTeamTitle"
-        app:layout_constraintTop_toBottomOf="@+id/ivTeamImage"
+        app:layout_constraintStart_toEndOf="@+id/team_tv_team_title"
+        app:layout_constraintTop_toBottomOf="@+id/team_iv_team_image"
         app:srcCompat="@drawable/baseline_arrow_forward_ios_24"
         app:layout_constraintHorizontal_bias="1"/>
 
     <LinearLayout
-        android:id="@+id/llNone1"
+        android:id="@+id/team_ll_none1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:background="@drawable/third_layout_background"
+        android:background="@drawable/layout_round_black12"
         android:orientation="horizontal"
         android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTeamTitle">
+        app:layout_constraintTop_toBottomOf="@+id/team_tv_team_title">
 
         <TextView
             android:layout_width="wrap_content"
@@ -65,7 +65,7 @@
             android:textSize="14dp" />
 
         <TextView
-            android:id="@+id/tvTeamMemberNum"
+            android:id="@+id/team_tv_team_member_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
@@ -76,16 +76,16 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/llNone2"
+        android:id="@+id/team_ll_none2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:background="@drawable/third_layout_background"
+        android:background="@drawable/layout_round_black12"
         android:orientation="horizontal"
         android:padding="8dp"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llNone1">
+        app:layout_constraintTop_toBottomOf="@+id/team_ll_none1">
 
         <TextView
             android:layout_width="wrap_content"
@@ -96,7 +96,7 @@
             android:textSize="14dp" />
 
         <TextView
-            android:id="@+id/tvTeamMissionStart"
+            android:id="@+id/team_tv_mission_start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
@@ -107,7 +107,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/tvNone"
+        android:id="@+id/team_tv_none1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="12dp"
@@ -115,22 +115,21 @@
         android:text="~"
         android:textColor="@color/secondary_grey_black_7"
         android:textSize="14dp"
-        app:layout_constraintEnd_toStartOf="@+id/llNone3"
-        app:layout_constraintStart_toEndOf="@+id/llNone2"
-        app:layout_constraintTop_toBottomOf="@+id/llNone1" />
+        app:layout_constraintEnd_toStartOf="@+id/team_ll_none3"
+        app:layout_constraintStart_toEndOf="@+id/team_ll_none2"
+        app:layout_constraintTop_toBottomOf="@+id/team_ll_none1" />
 
     <LinearLayout
-        android:id="@+id/llNone3"
+        android:id="@+id/team_ll_none3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:background="@drawable/third_layout_background"
+        android:background="@drawable/layout_round_black12"
         android:orientation="horizontal"
         android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
-
-        app:layout_constraintTop_toBottomOf="@+id/llNone1">
+        app:layout_constraintTop_toBottomOf="@+id/team_ll_none1">
 
         <TextView
             android:layout_width="wrap_content"
@@ -141,7 +140,7 @@
             android:textSize="14dp" />
 
         <TextView
-            android:id="@+id/tvTeamMissionEnd"
+            android:id="@+id/team_tv_team_mission_end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"

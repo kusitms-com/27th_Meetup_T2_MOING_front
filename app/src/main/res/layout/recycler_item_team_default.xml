@@ -3,19 +3,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/second_layout_background">
+    android:background="@drawable/layout_round_black13">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/clNone1"
+        android:id="@+id/team_default_cl_none1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="20dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="20dp"
-        android:background="@drawable/third_layout_background"
+        android:background="@drawable/layout_round_black12"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/btnAddTeam"
+        app:layout_constraintBottom_toTopOf="@+id/team_default_btn_add_team"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -24,10 +24,11 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
         <Button
-            android:id="@+id/btnAddTeam"
+            android:id="@+id/team_default_btn_add_team"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
+            android:backgroundTint="@color/main_dark_500"
             android:fontFamily="@font/pretendard_semi_bold"
             android:padding="16dp"
             android:text="모임 추가하기"
@@ -35,7 +36,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/clNone1"
+            app:layout_constraintTop_toBottomOf="@+id/team_default_cl_none1"
             app:layout_constraintVertical_bias="1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
