@@ -48,11 +48,9 @@ public class MakeTeamActivity2 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_make_team2);
 
-        //        // 소모임 목표 값 전달받기
-//        Intent intent = getIntent();
-//        // 목표값 전달
-//        dream = intent.getStringExtra("major");
-//        Log.d("MAKETEAMACTIVITY2", dream);
+        Intent intent = getIntent();
+        // 목표값 전달
+        dream = intent.getStringExtra("major");
 
         // 뒤로 가기
         btn_back = (ImageButton) findViewById(R.id.btn_back);
@@ -243,10 +241,11 @@ public class MakeTeamActivity2 extends AppCompatActivity {
     View.OnClickListener onCreateTeamNext = view -> {
         Intent intent = new Intent(getApplicationContext(), MakeTeamActivity3.class);
         // 보낼 데이터들 아직 미구현.. 구현되면 바로 값 넣어서 보낼 예정!
-        intent.putExtra("name", name);
-        intent.putExtra("member", cnt);
-        intent.putExtra("startDate", data);
-        intent.putExtra("predict", predictDate);
+        intent.putExtra("name", name); // 소모임 이름
+        intent.putExtra("member", cnt); // 소모임 구성원 수
+        intent.putExtra("startDate", data); // 소모임 시작일
+        intent.putExtra("predict", predictDate); // 소모임 예상 활동 기간
+        intent.putExtra("major", dream); // 소모임 목표
         startActivity(intent);
     };
 
