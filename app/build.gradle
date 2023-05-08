@@ -53,4 +53,7 @@ dependencies {
 
     // Firebase - push 알림
     implementation 'com.google.firebase:firebase-messaging:21.1.0'
+
+    // CardView
+    //implementation 'androidx.cardView:cardView:1.0.0'
 }
