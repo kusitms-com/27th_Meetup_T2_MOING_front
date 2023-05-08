@@ -85,9 +85,6 @@ public class MakeTeamActivity2 extends AppCompatActivity {
         btn_next = (Button) findViewById(R.id.btn_next2);
         iv_pg = (ImageView) findViewById(R.id.iv_pg1);
 
-        // 다음으로 버튼 비활성화
-        btn_next.setClickable(false);
-
         // onFocusChangeListener 등록
         // 소모임 이름
         setFocus(et_name, tv_name);
@@ -100,6 +97,9 @@ public class MakeTeamActivity2 extends AppCompatActivity {
         // OnClickListener
         btn_start.setOnClickListener(onStartDateClickListener);
         btn_next.setOnClickListener(onCreateTeamNext);
+
+        // 다음으로 버튼 비활성화
+        btn_next.setClickable(false);
 
         // 소모임 이름 최대 10칸 입력 가능
         et_name.addTextChangedListener(new TextWatcher() {
