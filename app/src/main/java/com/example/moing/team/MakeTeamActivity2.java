@@ -318,6 +318,7 @@ public class MakeTeamActivity2 extends AppCompatActivity {
             btn_next.setBackgroundResource(R.drawable.button_round_black1);
             btn_next.setTextColor(ContextCompat.getColorStateList(getApplicationContext(), R.color.secondary_grey_black_12));
             btn_next.setClickable(true);
+            iv_pg.setBackgroundResource(R.drawable.maketeam_progress4);
             // 프로그레스 바는 머지 한다음 수정할게요~!
         }
         else {
