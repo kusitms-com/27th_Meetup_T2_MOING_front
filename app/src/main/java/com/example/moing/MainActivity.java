@@ -1,21 +1,22 @@
 package com.example.moing;
 
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.moing.team.SwipeCallback;
 import com.example.moing.team.Team;
 import com.example.moing.team.TeamAdapter;
+import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
+    private static final int DEFAULT_TYPE = 0;
+    private static final int TEAM_TYPE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,18 +26,21 @@ public class MainActivity extends AppCompatActivity {
         // test data (삭제 예정)
         List<Team> teamList = new ArrayList<>();
         teamList.add(new Team("소모임 이름","소모임 몇명","시작일","종료일"));
+        teamList.add(new Team("소모임 이름","소모임 몇명","시작일","종료일"));
 
-        // 소모임 목록 리사이클러뷰
-        RecyclerView recyclerView = findViewById(R.id.main_rv_team_list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false));
+        // 현재 소모임 수
+        TextView tvCurTeam = findViewById(R.id.main_tv_cur_team);
+        tvCurTeam.setText("진행 중 모임  "+teamList.size());
+
+        // 소모임 목록 ViewPager
+        ViewPager2 viewpager = findViewById(R.id.main_vp_team_list);
 
         // adapter 설정
-        TeamAdapter teamAdapter = new TeamAdapter(teamList);
-        recyclerView.setAdapter(teamAdapter);
+        TeamAdapter teamAdapter = new TeamAdapter(teamList,this);
+        viewpager.setAdapter(teamAdapter);
 
-        // ItemTouchHelper 생성 및 연결
-        SwipeCallback swipeCallback = new SwipeCallback(recyclerView, teamAdapter);
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeCallback);
-        itemTouchHelper.attachToRecyclerView(recyclerView);
+        DotsIndicator dotsIndicator = findViewById(R.id.main_dots_indicator);
+        dotsIndicator.setViewPager2(viewpager);
+
     }
 }
