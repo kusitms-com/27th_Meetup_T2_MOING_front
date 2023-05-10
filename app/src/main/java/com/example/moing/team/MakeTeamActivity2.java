@@ -148,7 +148,7 @@ public class MakeTeamActivity2 extends AppCompatActivity {
                     }
 
                     else {
-                        tv_warn.setVisibility(View.INVISIBLE);
+                        tv_warn.setVisibility(View.GONE);
                         et_num.setBackgroundResource(R.drawable.edittext_round_corner_rectangle);
                     }
                 }

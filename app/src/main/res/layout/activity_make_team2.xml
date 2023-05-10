@@ -48,22 +48,24 @@
         <ImageView
             android:id="@+id/iv_pg1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="4dp"
             android:background="@drawable/maketeam_progress3" />
 
         <android.widget.Button
             android:id="@+id/btn_next2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/button_round_black12"
             android:fontFamily="@font/pretendard_semi_bold"
             android:text="다음으로"
             android:textColor="@color/secondary_grey_black_10"
             android:textSize="18dp"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
     </LinearLayout>
 
 
@@ -173,14 +175,14 @@
                 android:textSize="16dp"
                 android:text="20명 이내로 입력해주세요."
                 android:textColor="#F43A6F"
-                android:visibility="invisible" />
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/tv_startDay"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="24dp"
                 android:fontFamily="@font/pretendard_medium"
                 android:text="소모임 시작일"
                 android:textColor="@color/secondary_grey_black_7"
