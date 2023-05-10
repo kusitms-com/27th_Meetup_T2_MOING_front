@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moing.R;
+import com.example.moing.board.BoardActivity;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class TeamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public TeamAdapter(List<Team> teamList, Context mainContext) {
         TeamAdapter.teamList = teamList;
         TeamAdapter.mainContext = mainContext;
-        teamList.add(new Team("Default","Default","Default","Default"));
+        teamList.add(new Team(-1,"",-1,"","","",false));
     }
 
     @Override
@@ -72,10 +73,10 @@ public class TeamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 break;
             case TEAM_TYPE:
                 TeamViewHolder teamViewHolder = (TeamViewHolder) holder;
-                teamViewHolder.title.setText(team.getTitle());
-                teamViewHolder.memberNum.setText(team.memberNum);
-                teamViewHolder.missionStart.setText(team.missionStart);
-                teamViewHolder.missionEnd.setText(team.missionEnd);
+                teamViewHolder.title.setText(team.name);
+                teamViewHolder.memberNum.setText(String.valueOf(team.personnel));
+                teamViewHolder.missionStart.setText(team.startDate);
+                teamViewHolder.missionEnd.setText(team.endDate);
                 break;
         }
     }
@@ -129,6 +130,11 @@ public class TeamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             memberNum = itemView.findViewById(R.id.team_tv_team_member_num);
             missionStart = itemView.findViewById(R.id.team_tv_mission_start);
             missionEnd = itemView.findViewById(R.id.team_tv_team_mission_end);
+
+            itemView.setOnClickListener(view->{
+                Intent intent = new Intent(view.getContext(), BoardActivity.class);
+                view.getContext().startActivity(intent);
+            });
         }
     }
 }

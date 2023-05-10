@@ -15,8 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private static final int DEFAULT_TYPE = 0;
-    private static final int TEAM_TYPE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +23,8 @@ public class MainActivity extends AppCompatActivity {
 
         // test data (삭제 예정)
         List<Team> teamList = new ArrayList<>();
-        teamList.add(new Team("소모임 이름","소모임 몇명","시작일","종료일"));
-        teamList.add(new Team("소모임 이름","소모임 몇명","시작일","종료일"));
+        teamList.add(new Team(1,"소모임 이름",10,"시작일","종료일","이미지",false));
+        teamList.add(new Team(2,"소모임 이름",10,"시작일","종료일","이미지",false));
 
         // 현재 소모임 수
         TextView tvCurTeam = findViewById(R.id.main_tv_cur_team);
@@ -39,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         TeamAdapter teamAdapter = new TeamAdapter(teamList,this);
         viewpager.setAdapter(teamAdapter);
 
+        // DotIndicator 설정
         DotsIndicator dotsIndicator = findViewById(R.id.main_dots_indicator);
         dotsIndicator.setViewPager2(viewpager);
 

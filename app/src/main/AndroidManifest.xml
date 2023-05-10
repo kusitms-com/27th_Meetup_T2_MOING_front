@@ -17,6 +17,9 @@
         android:theme="@style/Theme.Moing_Day"
         tools:targetApi="31">
         <activity
+            android:name=".board.BoardActivity"
+            android:exported="false" />
+        <activity
             android:name=".team.MakeTeamActivity4"
             android:exported="false" />
         <activity
@@ -74,7 +77,7 @@
         <activity
             android:name=".RegisterInputNameActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize"></activity>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".LoginActivity"
             android:exported="true" />
@@ -90,7 +93,10 @@
         <activity
             android:name=".MainActivity"
             android:exported="true" />
-        <service android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService" android:enabled="true"/>
+
+        <service
+            android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
+            android:enabled="true" />
     </application>
 
 </manifest>
