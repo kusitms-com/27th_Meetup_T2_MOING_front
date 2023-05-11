@@ -3,35 +3,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/layout_round_black13">
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/team_default_iv"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="20dp"
+        android:layout_height="212dp"
         android:background="@drawable/ic_make_team_possible"
-        app:layout_constraintBottom_toTopOf="@+id/team_default_btn_add_team"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0">
     </androidx.constraintlayout.utils.widget.ImageFilterView>
 
     <Button
         android:id="@+id/team_default_btn_add_team"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_marginTop="36dp"
         android:backgroundTint="@color/main_dark_500"
         android:fontFamily="@font/pretendard_semi_bold"
         android:padding="16dp"
         android:text="모임 추가하기"
         android:textSize="18dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/team_default_iv"

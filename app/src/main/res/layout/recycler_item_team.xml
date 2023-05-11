@@ -13,7 +13,8 @@
     <ImageView
         android:id="@+id/team_iv_team_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="168dp"
+        android:maxHeight="168dp"
         android:background="@drawable/ic_team_sample"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
