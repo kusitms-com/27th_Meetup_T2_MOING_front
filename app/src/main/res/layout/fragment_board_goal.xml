@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/secondary_grey_black_14"
+    android:paddingHorizontal="16dp"
+    android:paddingTop="24dp"
+    android:fillViewport="true"
+    android:id="@+id/scrollView"
+    tools:context=".board.BoardGoalFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/relative_all"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/relative_first"
+                android:layout_width="match_parent"
+                android:layout_height="140dp"
+                android:background="@drawable/layout_top_round_black12">
+
+                <ImageView
+                    android:id="@+id/img"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginVertical="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:src="@drawable/ic_moings" />
+
+                <TextView
+                    android:id="@+id/tv_team"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@id/img"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_toRightOf="@id/img"
+                    android:fontFamily="@font/pretendard_medium"
+                    android:text="북시즘 소모임"
+                    android:textColor="@color/secondary_grey_black_1"
+                    android:textSize="20dp" />
+
+                <Button
+                    android:id="@+id/btn_dDay"
+                    android:layout_width="110dp"
+                    android:layout_height="35dp"
+                    android:layout_below="@+id/tv_team"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_toRightOf="@id/img"
+                    android:backgroundTint="#fff176"
+                    android:clickable="false"
+                    android:fontFamily="@font/pretendard_semi_bold"
+                    android:includeFontPadding="false"
+                    android:text="종료 D-63"
+                    android:textColor="#645A07"
+                    android:textSize="14dp" />
+
+                <ImageButton
+                    android:id="@+id/imgbtn_dotIndicator"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="24dp"
+                    android:background="@drawable/ic_dot_indicator" />
+
+                <ImageButton
+                    android:id="@+id/imgBtn_refresh"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_below="@id/btn_dDay"
+                    android:layout_alignTop="@id/tv_date"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginRight="-12dp"
+                    android:layout_toLeftOf="@id/tv_date"
+                    android:background="@drawable/ic_refresh" />
+
+                <TextView
+                    android:id="@+id/tv_date"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/btn_dDay"
+                    android:layout_alignLeft="@id/btn_dDay"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="12dp"
+                    android:fontFamily="@font/pretendard_semi_bold"
+                    android:text="2023.05.08 14:34"
+                    android:textColor="@color/secondary_grey_black_7"
+                    android:textSize="16dp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relative_second"
+                android:layout_width="match_parent"
+                android:layout_height="280dp"
+                android:layout_below="@+id/relative_first"
+                android:background="@color/secondary_grey_black_13">
+
+                <ImageView
+                    android:id="@+id/iv_fire"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/ic_board_fire_3x" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/iv_fire"
+                    android:layout_marginVertical="16dp"
+                    android:fontFamily="@font/pretendard_medium"
+                    android:gravity="center"
+                    android:text="HOT 모임! 아 핫핫 모임! 🔥"
+                    android:textColor="@color/secondary_grey_black_2"
+                    android:textSize="20dp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_below="@+id/relative_second"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:background="@drawable/layout_bottom_round_black12">
+
+                <TextView
+                    android:id="@+id/tv_weFire"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/pretendard_semi_bold"
+                    android:text="우리 불꽃 피워내기"
+                    android:textColor="@color/secondary_grey_black_4"
+                    android:textSize="18dp" />
+
+                <TextView
+                    android:id="@+id/tv_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_weFire"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="12dp"
+                    android:fontFamily="@font/pretendard_semi_bold"
+                    android:text="이번주 미션을 성공하면 불꽃에게 불을 줄 수 있어요!"
+                    android:textColor="@color/secondary_grey_black_8"
+                    android:textSize="16dp" />
+
+                <ImageButton
+                    android:id="@+id/imgbtn_circle"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignTop="@+id/tv_weFire"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="16dp"
+                    android:background="@drawable/ic_info_circle" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="130dp"
+                    android:layout_below="@+id/tv_hint"
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginTop="24dp"
+                    android:background="@drawable/layout_round_black10">
+
+                    <TextView
+                        android:id="@+id/tv_userHere"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="12dp"
+                        android:fontFamily="@font/pretendard_semi_bold"
+                        android:text="현재 유저닉네임의 위치"
+                        android:textColor="@color/secondary_grey_black_4"
+                        android:textSize="16dp" />
+
+                    <TextView
+                        android:id="@+id/tv_progress_team"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@id/relative_progress"
+                        android:layout_marginBottom="-40dp"
+                        android:fontFamily="@font/pretendard_semi_bold"
+                        android:text="우리 모임"
+                        android:textColor="#CBB9FF"
+                        android:textSize="14dp" />
+
+                    <TextView
+                        android:id="@+id/tv_progress_user"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@id/relative_progress"
+                        android:layout_marginBottom="-40dp"
+                        android:fontFamily="@font/pretendard_semi_bold"
+                        android:text="나"
+                        android:textColor="@color/main_dark_400"
+                        android:textSize="14dp" />
+
+                    <TextView
+                        android:layout_width="30dp"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@id/relative_progress"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginBottom="-40dp"
+                        android:fontFamily="@font/pretendard_semi_bold"
+                        android:text="+1"
+                        android:textColor="@color/secondary_grey_black_8"
+                        android:textSize="16dp" />
+
+                    <RelativeLayout
+                        android:id="@+id/relative_progress"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:layout_below="@id/tv_userHere"
+                        android:layout_marginHorizontal="8dp"
+                        android:layout_marginTop="45dp"
+                        android:background="@drawable/board_progress">
+
+                        <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_marginVertical="4dp"
+                            android:layout_marginLeft="8dp"
+                            android:background="@drawable/ic_board_first" />
+
+                        <ImageView
+                            android:id="@+id/iv_team"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_marginVertical="4dp"
+                            android:layout_marginLeft="8dp"
+                            android:background="@drawable/ic_board_team" />
+
+                        <ImageView
+                            android:id="@+id/iv_user"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_marginVertical="4dp"
+                            android:layout_marginLeft="8dp"
+                            android:background="@drawable/ic_board_user" />
+
+                        <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginVertical="4dp"
+                            android:layout_marginRight="8dp"
+                            android:background="@drawable/ic_board_end" />
+                    </RelativeLayout>
+                </RelativeLayout>
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <ImageButton
+            android:id="@+id/imgbtn_down"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/arrow_down"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:id="@+id/tv_toggle_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="72dp"
+            android:layout_marginLeft="24dp"
+            android:text="확인하지 않은 공지가 3개 있어요"
+            android:textColor="@color/secondary_grey_black_3"
+            android:fontFamily="@font/pretendard_semi_bold"
+            android:textSize="24dp"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="420dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/layout_round_radius8_black12">
+
+            <RelativeLayout
+                android:layout_width="180dp"
+                android:layout_height="50dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/button_radius15_black13">
+
+            </RelativeLayout>
+
+            <ImageButton
+                android:id="@+id/btn_notice_light_sign"
+                android:layout_width="85dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="90dp"
+                android:layout_marginTop="22dp"
+                android:background="@drawable/board_notice_light_sign_3x" />
+
+            <ImageButton
+                android:id="@+id/btn_notice_light_noSign"
+                android:layout_width="85dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="90dp"
+                android:layout_marginTop="22dp"
+                android:background="@drawable/board_notice_light_nosign_3x"
+                android:visibility="invisible"/>
+
+            <ImageButton
+                android:id="@+id/btn_notice_dark_sign"
+                android:layout_width="85dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="90dp"
+                android:layout_marginTop="22dp"
+                android:background="@drawable/board_notice_dark_sign_3x"
+                android:visibility="invisible"/>
+
+            <ImageButton
+                android:id="@+id/btn_notice_dark_noSign"
+                android:layout_width="85dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="90dp"
+                android:layout_marginTop="22dp"
+                android:background="@drawable/board_notice_dark_nosign_3x"
+                android:visibility="invisible"/>
+
+            <!-- 투표 토글 버튼 -->
+            <ImageButton
+                android:id="@+id/btn_vote_dark_noSign"
+                android:layout_width="85dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="22dp"
+                android:layout_toRightOf="@id/btn_notice_light_sign"
+                android:background="@drawable/board_vote_dark_nosign_3x"
+                android:visibility="invisible"/>
+
+            <ImageButton
+                android:id="@+id/btn_vote_dark_sign"
+                android:layout_width="85dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="22dp"
+                android:layout_toRightOf="@id/btn_notice_light_sign"
+                android:background="@drawable/board_vote_dark_sign_3x" />
+
+            <ImageButton
+                android:id="@+id/btn_vote_light_sign"
+                android:layout_width="85dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="22dp"
+                android:layout_toRightOf="@id/btn_notice_light_sign"
+                android:background="@drawable/board_vote_light_sign_3x"
+                android:visibility="invisible"/>
+
+            <ImageButton
+                android:id="@+id/btn_vote_light_noSign"
+                android:layout_width="85dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="22dp"
+                android:layout_toRightOf="@id/btn_notice_light_sign"
+                android:background="@drawable/board_vote_light_nosign_3x"
+                android:visibility="invisible"/>
+
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+</ScrollView>

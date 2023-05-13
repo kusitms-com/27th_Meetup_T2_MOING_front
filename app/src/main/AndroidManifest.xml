@@ -93,7 +93,8 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="true" />
+            android:exported="true" >
+        </activity>
 
         <service
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"

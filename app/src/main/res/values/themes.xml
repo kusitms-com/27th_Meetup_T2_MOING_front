@@ -16,4 +16,9 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+    <!-- 목표보드 상단 테마 설정 -->
+    <style name="board_tab_text" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">20dp</item>
+        <item name="android:fontFamily">@font/pretendard_semi_bold</item>
+    </style>
 </resources>

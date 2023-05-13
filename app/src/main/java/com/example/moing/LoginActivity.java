@@ -22,7 +22,6 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity {
 
     private RetrofitAPI retrofitAPI;
-    private String accessToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +66,6 @@ public class LoginActivity extends AppCompatActivity {
             } else if (oAuthToken != null) {
                 Log.i(TAG, "로그인 성공(토큰) : " + oAuthToken);
                 Log.i(TAG, "로그인 성공(토큰) : " + oAuthToken.getAccessToken());
-                accessToken = oAuthToken.getAccessToken();
                LoginStart(oAuthToken.getAccessToken());
             }
             return null;

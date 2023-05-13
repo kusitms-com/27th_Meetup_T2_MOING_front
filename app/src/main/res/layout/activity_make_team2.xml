@@ -228,7 +228,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:background="@drawable/button_press_to_select"
+                    android:background="@drawable/button_press_to_select_pink"
                     android:drawableRight="@drawable/arrow_down"
                     android:fontFamily="@font/pretendard_medium"
                     android:gravity="left"

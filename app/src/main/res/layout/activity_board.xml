@@ -4,7 +4,48 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
+    android:background="@color/secondary_grey_black_14"
     tools:context=".board.BoardActivity">
+
+    <LinearLayout
+        android:id="@+id/linear_tab"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/imgBtn_home"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:layout_gravity="left|center"
+            android:layout_marginLeft="16dp"
+            android:background="@drawable/ic_home" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="64dp"
+            android:layout_marginRight="16dp"
+            android:background="@color/secondary_grey_black_14"
+            app:tabIndicatorColor="@color/secondary_grey_black_1"
+            app:tabSelectedTextColor="@color/secondary_grey_black_1"
+            app:tabTextAppearance="@style/board_tab_text"
+            app:tabTextColor="@color/secondary_grey_black_11" />
+
+    </LinearLayout>
+
+
+    <FrameLayout
+        android:id="@+id/frame_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="64dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linear_tab"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
