@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/secondary_grey_black_14"
+    tools:context=".team.MakeTeamActivity3">
+
+    <LinearLayout
+        android:id="@+id/board_fix_ll_nav_none1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/board_fix_btn_close"
+            android:layout_width="20dp"
+            android:layout_height="match_parent"
+            android:background="@color/secondary_grey_black_14"
+            android:src="@drawable/x_icon" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="32dp"
+            android:fontFamily="@font/pretendard_semi_bold"
+            android:text="소모임 정보 수정"
+            android:textColor="@color/secondary_grey_black_3"
+            android:textSize="18dp" />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/board_fix_sv_none1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/board_fix_ll_nav_none1"
+        app:layout_constraintBottom_toTopOf="@id/board_fix_btn_fix_team">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/board_fix_tv_none1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="8dp"
+                android:layout_marginTop="44dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:lineSpacingExtra="11sp"
+                android:text="소모임의\n기본 정보를 수정할 수 있어요"
+                android:textColor="@color/secondary_grey_black_2"
+                android:textSize="28dp" />
+
+            <TextView
+                android:id="@+id/board_fix_tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="52dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:text="소모임 이름"
+                android:textColor="@color/secondary_grey_black_7"
+                android:textSize="16dp" />
+
+            <EditText
+                android:id="@+id/board_fix_et_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/edittext_round_corner_rectangle"
+                android:fontFamily="@font/pretendard_medium"
+                android:hint="현재 소모임 이름"
+                android:maxLength="10"
+                android:textColor="@color/secondary_grey_black_2"
+                android:textColorHint="@color/secondary_grey_black_7"
+                android:textSize="16dp"
+                android:singleLine="true"
+                android:inputType="text"
+                android:gravity="start"/>
+
+            <TextView
+                android:id="@+id/board_fix_tv_name_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:fontFamily="@font/pretendard_medium"
+                android:gravity="right"
+                android:text="(0/10)"
+                android:textColor="@color/secondary_grey_black_7"
+                android:textSize="16dp" />
+
+            <TextView
+                android:id="@+id/board_fix_tv_end_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:text="소모임 종료 날짜"
+                android:textColor="@color/secondary_grey_black_7"
+                android:textSize="16dp" />
+
+            <android.widget.Button
+                android:id="@+id/board_fix_btn_end_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/edittext_round_corner_rectangle"
+                android:drawableRight="@drawable/ic_calendar"
+                android:fontFamily="@font/pretendard_medium"
+                android:gravity="left"
+                android:hint="현재 종료 날짜"
+                android:textColorHint="@color/secondary_grey_black_7"
+                android:nextFocusDown="@id/btn_predict"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/board_fix_tv_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:fontFamily="@font/pretendard_semi_bold"
+                android:text="소모임의 대표사진이 필요해요"
+                android:textColor="@color/secondary_grey_black_2"
+                android:textSize="18dp" />
+
+
+            <ImageView
+                android:id="@+id/board_fix_iv_image_upload"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minWidth="330dp"
+                android:minHeight="220dp"
+                android:scaleType="fitXY"
+                android:visibility="gone"
+                app:srcCompat="@drawable/button_round_black12" />
+
+            <android.widget.Button
+                android:id="@+id/board_fix_btn_image_upload"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/button_round_black12"
+                android:drawableLeft="@drawable/ic_gallery"
+                android:drawablePadding="12dp"
+                android:minHeight="100dp"
+                android:paddingLeft="100dp"
+                android:paddingRight="100dp"
+                android:fontFamily="@font/pretendard_semi_bold"
+                android:text="사진 업로드하기"
+                android:textColor="@color/secondary_grey_black_6"
+                android:textSize="18dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:lineSpacingExtra="8dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:text="소모임의 대표 사진은 홈 화면에서의 썸네일로 적용되어요."
+                android:textColor="@color/secondary_grey_black_7"
+                android:textSize="16dp" />
+
+            <Button
+                android:id="@+id/board_fix_btn_image_upload_re"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:layout_marginBottom="164dp"
+                android:layout_gravity="center"
+                android:fontFamily="@font/pretendard_semi_bold"
+                android:text="다시 선택하기"
+                android:textColor="@color/secondary_grey_black_4"
+                android:textSize="18dp"
+                android:visibility="invisible"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+
+    <android.widget.Button
+        android:id="@+id/board_fix_btn_fix_team"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/button_round_black12"
+        android:clickable="false"
+        android:fontFamily="@font/pretendard_semi_bold"
+        android:text="수정하기"
+        android:textColor="@color/secondary_grey_black_10"
+        android:textSize="18dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/board_fix_ll_nav_none1"
+        app:layout_constraintVertical_bias="1"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

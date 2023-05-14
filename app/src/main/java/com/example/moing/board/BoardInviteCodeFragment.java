@@ -12,10 +12,10 @@ import android.widget.TextView;
 
 import com.example.moing.R;
 
-public class BoardInviteCodePopup extends PopupWindow {
+public class BoardInviteCodeFragment extends PopupWindow {
     private final TextView tvInviteCode;
 
-    public BoardInviteCodePopup(Context context) {
+    public BoardInviteCodeFragment(Context context) {
         super(context);
 
         LayoutInflater inflater = LayoutInflater.from(context);
