@@ -7,7 +7,7 @@
     android:background="@color/secondary_grey_black_12">
 
     <ImageButton
-        android:id="@+id/imgbtn_link"
+        android:id="@+id/board_dot_btn_link"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_marginHorizontal="16dp"
@@ -15,22 +15,22 @@
         android:background="@drawable/board_dot_link"/>
 
     <ImageButton
-        android:id="@+id/imgbtn_fix"
+        android:id="@+id/board_dot_btn_fix"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="8dp"
-        android:layout_below="@+id/imgbtn_link"
+        android:layout_below="@+id/board_dot_btn_link"
         android:background="@drawable/board_dot_fix"/>
 
     <ImageButton
-        android:id="@+id/imgbtn_close"
+        android:id="@+id/board_dot_btn_close"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"
-        android:layout_below="@+id/imgbtn_fix"
+        android:layout_below="@+id/board_dot_btn_fix"
         android:background="@drawable/board_dot_close"/>
 
 </RelativeLayout>
