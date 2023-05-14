@@ -12,7 +12,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.moing.retrofit.RegisterNameResponse;
+import com.example.moing.retrofit.RetrofitAPI;
+import com.example.moing.retrofit.RetrofitClient;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class RegisterInputNameActivity extends AppCompatActivity {
+
+    private RetrofitAPI retrofitAPI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +39,9 @@ public class RegisterInputNameActivity extends AppCompatActivity {
         TextView smallTv = (TextView) findViewById(R.id.smallTv); // 반가워요 ~
         TextView tv1 = (TextView) findViewById(R.id.tv1); // MOING에서 ~
         TextView tv2 = (TextView) findViewById(R.id.tv2); // 닉네임을 ~
+
+        //retrofit 이용
+        retrofitAPI = RetrofitClient.getApiService();
 
         xIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,7 +91,38 @@ public class RegisterInputNameActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                nickNameTF.setVisibility(View.VISIBLE);
+                String nickname = "exampleNickname";
+                Call<RegisterNameResponse> call = retrofitAPI.NameAvailable(nickname);
+                call.enqueue(new Callback<RegisterNameResponse>() {
+                    @Override
+                    public void onResponse(Call<RegisterNameResponse> call, Response<RegisterNameResponse> response) {
+                        if (response.isSuccessful()) {
+                            RegisterNameResponse registerNameResponse = response.body();
+                            String result = registerNameResponse.getData().getResult();
+
+                            if (result.equals("이미 존재하는 닉네임입니다")) {
+                                // 이미 존재하는 닉네임 처리 로직
+                                nickNameTF.setText("이미 존재하는 닉네임입니다.");
+                                nickNameTF.setVisibility(View.VISIBLE);
+
+                            } else if (result.equals("가능한 닉네임입니다")) {
+
+                                // 가능한 닉네임 처리 로직
+                                nickNameTF.setVisibility(View.VISIBLE);
+                                nextDark.setVisibility(View.INVISIBLE);
+                                nextLight.setVisibility(View.VISIBLE);
+                            }
+                        } else {
+                            // 응답 실패 처리 로직
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<RegisterNameResponse> call, Throwable t) {
+                        // 네트워크 오류 처리 로직
+                    }
+                });
+
                 nicknameBtn.setVisibility(View.INVISIBLE);
                 nextLight.setVisibility(View.VISIBLE);
                 nicknameTv.setVisibility(View.INVISIBLE);
@@ -88,6 +132,7 @@ public class RegisterInputNameActivity extends AppCompatActivity {
             }
         });
 
+        // click next in
         nextLight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -97,5 +142,6 @@ public class RegisterInputNameActivity extends AppCompatActivity {
                 finish();
             }
         });
+
     }
 }

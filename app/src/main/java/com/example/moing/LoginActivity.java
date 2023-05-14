@@ -2,6 +2,7 @@ package com.example.moing;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -67,6 +68,13 @@ public class LoginActivity extends AppCompatActivity {
                 Log.i(TAG, "로그인 성공(토큰) : " + oAuthToken);
                 Log.i(TAG, "로그인 성공(토큰) : " + oAuthToken.getAccessToken());
                LoginStart(oAuthToken.getAccessToken());
+
+               System.out.println("토큰 : " + oAuthToken + "이 저장되었습니다.");
+
+               Intent intent = new Intent(LoginActivity.this, RegisterInputNameActivity.class);
+               intent.putExtra("access_token", oAuthToken);
+               startActivity(intent);
+
             }
             return null;
         });
@@ -86,6 +94,7 @@ public class LoginActivity extends AppCompatActivity {
                     String access = loginResponse.getAccessToken();
                     String refresh = loginResponse.getRefreshToken();
                     String process = loginResponse.getProcess();
+
                 }
                 else {
                     Log.d("LoginStart", "토큰 얻기 실패" + response.message() + response.code());
