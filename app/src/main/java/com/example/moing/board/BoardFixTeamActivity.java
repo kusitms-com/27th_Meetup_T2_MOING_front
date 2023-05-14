@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -68,14 +69,12 @@ public class BoardFixTeamActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board_fix_team);
 
-
         // 구현 예정 - 서버 통신으로 소모임 정보 받아오기
         // 기존 소모임 이름, 종료 날짜, 사진
         beforeName = "name";
         beforeEndDate = "2023/5/14";
         beforeImage = "현재 소모임 사진";
 
-        // 소모임 이름
         // 소모임 이름
         EditText etName = findViewById(R.id.board_fix_et_name);
         TextView tvName = findViewById(R.id.board_fix_tv_name);
@@ -107,6 +106,10 @@ public class BoardFixTeamActivity extends AppCompatActivity {
         // onClickListener 등록
         btnFixTeam.setOnClickListener(onFixTeamClickListener);
         btnFixTeam.setClickable(false);
+
+        // 닫기
+        ImageButton btnClose = findViewById(R.id.board_fix_btn_close);
+        btnClose.setOnClickListener(view -> finish());
     }
     /** Button click 시 변경된 소모임 이름 or 종료날짜 or 사진 서버에 전송 구현 예정) 및 종료 **/
     View.OnClickListener onFixTeamClickListener = view -> finish();
