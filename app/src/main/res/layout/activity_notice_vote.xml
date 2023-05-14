@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/secondary_grey_black_14"
+    tools:context=".NoticeVoteActivity">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="72dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/lin_nav"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <ImageButton
+                            android:id="@+id/btn_back"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:padding="16dp"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginLeft="16dp"
+                            android:background="@color/secondary_grey_black_14"
+                            android:src="@drawable/arrow_left" />
+
+                        <TextView
+                            android:id="@+id/topTv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="32dp"
+                            android:layout_marginTop="11dp"
+                            android:fontFamily="@font/pretendard_semi_bold"
+                            android:gravity="center_horizontal|center_vertical"
+                            android:text="공지사항"
+                            android:textColor="@color/secondary_grey_black_3"
+                            android:textSize="18dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/bigTv1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="32dp"
+                                android:fontFamily="@font/pretendard_medium"
+                                android:text="확인하지 않은 공지가"
+                                android:layout_marginRight="5dp"
+                                android:textColor="@color/secondary_grey_black_2"
+                                android:textSize="20dp"
+                                android:layout_marginLeft="16dp" />
+
+                            <TextView
+                                android:id="@+id/bigColTv2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="32dp"
+                                android:fontFamily="@font/pretendard_medium"
+                                android:text="2개"
+                                android:textColor="#FF725F"
+                                android:textSize="20dp"
+                                android:layout_marginRight="5dp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/lin_nav" />
+
+                            <TextView
+                                android:id="@+id/bigTv3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="32dp"
+                                android:fontFamily="@font/pretendard_medium"
+                                android:text="있어요"
+                                android:textColor="@color/secondary_grey_black_2"
+                                android:textSize="20dp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/lin_nav" />
+                        </LinearLayout>
+
+
+                        <TextView
+                            android:id="@+id/tv3"
+                            android:layout_width="320dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/pretendard_medium"
+                            android:lineSpacingExtra="11sp"
+                            android:text="기다리고 있을 소모임원들을 위해, 빠르게 확인해주세요!"
+                            android:textColor="#959698"
+                            android:textSize="14dp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/tv2"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginBottom="36dp"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TabHost
+                            android:id="@+id/tabHost1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            >
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+
+                                <!-- TabWidget의 id값이 반드시 "tabs"로 지정되어야 함. -->
+                                <TabWidget
+                                    android:id="@android:id/tabs"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginBottom="40dp"
+                                    android:layout_marginHorizontal="70dp" />
+
+                                <!-- FrameLayout의 id값이 반드시 "tabcontent"로 지정되어야 함. -->
+                                <FrameLayout
+                                    android:id="@android:id/tabcontent"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent">
+
+                                    <!-- 공지사항. content1 -->
+                                    <LinearLayout
+                                        android:id="@+id/content1"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:orientation="vertical" >
+
+                                        <androidx.recyclerview.widget.RecyclerView
+                                            android:id="@+id/recycler"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:paddingHorizontal="10dp"
+                                            android:clipToPadding="false"
+                                            android:scrollbars="none"
+                                            android:overScrollMode="never"/>
+
+                                    </LinearLayout>
+
+                                    <!-- 투표. content2 -->
+                                    <LinearLayout
+                                        android:id="@+id/content2"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:orientation="vertical">
+
+                                        <androidx.recyclerview.widget.RecyclerView
+                                            android:id="@+id/recycler2"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:paddingHorizontal="10dp"
+                                            android:clipToPadding="false"
+                                            android:scrollbars="none"
+                                            android:overScrollMode="never"/>
+
+                                    </LinearLayout>
+                                </FrameLayout>
+                            </LinearLayout>
+                        </TabHost>
+                    </LinearLayout>
+                </LinearLayout>
+        </FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
