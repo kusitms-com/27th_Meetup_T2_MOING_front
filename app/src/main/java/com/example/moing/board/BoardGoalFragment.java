@@ -4,6 +4,8 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.moing.R;
+import com.example.moing.team.Team;
+import com.example.moing.team.TeamAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BoardGoalFragment extends Fragment {
 
@@ -22,9 +29,12 @@ public class BoardGoalFragment extends Fragment {
     TextView teamName, curDate, userName, tv_toggle;
     ImageButton dot, down;
     ImageView teamImg, btnRefresh, fire, imgTeam, imgUser;
-    Button teamDay;
+    Button teamDay, btnAll;
     ImageButton noticeLightSign, noticeLightNoSign, noticeDarkSign, noticeDarkNoSign;
     ImageButton voteLightSign, voteLightNoSign, voteDarkSign, voteDarkNoSign;
+
+    RecyclerView recyclerView;
+    BoardAdapter boardAdapter;
 
     // Dot Indicator
     BoardDotFragment boardDotFragment;
@@ -76,7 +86,27 @@ public class BoardGoalFragment extends Fragment {
         voteDarkSign = (ImageButton) view.findViewById(R.id.btn_vote_dark_sign);
         voteDarkNoSign = (ImageButton) view.findViewById(R.id.btn_vote_dark_noSign);
 
+        // 리사이클러뷰
+        recyclerView = view.findViewById(R.id.recycle_toggle);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        // 리싸이클러뷰 스크롤 방지
+        linearLayoutManager.setSmoothScrollbarEnabled(true);
+        linearLayoutManager.setAutoMeasureEnabled(true);
 
+        // 공지 전체보기 버튼
+        btnAll = (Button) view.findViewById(R.id.btn_all);
+        btnAll.setOnClickListener(btnAllClickListener);
+        // test data (삭제 예정)
+        List<Board> boardList = new ArrayList<>();
+        boardList.add(new Board("내용1입니다.","제목 1입니다.",1));
+        boardList.add(new Board("내용2입니다.","제목 2입니다.",2));
+        boardList.add(new Board("내용3입니다.","제목 3입니다.",3));
+
+        // 리싸이클러뷰 어댑터 설정
+        // adapter 설정
+        boardAdapter = new BoardAdapter(boardList, this);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(boardAdapter);
 
 
         // 스크롤 변화시 이미지 삭제
@@ -111,5 +141,10 @@ public class BoardGoalFragment extends Fragment {
     View.OnClickListener dotClickListener = v -> {
         boardDotFragment = new BoardDotFragment();
         boardDotFragment.show(requireActivity().getSupportFragmentManager(), boardDotFragment.getTag());
+    };
+
+    // 공지, 투표 전체보기 버튼 클릭 시
+    View.OnClickListener btnAllClickListener = v -> {
+        // 해당 공지사항 으로 이동
     };
 }
