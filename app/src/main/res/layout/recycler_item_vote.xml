@@ -11,22 +11,35 @@
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="24dp"
         android:background="@drawable/button_close"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentRight="true"
+        android:visibility="gone"/>
 
-    <TextView
-        android:id="@+id/tv_vote_content"
+    <CheckBox
+        android:id="@+id/btn_check"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginLeft="16dp"
+        android:background="@drawable/board_checkbox_no"
+        android:backgroundTint="@color/secondary_grey_black_7"
+        android:visibility="gone"/>
+
+
+    <EditText
+        android:id="@+id/et_vote_content"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginHorizontal="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        android:layout_toRightOf="@id/btn_check"
         android:background="@color/secondary_grey_black_12"
         android:fontFamily="@font/pretendard_semi_bold"
+        android:hint="투표 항목을 입력해주세요"
         android:paddingLeft="16dp"
-        android:text="투표 내용입니다."
-        android:textColor="@color/secondary_grey_black_2"
-        android:gravity="left|center"
         android:paddingTop="8dp"
-        android:textSize="18dp" />
+        android:textColorHint="@color/secondary_grey_black_7"
+        android:textSize="18dp"
+        android:textColor="@color/secondary_grey_black_2" />
 
 </RelativeLayout>

@@ -34,7 +34,7 @@
             android:layout_marginLeft="32dp" />
     </LinearLayout>
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -76,7 +76,7 @@
                 android:layout_height="50dp"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="4dp"
-                android:inputType="textMultiLine|textNoSuggestions"
+                android:inputType="textNoSuggestions"
                 android:background="@drawable/layout_round_black10"
                 android:backgroundTint="@color/secondary_grey_black_12"
                 android:gravity="center|left"
@@ -84,6 +84,9 @@
                 android:paddingLeft="16dp"
                 android:textColorHint="@color/secondary_grey_black_7"
                 android:textSize="18dp"
+                android:textColor="@color/secondary_grey_black_2"
+                android:maxLength="15"
+                android:maxLines="1"
                 />
 
             <TextView
@@ -121,7 +124,10 @@
                 android:hint="투표 관련 내용을 적어주세요"
                 android:padding="16dp"
                 android:textColorHint="@color/secondary_grey_black_7"
-                android:textSize="18dp" />
+                android:textSize="18dp"
+                android:textColor="@color/secondary_grey_black_2"
+                android:maxLength="300"/>
+
 
             <TextView
                 android:id="@+id/tv_contentCount"
@@ -171,35 +177,87 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/recycle_vote"
-                    android:visibility="gone"/>
+                    android:nestedScrollingEnabled="false"/>
 
-                <EditText
-                    android:id="@+id/et_vote_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginHorizontal="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@color/secondary_grey_black_12"
-                    android:fontFamily="@font/pretendard_semi_bold"
-                    android:hint="투표 항목을 입력해주세요"
-                    android:paddingLeft="16dp"
-                    android:paddingTop="8dp"
-                    android:textColorHint="@color/secondary_grey_black_7"
-                    android:textSize="18dp"
-                    android:textColor="@color/secondary_grey_black_2"/>
-
-                <ImageButton
+                <android.widget.Button
                     android:id="@+id/imgbtn_add"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:src="@drawable/board_add_vote"
-                    android:background="@color/secondary_grey_black_13"
-                    android:layout_marginTop="8dp"/>
+                    android:background="@android:color/transparent"
+                    android:text="항목 추가하기"
+                    android:fontFamily="@font/pretendard_semi_bold"
+                    android:textColor="@color/secondary_grey_black_4"
+                    android:textSize="18dp"
+                    android:drawableRight="@drawable/ic_plus"
+                    android:drawablePadding="-40dp"
+                    android:layout_gravity="center"
+                    android:paddingRight="80dp" />
 
-
+                <android.widget.Button
+                    android:id="@+id/imgbtn_erase"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@android:color/transparent"
+                    android:text="선택한 항목 지우기"
+                    android:fontFamily="@font/pretendard_semi_bold"
+                    android:textColor="@color/secondary_grey_black_11"
+                    android:textSize="18dp"
+                    android:layout_gravity="center"
+                    android:visibility="gone"/>
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="48dp"
+                android:layout_marginHorizontal="16dp"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/btn_anony"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/board_checkbox_no"
+                    android:backgroundTint="@color/secondary_grey_black_7" />
+
+                <TextView
+                    android:id="@+id/tv_anony"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="24dp"
+                    android:text="익명으로 투표할게요"
+                    android:textSize="18dp"
+                    android:textColor="@color/secondary_grey_black_3"
+                    android:fontFamily="@font/pretendard_medium" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/btn_multi"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/board_checkbox_no"
+                    android:backgroundTint="@color/secondary_grey_black_7" />
+
+                <TextView
+                    android:id="@+id/tv_multi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="24dp"
+                    android:text="복수 선택할 수 있어요"
+                    android:textSize="18dp"
+                    android:textColor="@color/secondary_grey_black_3"
+                    android:fontFamily="@font/pretendard_medium" />
+            </LinearLayout>
 
 
             <android.widget.Button
@@ -217,5 +275,5 @@
         </LinearLayout>
 
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
