@@ -76,13 +76,15 @@
                 android:layout_height="50dp"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="4dp"
+                android:inputType="textMultiLine|textNoSuggestions"
                 android:background="@drawable/layout_round_black10"
                 android:backgroundTint="@color/secondary_grey_black_12"
                 android:gravity="center|left"
                 android:hint="15자 이내의 제목을 적어주세요"
                 android:paddingLeft="16dp"
                 android:textColorHint="@color/secondary_grey_black_7"
-                android:textSize="18dp" />
+                android:textSize="18dp"
+                />
 
             <TextView
                 android:id="@+id/tv_titleCount"
@@ -164,18 +166,28 @@
                 android:background="@drawable/layout_round_black13"
                 android:orientation="vertical">
 
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/recycle_vote"
+                    android:visibility="gone"/>
+
                 <EditText
+                    android:id="@+id/et_vote_content"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginHorizontal="8dp"
                     android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
                     android:background="@color/secondary_grey_black_12"
                     android:fontFamily="@font/pretendard_semi_bold"
                     android:hint="투표 항목을 입력해주세요"
                     android:paddingLeft="16dp"
                     android:paddingTop="8dp"
                     android:textColorHint="@color/secondary_grey_black_7"
-                    android:textSize="18dp" />
+                    android:textSize="18dp"
+                    android:textColor="@color/secondary_grey_black_2"/>
 
                 <ImageButton
                     android:id="@+id/imgbtn_add"

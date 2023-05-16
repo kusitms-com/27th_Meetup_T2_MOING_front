@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/layout_round_black13">
+
+    <android.widget.Button
+        android:id="@+id/btn_vote_erase"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/button_close"
+        android:layout_alignParentRight="true" />
+
+    <TextView
+        android:id="@+id/tv_vote_content"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/secondary_grey_black_12"
+        android:fontFamily="@font/pretendard_semi_bold"
+        android:paddingLeft="16dp"
+        android:text="투표 내용입니다."
+        android:textColor="@color/secondary_grey_black_2"
+        android:gravity="left|center"
+        android:paddingTop="8dp"
+        android:textSize="18dp" />
+
+</RelativeLayout>
