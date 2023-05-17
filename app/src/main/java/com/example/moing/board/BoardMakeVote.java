@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.example.moing.MainActivity;
 import com.example.moing.R;
 
 import java.util.ArrayList;
@@ -136,7 +139,6 @@ public class BoardMakeVote extends AppCompatActivity {
             btn_erase_content.setClickable(true);
             btn_erase_content.setTextColor(Color.parseColor("#F43A6F"));
         }
-        checkInputs();
     };
 
     /** 선택한 항목 지우기 버튼 클릭 **/
@@ -219,29 +221,39 @@ public class BoardMakeVote extends AppCompatActivity {
 
     /** 업로드하기 버튼 **/
     View.OnClickListener uploadClickListener = v -> {
+        Intent intent = new Intent(getApplicationContext(), BoardActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
+        /** POST 요청 수행해야 한다. **/
+        List<Vote> result = voteAdapater.getVoteList();
+        for (Vote vote : result) {
+            Log.d("BOARDMAKEVOTE", vote.getVoteContent());
+        }
+
+        startActivity(intent);
     };
 
+    // VoteList 객체 내 EditText 값이 변경됐을 때 호출하는 메서드.
+    public boolean onVoteEditTextChanged() {
+        boolean isButtonEnabled = false;
+        for (Vote tmp : voteAdapater.getVoteList()) {
+            if(tmp.getVoteContent() == null) {
+//                isButtonEnabled = false;
+//                break;
+                return false;
+            }
+        }
+        return true;
+        //upload.setEnabled(isButtonEnabled);
+    }
+
+    // 입력값 확인
     public void checkInputs() {
-        if(title.length() > 0 && content.length() > 0 && checkVoteContent())
+        if(title.length() > 0 && content.length() > 0 && onVoteEditTextChanged())
         {
             upload.setClickable(true);
             upload.setTextColor(Color.parseColor("#202020"));
             upload.setBackgroundColor(Color.parseColor("#FFFFFF"));
         }
-    }
-
-    public boolean checkVoteContent() {
-        List<Vote> votes = voteAdapater.getVoteList();
-        if (votes.size() <= 0) {
-            return false;
-        }
-
-        for (Vote vote : votes) {
-            if(vote.getVoteContent().length() <= 0) {
-                return false;
-            }
-        }
-        return true;
     }
 }

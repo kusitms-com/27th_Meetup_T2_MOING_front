@@ -44,8 +44,6 @@ public class VoteAdapater extends RecyclerView.Adapter<VoteAdapater.VoteViewHold
 
     @Override
     public void onBindViewHolder(@NonNull VoteViewHolder holder, int position) {
-        holder.et_content.setText(voteList.get(position).getVoteContent());
-
         // 항목 지우기 버튼 시 Checkbox 버튼 가시성 설정
         if(isButtonVisible)
             holder.checkbox.setVisibility(View.VISIBLE);
@@ -53,14 +51,65 @@ public class VoteAdapater extends RecyclerView.Adapter<VoteAdapater.VoteViewHold
             holder.checkbox.setVisibility(View.GONE);
 
         // 체크 박스 여부 설정
-        if (holder.checkbox.isChecked()) {
-            selectedVote.add(voteList.get(position));
-            holder.checkbox.setBackgroundResource(R.drawable.board_checkbox_yes);
-        }
-        else {
-            selectedVote.remove(voteList.get(position));
-            holder.checkbox.setBackgroundResource(R.drawable.board_checkbox_no);
-        }
+//        if (holder.checkbox.isChecked()) {
+//            selectedVote.add(voteList.get(position));
+//            holder.checkbox.setBackgroundResource(R.drawable.board_checkbox_yes);
+//        }
+//        else {
+//            selectedVote.remove(voteList.get(position));
+//            holder.checkbox.setBackgroundResource(R.drawable.board_checkbox_no);
+//        }
+        holder.checkbox.setChecked(voteList.get(position).isSelected());
+
+        // EditText 관련 코드
+        holder.et_content.setText(voteList.get(position).getVoteContent());
+        // 변경점 수정
+        holder.et_content.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                holder.btn_close.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (holder.et_content.getText().length() != 0)
+                    holder.btn_close.setVisibility(View.VISIBLE);
+
+                voteList.get(holder.getAdapterPosition()).setVoteContent(holder.et_content.getText().toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                ((BoardMakeVote) context).onVoteEditTextChanged();
+            }
+        });
+
+        /** EditText 공란 처리 **/
+        holder.btn_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.et_content.setText(null);
+                voteList.get(holder.getAdapterPosition()).setVoteContent(holder.et_content.getText().toString());
+            }
+        });
+
+        /** 체크박스 변경 리스너 **/
+        holder.checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                int pos = holder.getAdapterPosition();
+                if (pos != RecyclerView.NO_POSITION) {
+                    voteList.get(pos).setSelected(isChecked);
+                    if (isChecked) {
+                        selectedVote.add(voteList.get(pos));
+                        holder.checkbox.setBackgroundResource(R.drawable.board_checkbox_yes);
+                    } else {
+                        selectedVote.remove(voteList.get(pos));
+                        holder.checkbox.setBackgroundResource(R.drawable.board_checkbox_no);
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -105,54 +154,6 @@ public class VoteAdapater extends RecyclerView.Adapter<VoteAdapater.VoteViewHold
             et_content = mView.findViewById(R.id.et_vote_content);
             btn_close = mView.findViewById(R.id.btn_vote_erase);
             checkbox = mView.findViewById(R.id.btn_check);
-
-            // EditText 글자 변경경
-            et_content.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                    btn_close.setVisibility(View.INVISIBLE);
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    if (et_content.getText().length() != 0)
-                        btn_close.setVisibility(View.VISIBLE);
-
-                    voteList.get(getAdapterPosition()).setVoteContent(et_content.getText().toString());
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                }
-            });
-
-            // EditText 공란 만들기
-            btn_close.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    et_content.setText(null);
-                    voteList.get(getAdapterPosition()).setVoteContent(et_content.getText().toString());
-                }
-            });
-
-            // 체크박스 변경 리스너
-            checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    int pos = getAdapterPosition();
-                    if (pos != RecyclerView.NO_POSITION) {
-                        voteList.get(pos).setSelected(isChecked);
-                        if (isChecked) {
-                            selectedVote.add(voteList.get(pos));
-                            checkbox.setBackgroundResource(R.drawable.board_checkbox_yes);
-                        }
-                        else {
-                            selectedVote.remove(voteList.get(pos));
-                            checkbox.setBackgroundResource(R.drawable.board_checkbox_no);
-                        }
-                    }
-                }
-            });
         }
     }
 
