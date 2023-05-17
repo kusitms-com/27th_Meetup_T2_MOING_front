@@ -30,9 +30,10 @@ public class VoteAdapater extends RecyclerView.Adapter<VoteAdapater.VoteViewHold
 
     // 액티비티에서 클릭할 수 있도록 돕는 클릭 리스너
     private OnEditTextChangedListener editTextChangedListener;
+
     // 인터페이스
     public interface OnEditTextChangedListener {
-        boolean onEditTextChanged();
+        void onEditTextChanged();
     }
 
     // 생성자
@@ -55,7 +56,7 @@ public class VoteAdapater extends RecyclerView.Adapter<VoteAdapater.VoteViewHold
     public void onBindViewHolder(@NonNull VoteViewHolder holder, int position) {
         int adaptPosition = holder.getAdapterPosition();
         // 항목 지우기 버튼 시 Checkbox 버튼 가시성 설정
-        if(isButtonVisible)
+        if (isButtonVisible)
             holder.checkbox.setVisibility(View.VISIBLE);
         else
             holder.checkbox.setVisibility(View.GONE);
@@ -68,20 +69,24 @@ public class VoteAdapater extends RecyclerView.Adapter<VoteAdapater.VoteViewHold
         holder.et_content.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                holder.btn_close.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (holder.et_content.getText().length() != 0)
                     holder.btn_close.setVisibility(View.VISIBLE);
+                else
+                    holder.btn_close.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                    voteList.get(holder.getAdapterPosition()).setVoteContent(s.toString());
-                    //Log.d("VoteAdapter", "voteList Item : " + position + ", " + voteList.get(holder.getAdapterPosition()).getVoteContent());
+                voteList.get(holder.getAdapterPosition()).setVoteContent(s.toString());
+                //Log.d("VoteAdapter", "voteList Item : " + position + ", " + voteList.get(holder.getAdapterPosition()).getVoteContent());
+
+                if(editTextChangedListener != null) {
                     editTextChangedListener.onEditTextChanged();
+                }
             }
         });
 

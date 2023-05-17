@@ -1,6 +1,7 @@
 package com.example.moing.board;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,9 +18,11 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.moing.MainActivity;
 import com.example.moing.R;
+import com.example.moing.team.MakeTeamActivity2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -219,16 +222,17 @@ public class BoardMakeVote extends AppCompatActivity implements VoteAdapater.OnE
 
     /** 업로드하기 버튼 **/
     View.OnClickListener uploadClickListener = v -> {
-        Intent intent = new Intent(getApplicationContext(), BoardActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        Intent intent = new Intent(getApplicationContext(), BoardActivity.class);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        startActivity(intent);
+
+//        String s = "";
+//        for (Vote vote : voteAdapater.getVoteList())
+//            s += vote.getVoteContent();
+//
+//        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
 
         /** POST 요청 수행해야 한다. **/
-        List<Vote> result = voteAdapater.getVoteList();
-        for (Vote vote : result) {
-            Log.d("BOARDMAKEVOTE", vote.getVoteContent());
-        }
-
-        startActivity(intent);
     };
 
     // 각 EditText들의 null값 여부 확인
@@ -250,8 +254,6 @@ public class BoardMakeVote extends AppCompatActivity implements VoteAdapater.OnE
 
     // 입력값 확인
     public void checkInputs() {
-        Log.d("CheckInputs", String.valueOf(onEditTextChanged()));
-
         if (isEditTextFilled()) {
             upload.setClickable(true);
             upload.setTextColor(Color.parseColor("#202020"));
@@ -260,15 +262,24 @@ public class BoardMakeVote extends AppCompatActivity implements VoteAdapater.OnE
 
         // upload버튼 비활성
         else {
-
+            upload.setClickable(false);
+            upload.setTextColor(ContextCompat.getColorStateList(BoardMakeVote.this, R.color.secondary_grey_black_10));
+            upload.setBackgroundColor(Color.parseColor("#202020"));
         }
     }
 
     // EditText에 값이 존재하게 될 때
     @Override
-    public boolean onEditTextChanged() {
+    public void onEditTextChanged() {
         boolean isEditTextFilled = voteAdapater.areEditTextsFilled();
         // upload 버튼 활성화 비활성화 여부
-        return isEditTextFilled ? true : false;
+        if(isEditTextFilled) {
+            checkInputs();
+        }
+        else {
+            upload.setClickable(false);
+            upload.setTextColor(ContextCompat.getColorStateList(BoardMakeVote.this, R.color.secondary_grey_black_10));
+            upload.setBackgroundColor(Color.parseColor("#202020"));
+        }
     }
 }
