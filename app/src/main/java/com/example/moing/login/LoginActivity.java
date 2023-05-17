@@ -1,4 +1,4 @@
-package com.example.moing;
+package com.example.moing.login;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,13 +8,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.example.moing.retrofit.LoginRequest;
-import com.example.moing.retrofit.LoginResponse;
+import com.example.moing.R;
+import com.example.moing.Request.LoginRequest;
+import com.example.moing.Response.LoginResponse;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClient;
 import com.kakao.sdk.user.UserApiClient;
-
-import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,6 +22,7 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity {
 
     private RetrofitAPI retrofitAPI;
+    private String AccessToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +69,17 @@ public class LoginActivity extends AppCompatActivity {
                 Log.i(TAG, "로그인 성공(토큰) : " + oAuthToken.getAccessToken());
                LoginStart(oAuthToken.getAccessToken());
 
-               System.out.println("토큰 : " + oAuthToken + "이 저장되었습니다.");
+               /* System.out.println("토큰 : " + oAuthToken + "이 저장되었습니다."); */
 
-               Intent intent = new Intent(LoginActivity.this, RegisterInputNameActivity.class);
+               /* Intent intent = new Intent(LoginActivity.this, RegisterInputNameActivity.class);
                intent.putExtra("access_token", oAuthToken);
-               startActivity(intent);
+               startActivity(intent); */
+
+                /* Intent intent = new Intent(LoginActivity.this, RegisterInputNameActivity.class);
+                if (oAuthToken != null) { // 액세스 토큰 값이 유효할 경우에만 Intent에 전달합니다.
+                    intent.putExtra("access_token", oAuthToken.getAccessToken());
+                }
+                startActivity(intent); */
 
             }
             return null;
@@ -91,20 +97,63 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if (response.isSuccessful()) {
                     LoginResponse loginResponse = response.body();
+                    if (loginResponse != null) {
+                        String access = loginResponse.getAccessToken();
+                        String refresh = loginResponse.getRefreshToken();
+                        String process = loginResponse.getProcess();
+
+                        Intent intent = new Intent(LoginActivity.this, RegisterInputNameActivity.class);
+
+                        if (access != null) {
+                            intent.putExtra("access_token", access);
+                            intent.putExtra("refresh_token", refresh);
+                            intent.putExtra("process_token", process);
+
+                            Log.d("access_token","access 토큰 : " + access + "이 저장되었습니다.");
+                            Log.d("refresh_token","refresh 토큰 : " + refresh + "이 저장되었습니다.");
+                            Log.d("process_token","process 토큰 : " + process + "이 저장되었습니다.");
+
+                        } startActivity(intent);
+                    } else {
+                        Log.d("LoginStart", "토큰 얻기 실패" + response.message() + response.code());
+                    }
+                } else {
+                    Log.d("LoginStart", "요청 실패" + response.message() + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
+                Log.d("LoginStart", "요청 실패" + t.getMessage());
+            }
+        });
+
+        /* call.enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                if (response.isSuccessful()) {
+                    LoginResponse loginResponse = response.body();
                     String access = loginResponse.getAccessToken();
                     String refresh = loginResponse.getRefreshToken();
                     String process = loginResponse.getProcess();
 
-                }
-                else {
-                    Log.d("LoginStart", "토큰 얻기 실패" + response.message() + response.code());
-                }
+                    Intent intent = new Intent(LoginActivity.this, RegisterInputNameActivity.class);
+
+                    if (access != null) {
+                        intent.putExtra("access_token", access);
+
+                        System.out.println("토큰 : " + access + "이 저장되었습니다.");
+                    }
+                    startActivity(intent);
+                    } else {
+                        Log.d("LoginStart", "토큰 얻기 실패" + response.message() + response.code());
+                    }
             }
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
                 t.printStackTrace();
             }
-        });
+        }); */
     }
 }

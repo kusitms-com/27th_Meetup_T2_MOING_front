@@ -1,4 +1,4 @@
-package com.example.moing;
+package com.example.moing.login;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,7 +12,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.moing.retrofit.RegisterNameResponse;
+import com.example.moing.R;
+import com.example.moing.Response.RegisterNameResponse;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClient;
 
@@ -23,12 +24,15 @@ import retrofit2.Response;
 public class RegisterInputNameActivity extends AppCompatActivity {
 
     private RetrofitAPI retrofitAPI;
+    private String access;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_input_name);
 
+        ImageView arrowLeft = (ImageView) findViewById(R.id.arrowLeft);
         ImageView nextLight = (ImageView) findViewById(R.id.nextLight);
         ImageView nextDark = (ImageView) findViewById(R.id.nextDark);
         ImageView nicknameBtn = (ImageView) findViewById(R.id.nicknameBtn);
@@ -42,6 +46,21 @@ public class RegisterInputNameActivity extends AppCompatActivity {
 
         //retrofit 이용
         retrofitAPI = RetrofitClient.getApiService();
+
+        // 이전 레이아웃에서 전달된 액세스 토큰 값을 받아옴
+        Intent intent = getIntent();
+        if (intent.hasExtra("access_token")) {
+            String access = intent.getStringExtra("access_token");
+            System.out.println("토큰 : " + access + "을 전달받았습니다.");
+        } else {
+            System.out.println("액세스 토큰 값이 전달되지 않았습니다.");
+        }
+        arrowLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         xIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,7 +110,8 @@ public class RegisterInputNameActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String nickname = "exampleNickname";
+                String nickname = editText.getText().toString();
+
                 Call<RegisterNameResponse> call = retrofitAPI.NameAvailable(nickname);
                 call.enqueue(new Callback<RegisterNameResponse>() {
                     @Override
@@ -137,11 +157,28 @@ public class RegisterInputNameActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                /*
                 Intent intent = new Intent(RegisterInputNameActivity.this, RegisterInputAddressActivity.class);
                 startActivity(intent);
-                finish();
+                */
+
+                if (access != null) { // 액세스 토큰 값이 유효할 경우에만 Intent...
+                    Intent intent = new Intent(RegisterInputNameActivity.this, RegisterInputAddressActivity.class);
+
+                    intent.putExtra("access_token", access);
+                    System.out.println("토큰 : " + access + "을 전달하겠습니다.");
+
+                    String nickname = editText.getText().toString();
+                    intent.putExtra("nickname", nickname);
+                    System.out.println("닉네임 : " + nickname + "을 전달하겠습니다.");
+                    startActivity(intent);
+                } else {
+                    System.out.println("액세스 토큰 값이 유효하지 않습니다.");
+                }
+
             }
         });
 
     }
+
 }

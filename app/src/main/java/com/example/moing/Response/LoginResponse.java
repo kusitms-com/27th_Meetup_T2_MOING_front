@@ -1,13 +1,13 @@
-package com.example.moing.retrofit;
+package com.example.moing.Response;
 
 import com.google.gson.annotations.SerializedName;
 
 public class LoginResponse {
-    @SerializedName("accessToken")
+    @SerializedName("access_token")
     private String accessToken;
-    @SerializedName("refreshToken")
+    @SerializedName("refresh_token")
     private String refreshToken;
-    @SerializedName("process")
+    @SerializedName("process_token")
     private String process;
 
     public String getAccessToken() {
