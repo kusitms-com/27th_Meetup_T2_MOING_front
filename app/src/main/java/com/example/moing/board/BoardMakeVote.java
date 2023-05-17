@@ -24,7 +24,7 @@ import com.example.moing.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BoardMakeVote extends AppCompatActivity {
+public class BoardMakeVote extends AppCompatActivity implements VoteAdapater.OnEditTextChangedListener{
 
     RecyclerView recyclerView;
     Button btn_close, btn_erase_content, addContent, deleteContent, upload;
@@ -81,7 +81,7 @@ public class BoardMakeVote extends AppCompatActivity {
 
         // 리싸이클러뷰 어댑터 설정
         // adapter 설정
-        voteAdapater = new VoteAdapater(voteList, this);
+        voteAdapater = new VoteAdapater(voteList, this, this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(voteAdapater);
         recyclerView.setHasFixedSize(true);
@@ -139,16 +139,14 @@ public class BoardMakeVote extends AppCompatActivity {
             btn_erase_content.setClickable(true);
             btn_erase_content.setTextColor(Color.parseColor("#F43A6F"));
         }
+
     };
 
     /** 선택한 항목 지우기 버튼 클릭 **/
     View.OnClickListener deleteContentClickListener = v -> {
-        //Log.d("CONTENTCLICKDELETE1", String.valueOf(voteList.size()));
         // 선택 항목 삭제
         deleteVote = voteAdapater.getSelectedItems();
-        //Log.d("CONTENTCLICKDELETE2", String.valueOf(deleteVote.size()));
         voteList.removeAll(deleteVote);
-        //Log.d("CONTENTCLICKDELETE3", String.valueOf(voteList.size()));
         voteAdapater.notifyDataSetChanged();
 
         // 다시 항목 추가하기로 이동
@@ -233,27 +231,44 @@ public class BoardMakeVote extends AppCompatActivity {
         startActivity(intent);
     };
 
-    // VoteList 객체 내 EditText 값이 변경됐을 때 호출하는 메서드.
-    public boolean onVoteEditTextChanged() {
-        boolean isButtonEnabled = false;
-        for (Vote tmp : voteAdapater.getVoteList()) {
-            if(tmp.getVoteContent() == null) {
-//                isButtonEnabled = false;
-//                break;
+    // 각 EditText들의 null값 여부 확인
+    public boolean isEditTextFilled() {
+        if (title.getText().toString().isEmpty() || content.getText().toString().isEmpty()) {
+            return false;
+        }
+        if (voteAdapater.getVoteList().size() <= 0)
+            return false;
+
+        for (Vote vote : voteList) {
+            if (vote.getVoteContent() == null || vote.getVoteContent().isEmpty()) {
                 return false;
             }
         }
+
         return true;
-        //upload.setEnabled(isButtonEnabled);
     }
 
     // 입력값 확인
     public void checkInputs() {
-        if(title.length() > 0 && content.length() > 0 && onVoteEditTextChanged())
-        {
+        Log.d("CheckInputs", String.valueOf(onEditTextChanged()));
+
+        if (isEditTextFilled()) {
             upload.setClickable(true);
             upload.setTextColor(Color.parseColor("#202020"));
             upload.setBackgroundColor(Color.parseColor("#FFFFFF"));
         }
+
+        // upload버튼 비활성
+        else {
+
+        }
+    }
+
+    // EditText에 값이 존재하게 될 때
+    @Override
+    public boolean onEditTextChanged() {
+        boolean isEditTextFilled = voteAdapater.areEditTextsFilled();
+        // upload 버튼 활성화 비활성화 여부
+        return isEditTextFilled ? true : false;
     }
 }

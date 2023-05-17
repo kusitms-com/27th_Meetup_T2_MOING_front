@@ -3,6 +3,7 @@ package com.example.moing.board;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,11 +28,19 @@ public class VoteAdapater extends RecyclerView.Adapter<VoteAdapater.VoteViewHold
     // 항목 지우기 체크박스 버튼 보일지 말지 여부
     private boolean isButtonVisible = false;
 
+    // 액티비티에서 클릭할 수 있도록 돕는 클릭 리스너
+    private OnEditTextChangedListener editTextChangedListener;
+    // 인터페이스
+    public interface OnEditTextChangedListener {
+        boolean onEditTextChanged();
+    }
+
     // 생성자
-    public VoteAdapater(List<Vote> voteList, Context context) {
+    public VoteAdapater(List<Vote> voteList, Context context, OnEditTextChangedListener editTextChangedListener) {
         this.voteList = voteList;
         this.selectedVote = new ArrayList<>();
         this.context = context;
+        this.editTextChangedListener = editTextChangedListener;
     }
 
     @NonNull
@@ -44,25 +53,17 @@ public class VoteAdapater extends RecyclerView.Adapter<VoteAdapater.VoteViewHold
 
     @Override
     public void onBindViewHolder(@NonNull VoteViewHolder holder, int position) {
+        int adaptPosition = holder.getAdapterPosition();
         // 항목 지우기 버튼 시 Checkbox 버튼 가시성 설정
         if(isButtonVisible)
             holder.checkbox.setVisibility(View.VISIBLE);
         else
             holder.checkbox.setVisibility(View.GONE);
 
-        // 체크 박스 여부 설정
-//        if (holder.checkbox.isChecked()) {
-//            selectedVote.add(voteList.get(position));
-//            holder.checkbox.setBackgroundResource(R.drawable.board_checkbox_yes);
-//        }
-//        else {
-//            selectedVote.remove(voteList.get(position));
-//            holder.checkbox.setBackgroundResource(R.drawable.board_checkbox_no);
-//        }
-        holder.checkbox.setChecked(voteList.get(position).isSelected());
+        holder.checkbox.setChecked(voteList.get(adaptPosition).isSelected());
 
         // EditText 관련 코드
-        holder.et_content.setText(voteList.get(position).getVoteContent());
+        holder.et_content.setText(voteList.get(holder.getAdapterPosition()).getVoteContent());
         // 변경점 수정
         holder.et_content.addTextChangedListener(new TextWatcher() {
             @Override
@@ -74,13 +75,13 @@ public class VoteAdapater extends RecyclerView.Adapter<VoteAdapater.VoteViewHold
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (holder.et_content.getText().length() != 0)
                     holder.btn_close.setVisibility(View.VISIBLE);
-
-                voteList.get(holder.getAdapterPosition()).setVoteContent(holder.et_content.getText().toString());
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                ((BoardMakeVote) context).onVoteEditTextChanged();
+                    voteList.get(holder.getAdapterPosition()).setVoteContent(s.toString());
+                    //Log.d("VoteAdapter", "voteList Item : " + position + ", " + voteList.get(holder.getAdapterPosition()).getVoteContent());
+                    editTextChangedListener.onEditTextChanged();
             }
         });
 
@@ -125,20 +126,17 @@ public class VoteAdapater extends RecyclerView.Adapter<VoteAdapater.VoteViewHold
         return selectedVote;
     }
 
-    public void setSelected(int position, boolean isSelected) {
-        if (position >= 0 && position < voteList.size()) {
-            Vote voteItem = voteList.get(position);
-            voteItem.setSelected(isSelected);
-            notifyItemChanged(position);
+    // 각 Item의 EditText가 널값인지를 판단하는 여부.
+    public boolean areEditTextsFilled() {
+        if (voteList.size() <= 0)
+            return false;
 
-            if (isSelected) {
-                if (!selectedVote.contains(voteItem)) {
-                    selectedVote.add(voteItem);
-                }
-            } else {
-                selectedVote.remove(voteItem);
+        for (Vote vote : voteList) {
+            if (vote.getVoteContent() == null || vote.getVoteContent().isEmpty()) {
+                return false;
             }
         }
+        return true;
     }
 
     class VoteViewHolder extends RecyclerView.ViewHolder {
