@@ -26,8 +26,4 @@
         android:text="투표 항목"
         android:textSize="18dp"
         android:textColor="@color/secondary_grey_black_7" />
-
-    
-
-
 </RelativeLayout>
