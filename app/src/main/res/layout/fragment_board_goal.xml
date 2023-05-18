@@ -263,7 +263,7 @@
             android:id="@+id/imgbtn_down"
             android:layout_width="28dp"
             android:layout_height="28dp"
-            android:background="@drawable/arrow_down"
+            android:background="@drawable/arrow_down2"
             android:layout_gravity="center" />
 
         <TextView

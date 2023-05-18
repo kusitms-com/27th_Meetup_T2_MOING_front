@@ -5,6 +5,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -15,13 +16,14 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.moing.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapater.OnEditTextChangedListener{
+public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapter.OnEditTextChangedListener{
 
     RecyclerView recyclerView;
     Button btn_close, btn_erase_content, addContent, deleteContent, upload;
@@ -31,7 +33,7 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapater
     List<MakeVote> makeVoteList = new ArrayList<>();
     List<MakeVote> deleteMakeVote = new ArrayList<>();
     private int addContentCount;
-    private MakeVoteAdapater makeVoteAdapater;
+    private MakeVoteAdapter makeVoteAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,9 +80,9 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapater
 
         // 리싸이클러뷰 어댑터 설정
         // adapter 설정
-        makeVoteAdapater = new MakeVoteAdapater(makeVoteList, this, this);
+        makeVoteAdapter = new MakeVoteAdapter(makeVoteList, this, this);
         recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(makeVoteAdapater);
+        recyclerView.setAdapter(makeVoteAdapter);
         recyclerView.setHasFixedSize(true);
 
         // 익명, 복수 투표
@@ -128,7 +130,7 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapater
         makeVoteList.add(makeVote);
         addContentCount = makeVoteList.size();
         addContent.setText("항목 추가하기("+addContentCount+"/10)");
-        makeVoteAdapater.notifyDataSetChanged();
+        makeVoteAdapter.notifyDataSetChanged();
 
         Log.d("CONTENTCLICKADD", String.valueOf(makeVoteList.size()));
 
@@ -142,13 +144,13 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapater
     /** 선택한 항목 지우기 버튼 클릭 **/
     View.OnClickListener deleteContentClickListener = v -> {
         // 선택 항목 삭제
-        deleteMakeVote = makeVoteAdapater.getSelectedItems();
+        deleteMakeVote = makeVoteAdapter.getSelectedItems();
         makeVoteList.removeAll(deleteMakeVote);
-        makeVoteAdapater.notifyDataSetChanged();
+        makeVoteAdapter.notifyDataSetChanged();
 
         // 다시 항목 추가하기로 이동
-        boolean isVisible = makeVoteAdapater.isButtonVisible();
-        makeVoteAdapater.setButtonVisible(!isVisible);
+        boolean isVisible = makeVoteAdapter.isButtonVisible();
+        makeVoteAdapter.setButtonVisible(!isVisible);
         deleteContent.setVisibility(View.GONE);
         addContent.setVisibility(View.VISIBLE);
         addContentCount = makeVoteList.size();
@@ -158,6 +160,10 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapater
         if (makeVoteList.size() < 2) {
             btn_erase_content.setClickable(false);
             btn_erase_content.setTextColor(Color.parseColor("#333232"));
+            // 업로드 버튼 비활성화
+            upload.setClickable(false);
+            upload.setTextColor(ContextCompat.getColorStateList(BoardMakeVote.this, R.color.secondary_grey_black_10));
+            upload.setBackgroundColor(Color.parseColor("#202020"));
         }
         else {
             btn_erase_content.setClickable(true);
@@ -167,8 +173,8 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapater
 
     /** 항목 지우기 버튼 클릭 **/
     View.OnClickListener contentEraseClickListener = v -> {
-        boolean isVisible = makeVoteAdapater.isButtonVisible();
-        makeVoteAdapater.setButtonVisible(!isVisible);
+        boolean isVisible = makeVoteAdapter.isButtonVisible();
+        makeVoteAdapter.setButtonVisible(!isVisible);
 
         // 선택한 항목 지우기로 이동
         if(!isVisible) {
@@ -195,10 +201,12 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapater
     View.OnClickListener anonyClickListener = v -> {
         if(anony.isChecked()) {
             anony.setBackgroundResource(R.drawable.board_checkbox_yes);
+            anony.setButtonTintList(ColorStateList.valueOf(Color.parseColor("#F6F6F6")));
             tv_anony.setTextColor(Color.parseColor("#F6F6F6"));
         } else {
             anony.setBackgroundResource(R.drawable.board_checkbox_no);
             tv_anony.setTextColor(Color.parseColor("#959698"));
+            anony.setButtonTintList(ColorStateList.valueOf(Color.parseColor("#000000")));
         }
     };
 
@@ -206,11 +214,13 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapater
     View.OnClickListener multiClickListener = v -> {
         if(multi.isChecked()) {
             multi.setBackgroundResource(R.drawable.board_checkbox_yes);
+            multi.setButtonTintList(ColorStateList.valueOf(Color.parseColor("#F6F6F6")));
             tv_multi.setTextColor(Color.parseColor("#F6F6F6"));
         }
         else {
             multi.setBackgroundResource(R.drawable.board_checkbox_no);
             tv_multi.setTextColor(Color.parseColor("#959698"));
+            multi.setButtonTintList(ColorStateList.valueOf(Color.parseColor("#000000")));
         }
     };
 
@@ -220,11 +230,11 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapater
 //        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 //        startActivity(intent);
 
-//        String s = "";
-//        for (Vote vote : voteAdapater.getVoteList())
-//            s += vote.getVoteContent();
-//
-//        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+        String s = "";
+        for (MakeVote vote : makeVoteAdapter.getVoteList())
+            s += vote.getVoteContent();
+
+        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
 
         /** POST 요청 수행해야 한다. **/
     };
@@ -234,7 +244,7 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapater
         if (title.getText().toString().isEmpty() || content.getText().toString().isEmpty()) {
             return false;
         }
-        if (makeVoteAdapater.getVoteList().size() <= 0)
+        if (makeVoteAdapter.getVoteList().size() <= 1)
             return false;
 
         for (MakeVote makeVote : makeVoteList) {
@@ -248,7 +258,7 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapater
 
     // 입력값 확인
     public void checkInputs() {
-        if (isEditTextFilled()) {
+        if (isEditTextFilled() ) {
             upload.setClickable(true);
             upload.setTextColor(Color.parseColor("#202020"));
             upload.setBackgroundColor(Color.parseColor("#FFFFFF"));
@@ -265,7 +275,7 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapater
     // EditText에 값이 존재하게 될 때
     @Override
     public void onEditTextChanged() {
-        boolean isEditTextFilled = makeVoteAdapater.areEditTextsFilled();
+        boolean isEditTextFilled = makeVoteAdapter.areEditTextsFilled();
         // upload 버튼 활성화 비활성화 여부
         if(isEditTextFilled) {
             checkInputs();

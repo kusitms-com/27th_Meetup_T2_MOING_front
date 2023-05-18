@@ -7,7 +7,6 @@ import androidx.core.content.ContextCompat;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -24,7 +23,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.moing.R;
 
@@ -182,7 +180,7 @@ public class MakeTeamActivity2 extends AppCompatActivity {
             if(hiddenView.getVisibility() == View.VISIBLE) {
                 TransitionManager.beginDelayedTransition(cardView, new AutoTransition());
                 hiddenView.setVisibility(View.GONE);
-                btn_predict.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.arrow_down,0);
+                btn_predict.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.arrow_down2,0);
             }
 
             else {
@@ -299,7 +297,7 @@ public class MakeTeamActivity2 extends AppCompatActivity {
         b.setTextColor(ContextCompat.getColorStateList(MakeTeamActivity2.this, R.color.secondary_grey_black_2));
         TransitionManager.beginDelayedTransition(cardView, new AutoTransition());
         hiddenView.setVisibility(View.GONE);
-        b.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.arrow_down,0);
+        b.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.arrow_down2,0);
         checkInputs();
         tv_predict.setTextColor(ContextCompat.getColorStateList(MakeTeamActivity2.this, R.color.secondary_grey_black_7));
         btn_predict.setSelected(false);

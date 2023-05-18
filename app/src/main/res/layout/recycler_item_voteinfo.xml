@@ -3,6 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
     android:background="@drawable/layout_round_radius8_black12">
 
     <CheckBox
@@ -12,8 +13,7 @@
         android:layout_marginTop="17dp"
         android:layout_marginLeft="16dp"
         android:layout_centerVertical="true"
-        android:background="@drawable/board_checkbox_no"
-        android:backgroundTint="@color/secondary_grey_black_7" />
+        android:background="@drawable/board_checkbox_no" />
 
     <TextView
         android:id="@+id/tv_item_date"

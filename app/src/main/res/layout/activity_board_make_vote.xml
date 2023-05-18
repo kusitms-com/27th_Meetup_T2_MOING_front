@@ -218,8 +218,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginTop="16dp"
-                    android:background="@drawable/board_checkbox_no"
-                    android:backgroundTint="@color/secondary_grey_black_7" />
+                    android:background="@drawable/board_checkbox_no" />
 
                 <TextView
                     android:id="@+id/tv_anony"
@@ -229,7 +228,7 @@
                     android:layout_marginLeft="24dp"
                     android:text="익명으로 투표할게요"
                     android:textSize="18dp"
-                    android:textColor="@color/secondary_grey_black_3"
+                    android:textColor="@color/secondary_grey_black_7"
                     android:fontFamily="@font/pretendard_medium" />
             </LinearLayout>
 
@@ -244,8 +243,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginTop="16dp"
-                    android:background="@drawable/board_checkbox_no"
-                    android:backgroundTint="@color/secondary_grey_black_7" />
+                    android:background="@drawable/board_checkbox_no" />
 
                 <TextView
                     android:id="@+id/tv_multi"
@@ -255,7 +253,7 @@
                     android:layout_marginLeft="24dp"
                     android:text="복수 선택할 수 있어요"
                     android:textSize="18dp"
-                    android:textColor="@color/secondary_grey_black_3"
+                    android:textColor="@color/secondary_grey_black_7"
                     android:fontFamily="@font/pretendard_medium" />
             </LinearLayout>
 

@@ -1,6 +1,7 @@
 package com.example.moing.board;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moing.R;
@@ -19,7 +21,7 @@ import com.example.moing.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MakeVoteAdapater extends RecyclerView.Adapter<MakeVoteAdapater.VoteViewHolder> {
+public class MakeVoteAdapter extends RecyclerView.Adapter<MakeVoteAdapter.VoteViewHolder> {
     private List<MakeVote> makeVoteList;
     private List<MakeVote> selectedMakeVote;
 
@@ -36,7 +38,7 @@ public class MakeVoteAdapater extends RecyclerView.Adapter<MakeVoteAdapater.Vote
     }
 
     // 생성자
-    public MakeVoteAdapater(List<MakeVote> makeVoteList, Context context, OnEditTextChangedListener editTextChangedListener) {
+    public MakeVoteAdapter(List<MakeVote> makeVoteList, Context context, OnEditTextChangedListener editTextChangedListener) {
         this.makeVoteList = makeVoteList;
         this.selectedMakeVote = new ArrayList<>();
         this.context = context;
@@ -48,7 +50,7 @@ public class MakeVoteAdapater extends RecyclerView.Adapter<MakeVoteAdapater.Vote
     public VoteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.recycler_item_vote, parent, false);
-        return new MakeVoteAdapater.VoteViewHolder(view);
+        return new MakeVoteAdapter.VoteViewHolder(view);
     }
 
     @Override
@@ -63,7 +65,16 @@ public class MakeVoteAdapater extends RecyclerView.Adapter<MakeVoteAdapater.Vote
         holder.checkbox.setChecked(makeVoteList.get(adaptPosition).isSelected());
 
         // EditText 관련 코드
-        holder.et_content.setText(makeVoteList.get(holder.getAdapterPosition()).getVoteContent());
+        String voteContent = makeVoteList.get(holder.getAdapterPosition()).getVoteContent();
+        holder.et_content.setText(voteContent);
+
+        // EditText null 버튼 가시성 여부
+        if (voteContent != null && !voteContent.isEmpty()) {
+            holder.btn_close.setVisibility(View.VISIBLE);
+        } else {
+            holder.btn_close.setVisibility(View.INVISIBLE);
+        }
+
         // 변경점 수정
         holder.et_content.addTextChangedListener(new TextWatcher() {
             @Override
@@ -72,7 +83,7 @@ public class MakeVoteAdapater extends RecyclerView.Adapter<MakeVoteAdapater.Vote
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (holder.et_content.getText().length() != 0)
+                if (s.length() != 0)
                     holder.btn_close.setVisibility(View.VISIBLE);
                 else
                     holder.btn_close.setVisibility(View.INVISIBLE);
@@ -108,6 +119,7 @@ public class MakeVoteAdapater extends RecyclerView.Adapter<MakeVoteAdapater.Vote
                     if (isChecked) {
                         selectedMakeVote.add(makeVoteList.get(pos));
                         holder.checkbox.setBackgroundResource(R.drawable.board_checkbox_yes);
+                        holder.checkbox.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.secondary_grey_black_3)));
                     } else {
                         selectedMakeVote.remove(makeVoteList.get(pos));
                         holder.checkbox.setBackgroundResource(R.drawable.board_checkbox_no);

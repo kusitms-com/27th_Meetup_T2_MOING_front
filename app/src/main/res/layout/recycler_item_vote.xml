@@ -21,8 +21,8 @@
         android:layout_marginTop="24dp"
         android:layout_marginLeft="16dp"
         android:background="@drawable/board_checkbox_no"
-        android:backgroundTint="@color/secondary_grey_black_7"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        />
 
 
     <EditText
