@@ -3,7 +3,6 @@ package com.example.moing.board;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +19,9 @@ import com.example.moing.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VoteAdapater extends RecyclerView.Adapter<VoteAdapater.VoteViewHolder> {
-    private List<Vote> voteList;
-    private List<Vote> selectedVote;
+public class MakeVoteAdapater extends RecyclerView.Adapter<MakeVoteAdapater.VoteViewHolder> {
+    private List<MakeVote> makeVoteList;
+    private List<MakeVote> selectedMakeVote;
 
     private Context context;
     // 항목 지우기 체크박스 버튼 보일지 말지 여부
@@ -37,9 +36,9 @@ public class VoteAdapater extends RecyclerView.Adapter<VoteAdapater.VoteViewHold
     }
 
     // 생성자
-    public VoteAdapater(List<Vote> voteList, Context context, OnEditTextChangedListener editTextChangedListener) {
-        this.voteList = voteList;
-        this.selectedVote = new ArrayList<>();
+    public MakeVoteAdapater(List<MakeVote> makeVoteList, Context context, OnEditTextChangedListener editTextChangedListener) {
+        this.makeVoteList = makeVoteList;
+        this.selectedMakeVote = new ArrayList<>();
         this.context = context;
         this.editTextChangedListener = editTextChangedListener;
     }
@@ -49,7 +48,7 @@ public class VoteAdapater extends RecyclerView.Adapter<VoteAdapater.VoteViewHold
     public VoteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.recycler_item_vote, parent, false);
-        return new VoteAdapater.VoteViewHolder(view);
+        return new MakeVoteAdapater.VoteViewHolder(view);
     }
 
     @Override
@@ -61,10 +60,10 @@ public class VoteAdapater extends RecyclerView.Adapter<VoteAdapater.VoteViewHold
         else
             holder.checkbox.setVisibility(View.GONE);
 
-        holder.checkbox.setChecked(voteList.get(adaptPosition).isSelected());
+        holder.checkbox.setChecked(makeVoteList.get(adaptPosition).isSelected());
 
         // EditText 관련 코드
-        holder.et_content.setText(voteList.get(holder.getAdapterPosition()).getVoteContent());
+        holder.et_content.setText(makeVoteList.get(holder.getAdapterPosition()).getVoteContent());
         // 변경점 수정
         holder.et_content.addTextChangedListener(new TextWatcher() {
             @Override
@@ -81,7 +80,7 @@ public class VoteAdapater extends RecyclerView.Adapter<VoteAdapater.VoteViewHold
 
             @Override
             public void afterTextChanged(Editable s) {
-                voteList.get(holder.getAdapterPosition()).setVoteContent(s.toString());
+                makeVoteList.get(holder.getAdapterPosition()).setVoteContent(s.toString());
                 //Log.d("VoteAdapter", "voteList Item : " + position + ", " + voteList.get(holder.getAdapterPosition()).getVoteContent());
 
                 if(editTextChangedListener != null) {
@@ -95,7 +94,7 @@ public class VoteAdapater extends RecyclerView.Adapter<VoteAdapater.VoteViewHold
             @Override
             public void onClick(View v) {
                 holder.et_content.setText(null);
-                voteList.get(holder.getAdapterPosition()).setVoteContent(holder.et_content.getText().toString());
+                makeVoteList.get(holder.getAdapterPosition()).setVoteContent(holder.et_content.getText().toString());
             }
         });
 
@@ -105,12 +104,12 @@ public class VoteAdapater extends RecyclerView.Adapter<VoteAdapater.VoteViewHold
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 int pos = holder.getAdapterPosition();
                 if (pos != RecyclerView.NO_POSITION) {
-                    voteList.get(pos).setSelected(isChecked);
+                    makeVoteList.get(pos).setSelected(isChecked);
                     if (isChecked) {
-                        selectedVote.add(voteList.get(pos));
+                        selectedMakeVote.add(makeVoteList.get(pos));
                         holder.checkbox.setBackgroundResource(R.drawable.board_checkbox_yes);
                     } else {
-                        selectedVote.remove(voteList.get(pos));
+                        selectedMakeVote.remove(makeVoteList.get(pos));
                         holder.checkbox.setBackgroundResource(R.drawable.board_checkbox_no);
                     }
                 }
@@ -120,24 +119,24 @@ public class VoteAdapater extends RecyclerView.Adapter<VoteAdapater.VoteViewHold
 
     @Override
     public int getItemCount() {
-        return voteList.size();
+        return makeVoteList.size();
     }
 
-    public List<Vote> getVoteList() {
-        return voteList;
+    public List<MakeVote> getVoteList() {
+        return makeVoteList;
     }
 
-    public List<Vote> getSelectedItems() {
-        return selectedVote;
+    public List<MakeVote> getSelectedItems() {
+        return selectedMakeVote;
     }
 
     // 각 Item의 EditText가 널값인지를 판단하는 여부.
     public boolean areEditTextsFilled() {
-        if (voteList.size() <= 0)
+        if (makeVoteList.size() <= 0)
             return false;
 
-        for (Vote vote : voteList) {
-            if (vote.getVoteContent() == null || vote.getVoteContent().isEmpty()) {
+        for (MakeVote makeVote : makeVoteList) {
+            if (makeVote.getVoteContent() == null || makeVote.getVoteContent().isEmpty()) {
                 return false;
             }
         }

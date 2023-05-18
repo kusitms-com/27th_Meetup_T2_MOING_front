@@ -15,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.moing.R;
 import com.example.moing.team.Team;
@@ -86,6 +87,13 @@ public class BoardGoalFragment extends Fragment {
         voteDarkSign = (ImageButton) view.findViewById(R.id.btn_vote_dark_sign);
         voteDarkNoSign = (ImageButton) view.findViewById(R.id.btn_vote_dark_noSign);
 
+        // 공지버튼, 투표버튼 클릭 리스너
+        noticeLightSign.setOnClickListener(noticeLignSignClickListener);
+        voteDarkSign.setOnClickListener(voteDarkSignClickListener);
+        /** 추가 구현 예정 **/
+
+
+
         // 리사이클러뷰
         recyclerView = view.findViewById(R.id.recycle_toggle);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -121,6 +129,16 @@ public class BoardGoalFragment extends Fragment {
                 }
             });
         }
+
+        /** 리사이클러뷰 아이템 클릭 이벤트 처리 **/
+        boardAdapter.setOnItemClickListener(new BoardAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int pos) {
+                // 아이템 클릭 이벤트 처리
+                String s = pos + "번 메뉴 선택...";
+                Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
+            }
+        });
         return view;
 
     }
@@ -146,5 +164,21 @@ public class BoardGoalFragment extends Fragment {
     // 공지, 투표 전체보기 버튼 클릭 시
     View.OnClickListener btnAllClickListener = v -> {
         // 해당 공지사항 으로 이동
+    };
+
+    /** 공지사항 안 읽은 것 있을 때 버튼 클릭 리스너 **/
+    View.OnClickListener noticeLignSignClickListener = v -> {
+
+    };
+
+    /** 투표 안 읽은 것 있을 때 버튼 클릭 리스너 **/
+    View.OnClickListener voteDarkSignClickListener = v -> {
+        // 투표 버튼은 하얗게 보이도록 함.
+        voteDarkSign.setVisibility(View.GONE);
+        voteLightSign.setVisibility(View.VISIBLE);
+        // 공지사항 버튼은 안보이는 걸 보이게 함.
+        noticeLightSign.setVisibility(View.GONE);
+        noticeDarkSign.setVisibility(View.VISIBLE);
+
     };
 }

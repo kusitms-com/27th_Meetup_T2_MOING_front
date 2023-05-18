@@ -19,6 +19,17 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
     TextView boardTitle, boardContent;
     View boardLine;
 
+    // 클릭 아이템 리스너
+    private OnItemClickListener onItemClickListener = null;
+    // 클릭 리스너 인터페이스
+    public interface OnItemClickListener {
+        void onItemClick(int pos);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.onItemClickListener = listener;
+    }
+
     // 생성자
     public BoardAdapter(List<Board> boardList, BoardGoalFragment context) {
         this.boardList = boardList;
@@ -34,6 +45,20 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
             boardTitle = mView.findViewById(R.id.tv_board_title);
             boardContent = mView.findViewById(R.id.tv_board_content);
             boardLine = mView.findViewById(R.id.view_board_line);
+
+            // 아이템 클릭 이벤트 추가
+            mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = getAdapterPosition();
+                    if (pos != RecyclerView.NO_POSITION) {
+                        // 리스너 객체 메서드 호출
+                        if(onItemClickListener != null) {
+                            onItemClickListener.onItemClick(pos);
+                        }
+                    }
+                }
+            });
         }
     }
 
