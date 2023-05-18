@@ -237,18 +237,20 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycle_noread"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"/>
 
 
             </androidx.cardview.widget.CardView>
 
-
+            <!-- 댓글 기능 -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycle_comment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:layout_marginHorizontal="16dp">
+                android:layout_marginHorizontal="16dp"
+                android:nestedScrollingEnabled="false">
 
             </androidx.recyclerview.widget.RecyclerView>
             

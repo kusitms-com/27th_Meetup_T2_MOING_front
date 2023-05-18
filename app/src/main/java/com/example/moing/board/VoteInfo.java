@@ -134,6 +134,7 @@ public class VoteInfo {
             this.voteChoices = voteChoices;
         }
 
+        /** voteData 생성자 **/
         public voteData(String title, String memo, String createdDate, int userId, String nickName,
                     String userImageUrl, List<String> notReadUsersNickName, List<VoteChoice> voteChoices) {
             this.title = title;

@@ -1,6 +1,7 @@
 package com.example.moing.board;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,13 +25,14 @@ public class VoteInfoActivity extends AppCompatActivity {
     ImageButton modal;
     TextView title, nickName, time, content, voteCount, tvAnony;
     ImageView profile, ivAnony;
-    RecyclerView voteRecycle;
+    RecyclerView voteRecycle, noReadRecycle;
 
     private List<VoteInfo.VoteChoice> voteChoiceList;
     private List<VoteInfo.VoteChoice> voteSelected;
     private List<String> voteUserNameList;
 
     private VoteInfoAdapter voteInfoAdapter;
+    private VoteNoReadAdapter voteNoReadAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +67,12 @@ public class VoteInfoActivity extends AppCompatActivity {
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setSmoothScrollbarEnabled(true);
         llm.setAutoMeasureEnabled(true);
+
+        // 투표 공지를 안 읽은 사람들을 위한 리사이클러뷰
+        noReadRecycle = findViewById(R.id.recycle_noread);
+        GridLayoutManager llm2 = new GridLayoutManager(this, 4);
+        llm2.setSmoothScrollbarEnabled(true);
+        llm2.setAutoMeasureEnabled(true);
 
         // 투표 참여 인원 수
         voteCount = (TextView) findViewById(R.id.tv_count);
@@ -102,19 +110,31 @@ public class VoteInfoActivity extends AppCompatActivity {
                 voteSelected = voteInfoAdapter.getSelectedItems();
                 Log.d("VoteInfoActivity", String.valueOf(voteSelected.size()));
                 if(voteSelected.size() >= 1) {
+                    voteComplete.setClickable(true);
                     voteComplete.setTextColor(Color.parseColor("#FFFFFF"));
                     voteComplete.setBackgroundColor(Color.parseColor("#FF725F"));
                 }
                 else {
+                    voteComplete.setClickable(false);
                     voteComplete.setTextColor(Color.parseColor("#37383C"));
                     voteComplete.setBackgroundColor(Color.parseColor("#1A1919"));
                 }
             }
         });
 
+        /** 안읽은 사람 Adapter 객체 생성 **/
+        // adapter2 = new RecyclerViewAdapter(dataList2);
+        // recyclerView2.setAdapter(adapter2);
+        // 예정 : 4명이 아직 안읽었어요 부터 해야함.
+
+        // 투표 현황 리사이클러뷰 Layout 호출
         voteRecycle.setLayoutManager(llm);
         voteRecycle.setAdapter(voteInfoAdapter);
         voteRecycle.setHasFixedSize(true);
+
+        // 안읽은 사람 리사이클러뷰 Layout 호출
+        noReadRecycle.setLayoutManager(llm2);
+
     }
 
     /** 뒤로 가기 버튼 클릭 리스너 **/
@@ -129,6 +149,9 @@ public class VoteInfoActivity extends AppCompatActivity {
 
     /** 투표 완료 버튼 클릭 리스너 **/
     View.OnClickListener completeClickListener = v -> {
-
+        voteSelected = voteInfoAdapter.getSelectedItems();
+        for ( VoteInfo.VoteChoice choice : voteSelected) {
+            Log.d("VoteInfo", choice.getContent()+"에 투표하셨습니다.");
+        }
     };
 }
