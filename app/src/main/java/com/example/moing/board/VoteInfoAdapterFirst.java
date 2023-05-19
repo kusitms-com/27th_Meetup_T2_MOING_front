@@ -1,8 +1,15 @@
 package com.example.moing.board;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.LayoutTransition;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.transition.AutoTransition;
+import android.transition.TransitionManager;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +18,8 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -79,7 +88,16 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
         }
 
         /** 두번째 리싸이클러뷰 넣는 부분 **/
-        vH.recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        GridLayoutManager llm2 = new GridLayoutManager(context, 4);
+        llm2.setSmoothScrollbarEnabled(true);
+        llm2.setAutoMeasureEnabled(true);
+
+        // 안읽은 사람 리스트(GridLayout) 간격 설정
+        int grid_spacing = (int) context.getResources().getDimension(R.dimen.grid_spacing);
+        VoteNoReadGridSpacing voteNoReadGridSpacing = new VoteNoReadGridSpacing(4, grid_spacing);
+        vH.recyclerView.addItemDecoration(voteNoReadGridSpacing);
+        vH.recyclerView.setLayoutManager(llm2);
+
         // 예정 : Retrofit 연동시 해당 코드가 맞음!!
         // 예정 : List<String> userList = voteChoice.getVoteUserNickName();
 
@@ -90,6 +108,11 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
         /** 테스트 코드 부분 종료 **/
 
         second_adapter = new VoteInfoAdapterSecond(voteChoiceList, userList);
+        vH.recyclerView.setAdapter(second_adapter);
+
+
+        // 예정 : 투표한 사람 버튼 VISIBLE, INVISIBLE 여부
+
 
         /** 예정 : 사람 수 받아와서 텍스트에 설정하기!! **/
         //vH.count.setText(voteChoice.getNum());
@@ -98,11 +121,16 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
         vH.btn_people.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+               int visibility = (vH.recyclerView.getVisibility() == View.GONE) ? View.VISIBLE : View.GONE;
+                TransitionManager.beginDelayedTransition((ViewGroup) vH.itemView, new AutoTransition());
+                vH.recyclerView.setVisibility(visibility);
+                // 보이는 상태라면
+                if(visibility == View.VISIBLE)
+                    vH.btn_people.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_up, 0);
+                else
+                    vH.btn_people.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
             }
         });
-
-
     }
 
     /** ViewHolder 작성 **/

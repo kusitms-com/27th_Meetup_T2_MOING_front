@@ -293,9 +293,8 @@
                     android:src="@drawable/ic_send"
                     android:background="@android:color/transparent"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="24dp" />
+                    android:layout_marginRight="18dp" />
             </RelativeLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

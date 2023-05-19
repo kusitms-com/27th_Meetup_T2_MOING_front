@@ -37,7 +37,7 @@ public class VoteInfoAdapterSecond extends RecyclerView.Adapter<VoteInfoAdapterS
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return userList.size();
     }
 
     public class VoteSecondViewHolder extends RecyclerView.ViewHolder {

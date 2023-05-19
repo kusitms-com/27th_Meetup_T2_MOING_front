@@ -9,15 +9,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.animation.LayoutTransition;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.moing.R;
 
@@ -26,12 +31,13 @@ import java.util.List;
 
 public class VoteInfoActivity extends AppCompatActivity {
     Button back, voteComplete;
-    ImageButton modal;
+    ImageButton modal, send;
     TextView title, nickName, time, content, voteCount, tvAnony, tv_noread;
     ImageView profile, ivAnony, noReadArrow;
-    RecyclerView voteRecycle, noReadRecycle;
+    RecyclerView voteRecycle, noReadRecycle, commentRecycle;
     CardView noreadCardView;
     LinearLayout layout_cardView;
+    EditText et_comment;
 
     // 투표 리스트
     private List<VoteInfo.VoteChoice> voteChoiceList;
@@ -41,9 +47,12 @@ public class VoteInfoActivity extends AppCompatActivity {
     private List<String> voteUserNameList;
     // 투표 안 읽은 사람의 리스트
     private List<String> voteNoReadList;
+    // 댓글 리스트
+    private List<VoteCommentResponse.VoteComment> voteCommentList;
 
     private VoteInfoAdapterFirst voteInfoAdapterFirst;
     private VoteNoReadAdapter voteNoReadAdapter;
+    private VoteCommentAdapter voteCommentAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +63,7 @@ public class VoteInfoActivity extends AppCompatActivity {
         voteSelected = new ArrayList<>();
         voteUserNameList = new ArrayList<>();
         voteNoReadList = new ArrayList<>();
+        voteCommentList = new ArrayList<>();
 
         // 뒤로 가기 버튼
         back = (Button) findViewById(R.id.btn_close);
@@ -173,6 +183,33 @@ public class VoteInfoActivity extends AppCompatActivity {
         noReadRecycle.setHasFixedSize(true);
 
 
+        // 투표 댓글 리사이클러뷰
+        commentRecycle = findViewById(R.id.recycle_comment);
+        LinearLayoutManager llm3 = new LinearLayoutManager(this);
+        llm3.setSmoothScrollbarEnabled(true);
+        llm3.setAutoMeasureEnabled(true);
+
+
+        // 댓글 리사이클러뷰 layout 호출
+        commentRecycle.setLayoutManager(llm3);
+        // Test 데이터 추가 2 (실제로 통신할 땐 VoteInfo의 Static 지워주어야 한다!)
+        VoteCommentResponse.VoteComment voteComment1 = new VoteCommentResponse.VoteComment(3, "그냥 죽여줘", 4, "test4", "string", "2023-05-04T01:04:28.224175");
+        VoteCommentResponse.VoteComment voteComment2 = new VoteCommentResponse.VoteComment(2, "뻥이야 살고 싶어", 3, "test3", "string", "2023-05-04T01:04:20.869323");
+        VoteCommentResponse.VoteComment voteComment3 = new VoteCommentResponse.VoteComment(1, "나를 죽여줘", 2, "test2", "string", "2023-05-04T01:04:11.809115");
+        voteCommentList.add(voteComment1);
+        voteCommentList.add(voteComment2);
+        voteCommentList.add(voteComment3);
+
+        voteCommentAdapter = new VoteCommentAdapter(voteCommentList, this);
+        commentRecycle.setAdapter(voteCommentAdapter);
+        commentRecycle.setHasFixedSize(true);
+
+        et_comment = (EditText) findViewById(R.id.et_comment);
+        setTextWatcher(et_comment);
+
+        send = (ImageButton) findViewById(R.id.imgbtn_send);
+        send.setOnClickListener(sendClickListener);
+        send.setEnabled(false);
     }
 
     /** 뒤로 가기 버튼 클릭 리스너 **/
@@ -205,4 +242,31 @@ public class VoteInfoActivity extends AppCompatActivity {
         else
             noReadArrow.setImageResource(R.drawable.arrow_down);
     };
+
+    /** 댓글 남기기 버튼 클릭 리스너 **/
+    View.OnClickListener sendClickListener = v -> {
+        String s = et_comment.getText().toString().trim();
+        if(!TextUtils.isEmpty(s))
+            Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+    };
+
+    /** 댓글 남기기 입력창 관리 **/
+    private void setTextWatcher(EditText editText) {
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!TextUtils.isEmpty(s.toString().trim())) {
+                    send.setEnabled(true);
+                }
+                else
+                    send.setClickable(false);
+            }
+        });
+    }
 }
