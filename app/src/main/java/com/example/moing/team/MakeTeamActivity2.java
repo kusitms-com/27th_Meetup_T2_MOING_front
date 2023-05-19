@@ -225,7 +225,18 @@ public class MakeTeamActivity2 extends AppCompatActivity {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int day) {
                         month = month + 1;
-                        data = year + "/" + month + "/" + day;
+                        String strMonth, strDay;
+                        if (String.valueOf(month).length() <2)
+                            strMonth = "0"+month;
+
+                        else
+                            strMonth = String.valueOf(month);
+
+                        if (String.valueOf(day).length() < 2)
+                            strDay = "0"+day;
+                        else
+                            strDay = String.valueOf(day);
+                        data = year + "-" + strMonth + "-" + strDay;
                         Log.d("MAKETEAMACTIVITY2__", "시작일2 : " +  data);
                         btn_start.setText(data);
                         btn_start.setTextColor(ContextCompat.getColorStateList(MakeTeamActivity2.this, R.color.secondary_grey_black_3));
