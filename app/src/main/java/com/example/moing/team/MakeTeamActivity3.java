@@ -2,6 +2,7 @@ package com.example.moing.team;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -39,8 +40,16 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.moing.R;
+import com.example.moing.Request.MakeTeamRequest;
+import com.example.moing.Request.MakeTeamResponse;
+import com.example.moing.retrofit.RetrofitAPI;
+import com.example.moing.retrofit.RetrofitClientJwt;
 
 import java.io.File;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MakeTeamActivity3 extends AppCompatActivity {
     private static final String TAG = "MakeTeamActivity3";
@@ -54,16 +63,25 @@ public class MakeTeamActivity3 extends AppCompatActivity {
     private Button btnCreateTeam;
     private ImageView ivProgressBar;
 
-
-
+    //Intent Data
+    private String major, name, cnt, data, predictDate;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_make_team3);
 
+        // Intent 를 통한 이전 값 전달 받기
+        Intent intent = getIntent();
+        name = intent.getStringExtra("name"); // 소모임 이름
+        cnt = intent.getStringExtra("member"); // 소모임 구성원 수
+        data = intent.getStringExtra("startDate"); // 소모임 시작일
+        predictDate = intent.getStringExtra("predict"); // 소모임 예상 활동 기간
+        major = intent.getStringExtra("major"); // 소모임 목표
 
-        // 구현 예정 - Intent 를 통한 이전 값 전달 받기
+        /** API 통신을 위한 헤더에 담을 토큰값 가져오기 **/
+        sharedPreferences = getSharedPreferences("JWT Token", Context.MODE_PRIVATE);
 
         // 뒤로 가기
         ImageButton btnBack = findViewById(R.id.make_team3_btn_back);
@@ -107,14 +125,77 @@ public class MakeTeamActivity3 extends AppCompatActivity {
     /** 버튼 클릭 시 소모임 Data 전송 후 다음 화면 실행 **/
     View.OnClickListener onCreateTeamClickListener = view -> {
         // 구현 예정 - 소모임 Data Retrofit 사용하여 전달
+        String token = sharedPreferences.getString("jwtToken", null);
+        String period = predictDate.substring(0,1);
+        String category= "";
 
-        // S3를 통한 사진 업로드
-        File file = new File((getAbsolutePathFromUri(getApplicationContext(),uri)));
-        uploadWithTransferUtility(file.getName(),file);
+        switch(major) {
+            case "스포츠/운동":
+                category="SPORTS";
+                break;
+            case "생활습관 개선":
+                category = "HABIT";
+                break;
+            case "시험/취업준비":
+                category = "TEST";
+                break;
+            case "스터디/공부":
+                category = "STUDY";
+                break;
+            case "독서":
+                category = "READING";
+                break;
+            case "그외 자기계발":
+                category = "ETC";
+                break;
+        }
 
-        // 다음 화면
-        Intent intent = new Intent(getApplicationContext(), MakeTeamActivity4.class);
-        startActivity(intent);
+        RetrofitAPI apiService = RetrofitClientJwt.getApiService(token);
+        MakeTeamRequest makeTeamRequest = new MakeTeamRequest(category, etIntroduce.getText().toString(), name,
+                Integer.parseInt(period), Integer.parseInt(cnt), uri.toString(), etResolution.getText().toString(), data);
+
+        Call<MakeTeamResponse> call = apiService.makeTeam(token, makeTeamRequest);
+        call.enqueue(new Callback<MakeTeamResponse>() {
+            @Override
+            public void onResponse(Call<MakeTeamResponse> call, Response<MakeTeamResponse> response) {
+                // 응답 성공 시
+                Log.d("MAKETEAMACTIVITY3", "응답 성공!!!");
+
+                //
+                MakeTeamResponse mtResponse = response.body();
+                String msg = mtResponse.getMessage();
+                // 연결 성공
+                if(msg.equals("소모임을 생성하였습니다."))
+                {
+                    MakeTeamResponse.Data makeTeamData = mtResponse.getData();
+                    int teamId = makeTeamData.getTeamId();
+                    String invitationCode = makeTeamData.getInvitationCode();
+                    Log.d("MAKETEAMACTIVITY", String.valueOf(teamId));
+                    Log.d("MAKETEAMACTIVITY",invitationCode);
+
+                    // S3를 통한 사진 업로드
+                    File file = new File((getAbsolutePathFromUri(getApplicationContext(),uri)));
+                    uploadWithTransferUtility(file.getName(),file);
+
+                    // 다음 화면
+                    Intent intent = new Intent(getApplicationContext(), MakeTeamActivity4.class);
+                    startActivity(intent);
+                }
+
+                else if (msg.equals("만료된 토큰입니다."))
+                {
+                    /** 만료된 토큰 처리 **/
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<MakeTeamResponse> call, Throwable t) {
+                // 응답 실패 시
+                Log.d("MAKETEAMACTIVITY3", "응답 실패 ...");
+            }
+        });
+
     };
 
     /** 버튼 클릭 시 권한 확인 후 갤러리 접근 **/

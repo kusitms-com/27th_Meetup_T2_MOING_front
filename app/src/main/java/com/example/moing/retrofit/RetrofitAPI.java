@@ -1,6 +1,8 @@
 package com.example.moing.retrofit;
 
 import com.example.moing.Request.LoginRequest;
+import com.example.moing.Request.MakeTeamRequest;
+import com.example.moing.Request.MakeTeamResponse;
 import com.example.moing.Request.RegisterAddressRequest;
 import com.example.moing.Response.LoginResponse;
 import com.example.moing.Response.RegisterAddressResponse;
@@ -28,12 +30,11 @@ public interface RetrofitAPI {
     @POST("/api/v1/users/additional-info")
     Call<RegisterAddressResponse> AdditionalInfo(@Header("Authorization") String token, @Body RegisterAddressRequest registerAddressRequest);
 
-    /** 카카오 로그인 연동 후 백엔드와 보낼때 API 양식 **/
-//    @POST("test")
-//    Call<ResponseBody> sendData(
-//            @Header("Authorization") String token,
-//            @Body RequestData requestData
-//    );
+    /** 소모임 생성 **/
+    @POST("/api/v1/team")
+    Call<MakeTeamResponse> makeTeam(@Header("Authorization") String token, @Body MakeTeamRequest makeTeamRequest);
+
+
 
 
 
