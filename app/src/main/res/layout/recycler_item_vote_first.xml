@@ -47,6 +47,34 @@
         android:layout_marginRight="16dp"
         android:background="@drawable/arrow_down" />
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView_second"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_item_date"
+        android:layout_marginHorizontal="16dp">
+        
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+
+            </RelativeLayout>
+
+
+
+
+
+        </LinearLayout>
+        
+        
+    </androidx.cardview.widget.CardView>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycle_second"
         android:layout_width="match_parent"

@@ -138,20 +138,18 @@ public class VoteInfoActivity extends AppCompatActivity {
             }
         });
 
+        // 예정 : 4명이 아직 안읽었어요 부터 백엔드 연동 해야함.
         /** 안읽은 사람 리스트에 대한 Adapter 테스트 코드 **/
         voteNoReadList.add("손현석");
         voteNoReadList.add("곽승엽");
         voteNoReadList.add("이지현");
         voteNoReadList.add("정승연");
-        voteNoReadList.add("김민수");
-        voteNoReadList.add("강은영");
-        voteNoReadList.add("이채연");
         voteNoReadAdapter = new VoteNoReadAdapter(voteNoReadList,this);
 
         /** 안읽은 사람 Adapter 객체 생성 **/
         // adapter2 = new RecyclerViewAdapter(dataList2);
         // recyclerView2.setAdapter(adapter2);
-        // 예정 : 4명이 아직 안읽었어요 부터 해야함.
+
 
         // 투표 현황 리사이클러뷰 Layout 호출
         voteRecycle.setLayoutManager(llm);

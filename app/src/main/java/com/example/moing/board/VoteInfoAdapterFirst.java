@@ -6,14 +6,17 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moing.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -26,9 +29,6 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
     // 두번째 어댑터와 연결
     VoteInfoAdapterSecond second_adapter;
 
-    // 예정 : Item의 클릭 상태를 저장할 array 객체
-    // private SparseBooleanArray selectedItems = new SparseBooleanArray();
-
     // 클릭 리스너 설정
     public interface OnItemClickListener {
         void onItemClick(int pos);
@@ -40,7 +40,6 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
 
     public VoteInfoAdapterFirst(List<VoteInfo.VoteChoice> voteChoiceList, List<VoteInfo.VoteChoice> voteSelected, Context context) {
         this.voteChoiceList = voteChoiceList;
-        //this.voteSelected = new ArrayList<>();
         this.voteSelected = voteSelected;
         this.context = context;
     }
@@ -58,7 +57,7 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.recycler_item_voteinfo, parent, false);
+        View view = layoutInflater.inflate(R.layout.recycler_item_vote_first, parent, false);
         return new VoteInfoAdapterFirst.VoteInfoViewHolder(view);
     }
 
@@ -78,18 +77,50 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
             // 선택되지 않은 상태의 배경색 제거
             vH.checkBox.setButtonTintList(ColorStateList.valueOf(Color.parseColor("#959698")));
         }
+
+        /** 두번째 리싸이클러뷰 넣는 부분 **/
+        vH.recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        // 예정 : Retrofit 연동시 해당 코드가 맞음!!
+        // 예정 : List<String> userList = voteChoice.getVoteUserNickName();
+
+        /** 아래 코드는 테스트 코드 **/
+        List<String> userList = new ArrayList<>();
+        userList.add("손현석");
+        userList.add("곽승엽");
+        /** 테스트 코드 부분 종료 **/
+
+        second_adapter = new VoteInfoAdapterSecond(voteChoiceList, userList);
+
+        /** 예정 : 사람 수 받아와서 텍스트에 설정하기!! **/
+        //vH.count.setText(voteChoice.getNum());
+
+        /** 예정 : 버튼 클릭시 카드뷰가 보여지게 구현! **/
+        vH.btn_people.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+
     }
 
     /** ViewHolder 작성 **/
     class VoteInfoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         CheckBox checkBox;
-        TextView tv_text;
+        TextView tv_text, count;
+        Button btn_people;
+        RecyclerView recyclerView;
 
         public VoteInfoViewHolder(@NonNull View itemView) {
             super(itemView);
 
             checkBox = itemView.findViewById(R.id.btn_check);
             tv_text = itemView.findViewById(R.id.tv_item_date);
+            count = itemView.findViewById(R.id.tv_voteCount);
+            btn_people = itemView.findViewById(R.id.btn_voteCheck);
+            recyclerView = itemView.findViewById(R.id.recycle_second);
+
             itemView.setOnClickListener(this);
             checkBox.setOnClickListener(this);
         }
