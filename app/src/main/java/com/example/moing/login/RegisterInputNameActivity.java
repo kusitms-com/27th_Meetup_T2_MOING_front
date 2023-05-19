@@ -2,11 +2,15 @@ package com.example.moing.login;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,7 +30,9 @@ public class RegisterInputNameActivity extends AppCompatActivity {
     private RetrofitAPI retrofitAPI;
     private String access;
 
+    private static final String PREF_NAME = "JWT Token";
 
+    private SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,14 +53,19 @@ public class RegisterInputNameActivity extends AppCompatActivity {
         //retrofit 이용
         retrofitAPI = RetrofitClient.getApiService();
 
-        // 이전 레이아웃에서 전달된 액세스 토큰 값을 받아옴
-        Intent intent = getIntent();
-        if (intent.hasExtra("access_token")) {
-            String access = intent.getStringExtra("access_token");
-            System.out.println("토큰 : " + access + "을 전달받았습니다.");
+        // Initialize SharedPreferences
+        sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+
+        String accessToken = sharedPreferences.getString("access_token", null); // 액세스 토큰 검색
+        if (accessToken != null) {
+            // 액세스 토큰이 존재하는 경우의 처리 로직
+            access = accessToken; // access 변수에 토큰 값 저장
+            System.out.println("토큰: " + access + "을 찾았습니다.");
         } else {
-            System.out.println("액세스 토큰 값이 전달되지 않았습니다.");
+            // 액세스 토큰이 존재하지 않는 경우의 처리 로직
+            System.out.println("액세스 토큰 값이 저장되지 않았습니다.");
         }
+
         arrowLeft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,7 +141,13 @@ public class RegisterInputNameActivity extends AppCompatActivity {
                                 // 가능한 닉네임 처리 로직
                                 nickNameTF.setVisibility(View.VISIBLE);
                                 nextDark.setVisibility(View.INVISIBLE);
-                                nextLight.setVisibility(View.VISIBLE);
+
+                                // 닉네임을 SharedPreferences에 저장
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString("nickname", nickname);
+                                Log.d("nickname", "nickname: " + nickname + "이 저장되었습니다.");
+                                editor.apply();
+
                             }
                         } else {
                             // 응답 실패 처리 로직
@@ -157,24 +174,8 @@ public class RegisterInputNameActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                /*
                 Intent intent = new Intent(RegisterInputNameActivity.this, RegisterInputAddressActivity.class);
                 startActivity(intent);
-                */
-
-                if (access != null) { // 액세스 토큰 값이 유효할 경우에만 Intent...
-                    Intent intent = new Intent(RegisterInputNameActivity.this, RegisterInputAddressActivity.class);
-
-                    intent.putExtra("access_token", access);
-                    System.out.println("토큰 : " + access + "을 전달하겠습니다.");
-
-                    String nickname = editText.getText().toString();
-                    intent.putExtra("nickname", nickname);
-                    System.out.println("닉네임 : " + nickname + "을 전달하겠습니다.");
-                    startActivity(intent);
-                } else {
-                    System.out.println("액세스 토큰 값이 유효하지 않습니다.");
-                }
 
             }
         });

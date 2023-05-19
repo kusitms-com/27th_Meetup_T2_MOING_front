@@ -9,10 +9,12 @@ import com.example.moing.Response.RegisterNameResponse;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
-/** REST API 와 통신 하기 위한 Interface **/
+/** REST API와 통신하기 위한 Interface **/
 public interface RetrofitAPI {
     //@POST("/api/v1/team/join")
     @POST("/api/v1/users/auth/kakao")
@@ -21,7 +23,7 @@ public interface RetrofitAPI {
     @GET("/api/v1/users/nickname/{nickname}/available")
     Call<RegisterNameResponse> NameAvailable(@Path("nickname") String nickname);
 
+    @Headers({"Content-Type: application/json"})
     @POST("/api/v1/users/additional-info")
-    Call<RegisterAddressResponse> AdditionalInfo(@Body RegisterAddressRequest registerAddressRequest);
-
+    Call<RegisterAddressResponse> AdditionalInfo(@Header("Authorization") String token, @Body RegisterAddressRequest registerAddressRequest);
 }

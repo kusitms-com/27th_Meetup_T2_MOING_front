@@ -3,28 +3,40 @@ package com.example.moing.Response;
 import com.google.gson.annotations.SerializedName;
 
 public class LoginResponse {
-    @SerializedName("access_token")
-    private String accessToken;
-    @SerializedName("refresh_token")
-    private String refreshToken;
-    @SerializedName("process_token")
-    private String process;
+    private int statusCode;
+    private String message;
+    private Data data;
 
-    public String getAccessToken() {
-        return accessToken;
+    public int getStatusCode() {
+        return statusCode;
     }
 
-    public String getRefreshToken() {
-        return refreshToken;
+    public String getMessage() {
+        return message;
     }
 
-    public String getProcess() {
-        return process;
+    public Data getData() {
+        return data;
     }
 
-    public LoginResponse(String accessToken, String refreshToken, String process) {
-        this.accessToken = accessToken;
-        this.refreshToken = refreshToken;
-        this.process = process;
+    public class Data {
+        @SerializedName("accessToken")
+        private String accessToken;
+        @SerializedName("refreshToken")
+        private String refreshToken;
+        @SerializedName("process")
+        private String process;
+
+        public String getAccessToken() {
+            return accessToken;
+        }
+
+        public String getRefreshToken() {
+            return refreshToken;
+        }
+
+        public String getProcess() {
+            return process;
+        }
     }
 }

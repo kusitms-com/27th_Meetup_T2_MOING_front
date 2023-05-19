@@ -2,11 +2,14 @@ package com.example.moing.login;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,8 +29,12 @@ import retrofit2.Response;
 public class RegisterInputAddressActivity extends AppCompatActivity {
 
     private RetrofitAPI retrofitAPI;
-    private String AccessToken;
-    private String NickName;
+    private String access;
+    private String nickname;
+
+    private static final String PREF_NAME = "JWT Token";
+
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,20 +56,29 @@ public class RegisterInputAddressActivity extends AppCompatActivity {
         //retrofit 이용
         retrofitAPI = RetrofitClient.getApiService();
 
-        // 이전 레이아웃에서 전달된 액세스 토큰 값을 받아옴
-        Intent intent = getIntent();
-        if (intent.hasExtra("access_token")) {
-            String accessToken = intent.getStringExtra("access_token");
-            System.out.println("토큰 : " + accessToken + "을 전달 받았습니다.");
+        // SharedPreferences 초기화
+        sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+
+        // 저장해둔 토큰 찾기
+        String accessToken = sharedPreferences.getString("access_token", null); // 액세스 토큰 검색
+        if (accessToken != null) {
+            // 액세스 토큰이 존재하는 경우의 처리 로직
+            access = accessToken; // access 변수에 토큰 값 저장
+            Log.d("token", "토큰: " + access + "을 찾았습니다.");
         } else {
-            System.out.println("액세스 토큰 값이 전달되지 않았습니다.");
+            // 액세스 토큰이 존재하지 않는 경우의 처리 로직
+            Log.d("token", "액세스 토큰 값이 저장되지 않았습니다.");
         }
 
-        if (intent.hasExtra("nickname")) {
-            NickName = intent.getStringExtra("nickname");
-            System.out.println("닉네임 : " + NickName + "을 전달 받았습니다.");
+        // 저장해둔 닉네임 찾기
+        String nickName = sharedPreferences.getString("nickname", null); // 닉네임 검색
+        if (nickName != null) {
+            // 액세스 토큰이 존재하는 경우의 처리 로직
+            nickname = nickName; // access 변수에 토큰 값 저장
+            Log.d("nickname", "닉네임: " + nickname + "을 찾았습니다.");
         } else {
-            System.out.println("닉네임이 전달되지 않았습니다.");
+            // 액세스 토큰이 존재하지 않는 경우의 처리 로직
+            Log.d("nickname", "닉네임이 저장되지 않았습니다.");
         }
 
         arrowLeft.setOnClickListener(new View.OnClickListener() {
@@ -122,26 +138,30 @@ public class RegisterInputAddressActivity extends AppCompatActivity {
                 String address = editText.getText().toString();
 
                 // RegisterAddressRequest 객체를 생성하고 주소 정보를 담음
-                RegisterAddressRequest request = new RegisterAddressRequest(AccessToken, address, NickName, "temp");
+                RegisterAddressRequest request = new RegisterAddressRequest(access, address, nickname, "temp");
                 request.setAddress(address);
 
+                // API 요청을 보내기 전에 Request Header에 토큰 값을 추가
+                String token = "Bearer " + access; // 토큰 값을 "Bearer {토큰값}" 형태로 생성
+                Call<RegisterAddressResponse> call = retrofitAPI.AdditionalInfo(token, request);
+                // Call 객체에 Request Header에 토큰 값을 추가한 후 API 요청을 보냄
+
                 // API 요청을 보내고 응답을 처리하는 콜백 메서드를 정의함
-                retrofitAPI.AdditionalInfo(request).enqueue(new Callback<RegisterAddressResponse>() {
+                call.enqueue(new Callback<RegisterAddressResponse>() {
                     @Override
                     public void onResponse(Call<RegisterAddressResponse> call, Response<RegisterAddressResponse> response) {
                         if (response.isSuccessful()) {
                             RegisterAddressResponse registerAddressResponse = response.body();
 
-                            // API 요청이 성공적으로 처리되었을 때
+                            // 백에서 준 jwt
+                            String jwtToken = registerAddressResponse.getData().getAccessToken();
+                            Log.d("jwtToken", "jwtToken: " + jwtToken);
 
-                            if (AccessToken != null) { // 액세스 토큰 값이 유효할 경우에만 Intent...
-                                Intent intent = new Intent(RegisterInputAddressActivity.this, MainActivity.class);
-                                intent.putExtra("access_token", AccessToken);
-                                System.out.println("토큰 : " + AccessToken + "을 전달하겠습니다.");
-                                startActivity(intent);
-                            } else {
-                                System.out.println("액세스 토큰 값이 유효하지 않습니다.");
-                            }
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("jwtToken", jwtToken);
+                            editor.apply();
+
+                            // 홈 화면에서 부터 요청을 jwt 토큰을 헤더에 담아서 요청??
 
                             Intent intent = new Intent(RegisterInputAddressActivity.this, MainActivity.class);
                             startActivity(intent);
