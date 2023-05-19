@@ -12,7 +12,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.moing.MainActivity;
 import com.example.moing.R;
+import com.example.moing.Request.ChangeJwtRequest;
 import com.example.moing.Request.LoginRequest;
+import com.example.moing.Response.ChangeJwtResponse;
 import com.example.moing.Response.LoginResponse;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClient;
@@ -42,26 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         retrofitAPI = RetrofitClient.getApiService();
 
         sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-
-        // Check if user is already logged in
-        /* if (isUserLoggedIn()) {
-            navigateToNextActivity();
-        } */
     }
-
-    /* private boolean isUserLoggedIn() {
-        String accessToken = getAccessToken();
-        return accessToken != null && !accessToken.isEmpty();
-    } */
-
-    /* private void navigateToNextActivity(String accessToken, String refreshToken, String process) {
-        Intent intent = new Intent(LoginActivity.this, RegisterInputNameActivity.class);
-        intent.putExtra("access_token", accessToken);
-        intent.putExtra("refresh_token", refreshToken);
-        intent.putExtra("process_token", process);
-        startActivity(intent);
-        finish();
-    } */
 
     View.OnClickListener loginClickListener = view -> {
         if (UserApiClient.getInstance().isKakaoTalkLoginAvailable(LoginActivity.this)) {
@@ -78,7 +61,6 @@ public class LoginActivity extends AppCompatActivity {
                 Log.e(TAG, "로그인 실패", error);
             } else {
                 Log.i(TAG, "로그인 성공(토큰): " + oAuthToken.getAccessToken());
-                saveTokens(oAuthToken.getAccessToken(), null, null);
                 LoginStart(oAuthToken.getAccessToken());
             }
             return null;
@@ -92,18 +74,19 @@ public class LoginActivity extends AppCompatActivity {
                 Log.e(TAG, "로그인 실패", error);
             } else if (oAuthToken != null) {
                 Log.i(TAG, "로그인 성공(토큰): " + oAuthToken.getAccessToken());
-                saveTokens(oAuthToken.getAccessToken(), null, null);
                 LoginStart(oAuthToken.getAccessToken());
             }
             return null;
         });
     }
 
-    private void saveTokens(String accessToken, String refreshToken, String process) {
+    private void saveTokens(String accessToken, String refreshToken, String process, Long userId) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
+        String strUserId = String.valueOf(userId);
         editor.putString(ACCESS_TOKEN_KEY, accessToken);
         editor.putString(REFRESH_TOKEN_KEY, refreshToken);
         editor.putString(PROCESS_TOKEN_KEY, process);
+        editor.putString("userId", strUserId);
 
         Log.d("Token", "Access Token: " + accessToken);
         Log.d("Token", "Refresh Token: " + refreshToken);
@@ -111,19 +94,6 @@ public class LoginActivity extends AppCompatActivity {
 
         editor.apply();
     }
-
-
-    /* private String getAccessToken() {
-        return sharedPreferences.getString(ACCESS_TOKEN_KEY, null);
-    }
-
-    private String getRefreshToken() {
-        return sharedPreferences.getString(REFRESH_TOKEN_KEY, null);
-    }
-
-    private String getProcessToken() {
-        return sharedPreferences.getString(PROCESS_TOKEN_KEY, null);
-    } */
 
     private void LoginStart(String accessToken) {
         String TAG = "LoginStart";
@@ -137,33 +107,42 @@ public class LoginActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     LoginResponse loginResponse = response.body();
                     if (loginResponse != null) {
-                        LoginResponse.Data data = loginResponse.getData();
-                        if (data != null) {
-                            String access = data.getAccessToken();
-                            String refresh = data.getRefreshToken();
-                            String process = data.getProcess();
+                        String msg = loginResponse.getMessage();
+                        if (msg.equals("카카오 로그인을 했습니다")) {
+                            LoginResponse.Data data = loginResponse.getData();
+                            if (data != null) {
+                                String access = data.getAccessToken();
+                                String refresh = data.getRefreshToken();
+                                String process = data.getProcess();
+                                Long userId = data.getUserId();
 
-                            // 토큰 값 저장
-                            saveTokens(access, refresh, process);
+                                // 토큰 값 저장
+                                saveTokens(access, refresh, process, userId);
 
-                            if (process.equals("로그인이 완료되었습니다")) {
-                                // 홈 화면(MainActivity)로 이동
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                startActivity(intent);
-                            } else {
-                                // 회원가입 추가 정보 입력 화면(RegisterInputNameActivity)로 이동
-                                Intent intent = new Intent(LoginActivity.this, RegisterInputNameActivity.class);
-                                startActivity(intent);
+                                if (process.equals("로그인이 완료되었습니다")) {
+                                    // 홈 화면(MainActivity)로 이동
+                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                    startActivity(intent);
+                                }
+                                else {
+                                    // 회원가입 추가 정보 입력 화면(RegisterInputNameActivity)로 이동
+                                    Intent intent = new Intent(LoginActivity.this, RegisterInputNameActivity.class);
+                                    startActivity(intent);
+                                }
                             }
-
-                            /*
-                            Intent intent = new Intent(LoginActivity.this, RegisterInputNameActivity.class);
-                            startActivity(intent);
-                            */
-
-                        } else {
-                            Log.d("LoginStart", "토큰 얻기 실패" + response.message() + response.code());
+                            else {
+                                Log.d("LoginStart", "토큰 얻기 실패" + response.message() + response.code());
+                            }
                         }
+                        /** 만료된 토큰 처리 **/
+                        else if (msg.equals("만료된 토큰입니다.")) {
+                            Log.d("LoginActivity", "만료된 토큰입니다.");
+                            String refreshToken = sharedPreferences.getString("refresh_token", null); // refresh token 검색
+                            String strUserId = sharedPreferences.getString("userId", null); // userId 검색
+                            Long userId = Long.parseLong(strUserId);
+                            changeJwt(refreshToken, userId);
+                        }
+
                     }
                 } else {
                     Log.d("LoginStart", "요청 실패" + response.message() + response.code());
@@ -173,6 +152,28 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
                 Log.d("LoginStart", "요청 실패" + t.getMessage());
+            }
+        });
+    }
+
+    private void changeJwt(String refreshToken, Long id) {
+        ChangeJwtRequest request = new ChangeJwtRequest(refreshToken, id);
+        Call<ChangeJwtResponse> call = retrofitAPI.changeJwt(request);
+        call.enqueue(new Callback<ChangeJwtResponse>() {
+            @Override
+            public void onResponse(Call<ChangeJwtResponse> call, Response<ChangeJwtResponse> response) {
+                if(response.isSuccessful()) {
+                    ChangeJwtResponse jwtResponse = response.body();
+                    ChangeJwtResponse.Data data = jwtResponse.getData();
+                    String accessToken = data.getAccessToken();
+                    String refreshToken = data.getRefreshToken();
+                    /** 저장 **/
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ChangeJwtResponse> call, Throwable t) {
+                Log.d("LOGINACTIVITY", t.getMessage());
             }
         });
     }

@@ -41,7 +41,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.moing.R;
 import com.example.moing.Request.MakeTeamRequest;
-import com.example.moing.Request.MakeTeamResponse;
+import com.example.moing.Response.MakeTeamResponse;
+import com.example.moing.retrofit.ChangeJwt;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClientJwt;
 
@@ -185,6 +186,7 @@ public class MakeTeamActivity3 extends AppCompatActivity {
                 else if (msg.equals("만료된 토큰입니다."))
                 {
                     /** 만료된 토큰 처리 **/
+                    ChangeJwt.updateJwtToken(MakeTeamActivity3.this);
                 }
 
             }
