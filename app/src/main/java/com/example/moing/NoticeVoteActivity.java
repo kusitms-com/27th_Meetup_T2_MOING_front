@@ -1,6 +1,8 @@
 package com.example.moing;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -9,12 +11,53 @@ import android.widget.TextView;
 
 import com.google.android.material.tabs.TabLayout;
 
+import java.util.ArrayList;
+
 public class NoticeVoteActivity extends AppCompatActivity {
+
+    public NoticeRecyclerAdapter mRecyclerAdapter;
+    public NoticeRecyclerAdapter mRecyclerAdapter2;
+
+    public ArrayList<NoticeItem> mNoticeItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notice_vote);
+
+        // 공지사항
+        RecyclerView mRecyclerView = findViewById(R.id.recycler);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+
+        // 투표
+        RecyclerView mRecyclerView2 = findViewById(R.id.recycler2);
+
+        LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(this);
+        linearLayoutManager2.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView2.setLayoutManager(linearLayoutManager2);
+
+        mRecyclerAdapter = new NoticeRecyclerAdapter();
+        mRecyclerAdapter2 = new NoticeRecyclerAdapter();
+
+        mRecyclerView.setAdapter(mRecyclerAdapter);
+        mRecyclerView2.setAdapter(mRecyclerAdapter2);
+
+        mNoticeItem = new ArrayList<>();
+        mNoticeItem.add(new NoticeItem("뿅뿅이", "아 배고프다", "뼈해장국먹을사람", "15", R.drawable.notice_profile, R.drawable.notice_crown, R.drawable.notice_dot, R.drawable.notice_message));
+        mNoticeItem.add(new NoticeItem("뿅뿅이", "아 배고프다", "뼈해장국먹을사람", "5", R.drawable.notice_profile, R.drawable.notice_crown, R.drawable.notice_dot, R.drawable.notice_message));
+        mNoticeItem.add(new NoticeItem("뿅뿅이", "아 배고프다", "뼈해장국먹을사람", "15", R.drawable.notice_profile, R.drawable.notice_crown, R.drawable.notice_dot, R.drawable.notice_message));
+        mNoticeItem.add(new NoticeItem("뿅뿅이", "아 배고프다", "뼈해장국먹을사람", "15", R.drawable.notice_profile, R.drawable.notice_crown, R.drawable.notice_dot, R.drawable.notice_message));
+        mRecyclerAdapter.setNoticeList(this, mNoticeItem);
+
+        mNoticeItem = new ArrayList<>();
+        mNoticeItem.add(new NoticeItem("투표", "책 추천 받아요", "뼈해장국먹을사람", "15", R.drawable.notice_profile, R.drawable.notice_crown, R.drawable.notice_dot, R.drawable.notice_message));
+        mNoticeItem.add(new NoticeItem("뿅뿅이", "아 배고프다", "뼈해장국먹을사람", "5", R.drawable.notice_profile, R.drawable.notice_crown, R.drawable.notice_dot, R.drawable.notice_message));
+        mNoticeItem.add(new NoticeItem("뿅뿅이", "아 배고프다", "뼈해장국먹을사람", "15", R.drawable.notice_profile, R.drawable.notice_crown, R.drawable.notice_dot, R.drawable.notice_message));
+        mNoticeItem.add(new NoticeItem("뿅뿅이", "아 배고프다", "뼈해장국먹을사람", "15", R.drawable.notice_profile, R.drawable.notice_crown, R.drawable.notice_dot, R.drawable.notice_message));
+        mRecyclerAdapter2.setNoticeList(this, mNoticeItem);
 
         TabHost tabHost1 = (TabHost) findViewById(R.id.tabHost1);
         tabHost1.setup();
