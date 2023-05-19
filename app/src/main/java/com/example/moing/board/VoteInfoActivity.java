@@ -1,17 +1,22 @@
 package com.example.moing.board;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.animation.LayoutTransition;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.transition.AutoTransition;
+import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,10 +31,17 @@ public class VoteInfoActivity extends AppCompatActivity {
     TextView title, nickName, time, content, voteCount, tvAnony;
     ImageView profile, ivAnony;
     RecyclerView voteRecycle, noReadRecycle;
+    CardView noreadCardView;
+    LinearLayout layout_cardView;
 
+    // 투표 리스트
     private List<VoteInfo.VoteChoice> voteChoiceList;
+    // 투표 선택한 리스트
     private List<VoteInfo.VoteChoice> voteSelected;
+    // 투표한 사람들의 이름 리스트
     private List<String> voteUserNameList;
+    // 투표 안 읽은 사람의 리스트
+    private List<String> voteNoReadList;
 
     private VoteInfoAdapter voteInfoAdapter;
     private VoteNoReadAdapter voteNoReadAdapter;
@@ -42,6 +54,7 @@ public class VoteInfoActivity extends AppCompatActivity {
         voteChoiceList = new ArrayList<>();
         voteSelected = new ArrayList<>();
         voteUserNameList = new ArrayList<>();
+        voteNoReadList = new ArrayList<>();
 
         // 뒤로 가기 버튼
         back = (Button) findViewById(R.id.btn_close);
@@ -122,6 +135,16 @@ public class VoteInfoActivity extends AppCompatActivity {
             }
         });
 
+        /** 안읽은 사람 리스트에 대한 Adapter 테스트 코드 **/
+        voteNoReadList.add("손현석");
+        voteNoReadList.add("곽승엽");
+        voteNoReadList.add("이지현");
+        voteNoReadList.add("정승연");
+        voteNoReadList.add("김민수");
+        voteNoReadList.add("강은영");
+        voteNoReadList.add("이채연");
+        voteNoReadAdapter = new VoteNoReadAdapter(voteNoReadList,this);
+
         /** 안읽은 사람 Adapter 객체 생성 **/
         // adapter2 = new RecyclerViewAdapter(dataList2);
         // recyclerView2.setAdapter(adapter2);
@@ -132,8 +155,22 @@ public class VoteInfoActivity extends AppCompatActivity {
         voteRecycle.setAdapter(voteInfoAdapter);
         voteRecycle.setHasFixedSize(true);
 
+        /** CardView 작성**/
+        noreadCardView = (CardView) findViewById(R.id.cardView_noread);
+        noreadCardView.setOnClickListener(cardViewClickListener);
+        layout_cardView = findViewById(R.id.layout_card);
+        layout_cardView.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
+
+        // 안읽은 사람 리스트(GridLayout) 간격 설정
+        int grid_spacing = (int) getResources().getDimension(R.dimen.grid_spacing); // 8dp 의미.
+        VoteNoReadGridSpacing voteNoReadGridSpacing = new VoteNoReadGridSpacing(4, grid_spacing, true);
+        noReadRecycle.addItemDecoration(voteNoReadGridSpacing);
+
         // 안읽은 사람 리사이클러뷰 Layout 호출
         noReadRecycle.setLayoutManager(llm2);
+        noReadRecycle.setAdapter(voteNoReadAdapter);
+        noReadRecycle.setHasFixedSize(true);
+
 
     }
 
@@ -153,5 +190,13 @@ public class VoteInfoActivity extends AppCompatActivity {
         for ( VoteInfo.VoteChoice choice : voteSelected) {
             Log.d("VoteInfo", choice.getContent()+"에 투표하셨습니다.");
         }
+    };
+
+    /** CardView(안읽은 사람 리스트) 클릭 리스너 **/
+    View.OnClickListener cardViewClickListener = v -> {
+        int visibility = (noReadRecycle.getVisibility() == View.GONE) ? View.VISIBLE : View.GONE;
+
+        TransitionManager.beginDelayedTransition(layout_cardView, new AutoTransition());
+        noReadRecycle.setVisibility(visibility);
     };
 }

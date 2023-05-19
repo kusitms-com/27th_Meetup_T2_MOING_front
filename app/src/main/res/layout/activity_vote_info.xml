@@ -198,49 +198,56 @@
                 android:layout_marginHorizontal="16dp"
                 android:backgroundTint="@color/secondary_grey_black_14">
 
-                <!-- 안 읽은 사람 -->
-                <RelativeLayout
-                    android:id="@+id/relative_noRead"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                <LinearLayout
+                    android:id="@+id/layout_card"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:animateLayoutChanges="true"
                     android:background="@drawable/layout_round_radius8_black12">
 
-                    <ImageView
-                        android:id="@+id/iv_noread"
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/ic_vote_noread_3x"
-                        android:layout_marginLeft="24dp"/>
+                    <!-- 안 읽은 사람 -->
+                    <RelativeLayout
+                        android:id="@+id/relative_noRead"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp">
 
-                    <TextView
-                        android:id="@+id/tv_noread"
-                        android:layout_width="wrap_content"
+                        <ImageView
+                            android:id="@+id/iv_noread"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/ic_vote_noread_3x"
+                            android:layout_marginLeft="24dp"/>
+
+                        <TextView
+                            android:id="@+id/tv_noread"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@+id/iv_noread"
+                            android:layout_marginLeft="12dp"
+                            android:layout_centerVertical="true"
+                            android:text="4명이 아직 안 읽었어요"
+                            android:textColor="@color/secondary_grey_black_3"
+                            android:textSize="16dp"
+                            android:fontFamily="@font/pretendard_semi_bold"/>
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginRight="24dp"
+                            android:src="@drawable/arrow_down" />
+                    </RelativeLayout>
+                    <!-- 안 읽은 사람 리스트 -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycle_noread"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_toRightOf="@+id/iv_noread"
-                        android:layout_marginLeft="12dp"
-                        android:layout_centerVertical="true"
-                        android:text="4명이 아직 안 읽었어요"
-                        android:textColor="@color/secondary_grey_black_3"
-                        android:textSize="16dp"
-                        android:fontFamily="@font/pretendard_semi_bold"/>
-
-                    <ImageView
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
-                        android:layout_centerVertical="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginRight="24dp"
-                        android:src="@drawable/arrow_down" />
-                </RelativeLayout>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycle_noread"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="false"/>
-
-
+                        android:visibility="gone"
+                        android:nestedScrollingEnabled="false"/>
+                </LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <!-- 댓글 기능 -->

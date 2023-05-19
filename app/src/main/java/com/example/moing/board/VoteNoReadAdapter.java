@@ -15,10 +15,10 @@ import java.util.List;
 
 public class VoteNoReadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<VoteInfo.voteData> noReadList;
+    private List<String> noReadList;
     private Context context;
 
-    public VoteNoReadAdapter(List<VoteInfo.voteData> noReadList, Context context) {
+    public VoteNoReadAdapter(List<String> noReadList, Context context) {
         this.noReadList = noReadList;
         this.context = context;
     }
@@ -33,8 +33,10 @@ public class VoteNoReadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        VoteInfo.voteData voteData = noReadList.get(position);
-
+        // VoteInfo.voteData voteData = noReadList.get(position);
+        String item_name = noReadList.get(position);
+        VoteNoReadAdapter.VoteNoReadViewHolder vh = ( VoteNoReadAdapter.VoteNoReadViewHolder) holder;
+        vh.name.setText(item_name);
     }
 
     @Override
