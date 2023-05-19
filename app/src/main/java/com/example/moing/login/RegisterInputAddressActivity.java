@@ -137,8 +137,12 @@ public class RegisterInputAddressActivity extends AppCompatActivity {
                 // 사용자가 입력한 주소 정보를 가져옴
                 String address = editText.getText().toString();
 
+                // fcmToken 가져오기
+                SharedPreferences sharedPreferences = getSharedPreferences("FCM Token", Context.MODE_PRIVATE);
+                String fcmToken = sharedPreferences.getString("fcmToken", null);
+
                 // RegisterAddressRequest 객체를 생성하고 주소 정보를 담음
-                RegisterAddressRequest request = new RegisterAddressRequest(access, address, nickname, "temp");
+                RegisterAddressRequest request = new RegisterAddressRequest(access, address, nickname, fcmToken);
                 request.setAddress(address);
 
                 // API 요청을 보내기 전에 Request Header에 토큰 값을 추가
