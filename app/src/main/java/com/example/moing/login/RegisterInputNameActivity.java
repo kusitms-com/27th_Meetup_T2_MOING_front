@@ -1,18 +1,23 @@
-package com.example.moing;
+package com.example.moing.login;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.moing.retrofit.RegisterNameResponse;
+import com.example.moing.R;
+import com.example.moing.Response.RegisterNameResponse;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClient;
 
@@ -23,12 +28,17 @@ import retrofit2.Response;
 public class RegisterInputNameActivity extends AppCompatActivity {
 
     private RetrofitAPI retrofitAPI;
+    private String access;
 
+    private static final String PREF_NAME = "JWT Token";
+
+    private SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_input_name);
 
+        ImageView arrowLeft = (ImageView) findViewById(R.id.arrowLeft);
         ImageView nextLight = (ImageView) findViewById(R.id.nextLight);
         ImageView nextDark = (ImageView) findViewById(R.id.nextDark);
         ImageView nicknameBtn = (ImageView) findViewById(R.id.nicknameBtn);
@@ -42,6 +52,26 @@ public class RegisterInputNameActivity extends AppCompatActivity {
 
         //retrofit 이용
         retrofitAPI = RetrofitClient.getApiService();
+
+        // Initialize SharedPreferences
+        sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+
+        String accessToken = sharedPreferences.getString("access_token", null); // 액세스 토큰 검색
+        if (accessToken != null) {
+            // 액세스 토큰이 존재하는 경우의 처리 로직
+            access = accessToken; // access 변수에 토큰 값 저장
+            System.out.println("토큰: " + access + "을 찾았습니다.");
+        } else {
+            // 액세스 토큰이 존재하지 않는 경우의 처리 로직
+            System.out.println("액세스 토큰 값이 저장되지 않았습니다.");
+        }
+
+        arrowLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         xIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,7 +121,8 @@ public class RegisterInputNameActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String nickname = "exampleNickname";
+                String nickname = editText.getText().toString();
+
                 Call<RegisterNameResponse> call = retrofitAPI.NameAvailable(nickname);
                 call.enqueue(new Callback<RegisterNameResponse>() {
                     @Override
@@ -110,7 +141,13 @@ public class RegisterInputNameActivity extends AppCompatActivity {
                                 // 가능한 닉네임 처리 로직
                                 nickNameTF.setVisibility(View.VISIBLE);
                                 nextDark.setVisibility(View.INVISIBLE);
-                                nextLight.setVisibility(View.VISIBLE);
+
+                                // 닉네임을 SharedPreferences에 저장
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString("nickname", nickname);
+                                Log.d("nickname", "nickname: " + nickname + "이 저장되었습니다.");
+                                editor.apply();
+
                             }
                         } else {
                             // 응답 실패 처리 로직
@@ -139,9 +176,10 @@ public class RegisterInputNameActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(RegisterInputNameActivity.this, RegisterInputAddressActivity.class);
                 startActivity(intent);
-                finish();
+
             }
         });
 
     }
+
 }

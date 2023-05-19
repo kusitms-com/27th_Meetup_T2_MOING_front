@@ -27,6 +27,8 @@ public class RetrofitClient {
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
+            // 헤더에 토큰 넣어 주는 코드 하나 추가
+
             // OkHttpClient 생성 - Interceptor 설정, Timeout 시간 설정
             OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
             clientBuilder.addInterceptor(loggingInterceptor)

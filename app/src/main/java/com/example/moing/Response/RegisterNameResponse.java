@@ -1,4 +1,4 @@
-package com.example.moing.retrofit;
+package com.example.moing.Response;
 
 import com.google.gson.annotations.SerializedName;
 

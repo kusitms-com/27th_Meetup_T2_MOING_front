@@ -21,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /** sharedPreference 사용 **/
+
         // test data (삭제 예정)
         List<Team> teamList = new ArrayList<>();
         teamList.add(new Team(1,"소모임 이름",10,"시작일","종료일","이미지",false));
