@@ -6,6 +6,7 @@ import com.example.moing.Response.LoginResponse;
 import com.example.moing.Response.RegisterAddressResponse;
 import com.example.moing.Response.RegisterNameResponse;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -26,4 +27,14 @@ public interface RetrofitAPI {
     @Headers({"Content-Type: application/json"})
     @POST("/api/v1/users/additional-info")
     Call<RegisterAddressResponse> AdditionalInfo(@Header("Authorization") String token, @Body RegisterAddressRequest registerAddressRequest);
+
+    /** 카카오 로그인 연동 후 백엔드와 보낼때 API 양식 **/
+//    @POST("test")
+//    Call<ResponseBody> sendData(
+//            @Header("Authorization") String token,
+//            @Body RequestData requestData
+//    );
+
+
+
 }
