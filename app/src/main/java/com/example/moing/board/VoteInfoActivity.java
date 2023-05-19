@@ -18,7 +18,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.moing.R;
 
@@ -28,8 +27,8 @@ import java.util.List;
 public class VoteInfoActivity extends AppCompatActivity {
     Button back, voteComplete;
     ImageButton modal;
-    TextView title, nickName, time, content, voteCount, tvAnony;
-    ImageView profile, ivAnony;
+    TextView title, nickName, time, content, voteCount, tvAnony, tv_noread;
+    ImageView profile, ivAnony, noReadArrow;
     RecyclerView voteRecycle, noReadRecycle;
     CardView noreadCardView;
     LinearLayout layout_cardView;
@@ -43,7 +42,7 @@ public class VoteInfoActivity extends AppCompatActivity {
     // 투표 안 읽은 사람의 리스트
     private List<String> voteNoReadList;
 
-    private VoteInfoAdapter voteInfoAdapter;
+    private VoteInfoAdapterFirst voteInfoAdapterFirst;
     private VoteNoReadAdapter voteNoReadAdapter;
 
     @Override
@@ -98,6 +97,10 @@ public class VoteInfoActivity extends AppCompatActivity {
         voteComplete.setOnClickListener(completeClickListener);
         voteComplete.setClickable(false);
 
+        // 안읽은 사람 리스트 상태 변경
+        tv_noread = (TextView) findViewById(R.id.tv_noread);
+        noReadArrow = (ImageView) findViewById(R.id.iv_noread);
+
         /** 테스트 데이터 **/
         voteUserNameList.add("손현석");
         voteUserNameList.add("곽승엽");
@@ -114,13 +117,13 @@ public class VoteInfoActivity extends AppCompatActivity {
         /** 테스트 데이터 끝 **/
 
         // 투표 리사이클러뷰 어댑터 설정
-        voteInfoAdapter = new VoteInfoAdapter(voteChoiceList, voteSelected, this);
+        voteInfoAdapterFirst = new VoteInfoAdapterFirst(voteChoiceList, voteSelected, this);
         /** 투표 선택 클릭 리스너 **/
-        voteInfoAdapter.setOnItemClickListener(new VoteInfoAdapter.OnItemClickListener() {
+        voteInfoAdapterFirst.setOnItemClickListener(new VoteInfoAdapterFirst.OnItemClickListener() {
             @Override
             public void onItemClick(int pos) {
                 //Toast.makeText(getApplicationContext(), "pos : " + pos, Toast.LENGTH_SHORT).show();
-                voteSelected = voteInfoAdapter.getSelectedItems();
+                voteSelected = voteInfoAdapterFirst.getSelectedItems();
                 Log.d("VoteInfoActivity", String.valueOf(voteSelected.size()));
                 if(voteSelected.size() >= 1) {
                     voteComplete.setClickable(true);
@@ -152,7 +155,7 @@ public class VoteInfoActivity extends AppCompatActivity {
 
         // 투표 현황 리사이클러뷰 Layout 호출
         voteRecycle.setLayoutManager(llm);
-        voteRecycle.setAdapter(voteInfoAdapter);
+        voteRecycle.setAdapter(voteInfoAdapterFirst);
         voteRecycle.setHasFixedSize(true);
 
         /** CardView 작성**/
@@ -163,7 +166,7 @@ public class VoteInfoActivity extends AppCompatActivity {
 
         // 안읽은 사람 리스트(GridLayout) 간격 설정
         int grid_spacing = (int) getResources().getDimension(R.dimen.grid_spacing); // 8dp 의미.
-        VoteNoReadGridSpacing voteNoReadGridSpacing = new VoteNoReadGridSpacing(4, grid_spacing, true);
+        VoteNoReadGridSpacing voteNoReadGridSpacing = new VoteNoReadGridSpacing(4, grid_spacing);
         noReadRecycle.addItemDecoration(voteNoReadGridSpacing);
 
         // 안읽은 사람 리사이클러뷰 Layout 호출
@@ -186,7 +189,7 @@ public class VoteInfoActivity extends AppCompatActivity {
 
     /** 투표 완료 버튼 클릭 리스너 **/
     View.OnClickListener completeClickListener = v -> {
-        voteSelected = voteInfoAdapter.getSelectedItems();
+        voteSelected = voteInfoAdapterFirst.getSelectedItems();
         for ( VoteInfo.VoteChoice choice : voteSelected) {
             Log.d("VoteInfo", choice.getContent()+"에 투표하셨습니다.");
         }
@@ -198,5 +201,10 @@ public class VoteInfoActivity extends AppCompatActivity {
 
         TransitionManager.beginDelayedTransition(layout_cardView, new AutoTransition());
         noReadRecycle.setVisibility(visibility);
+        // 보이는 상태라면
+        if(visibility == View.VISIBLE)
+            noReadArrow.setImageResource(R.drawable.arrow_up);
+        else
+            noReadArrow.setImageResource(R.drawable.arrow_down);
     };
 }

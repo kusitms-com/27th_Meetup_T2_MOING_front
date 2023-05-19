@@ -7,23 +7,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moing.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class VoteInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<VoteInfo.VoteChoice> voteChoiceList;
     private List<VoteInfo.VoteChoice> voteSelected;
     private Context context;
     private OnItemClickListener clickListener = null;
+
+    // 리사이클러뷰 안의 리사이클러뷰 관련
+    // 두번째 어댑터와 연결
+    VoteInfoAdapterSecond second_adapter;
+
+    // 예정 : Item의 클릭 상태를 저장할 array 객체
+    // private SparseBooleanArray selectedItems = new SparseBooleanArray();
 
     // 클릭 리스너 설정
     public interface OnItemClickListener {
@@ -34,7 +38,7 @@ public class VoteInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.clickListener = listener;
     }
 
-    public VoteInfoAdapter(List<VoteInfo.VoteChoice> voteChoiceList,List<VoteInfo.VoteChoice> voteSelected,Context context) {
+    public VoteInfoAdapterFirst(List<VoteInfo.VoteChoice> voteChoiceList, List<VoteInfo.VoteChoice> voteSelected, Context context) {
         this.voteChoiceList = voteChoiceList;
         //this.voteSelected = new ArrayList<>();
         this.voteSelected = voteSelected;
@@ -55,7 +59,7 @@ public class VoteInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.recycler_item_voteinfo, parent, false);
-        return new VoteInfoAdapter.VoteInfoViewHolder(view);
+        return new VoteInfoAdapterFirst.VoteInfoViewHolder(view);
     }
 
     @Override

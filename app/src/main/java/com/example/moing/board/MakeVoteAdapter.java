@@ -49,7 +49,7 @@ public class MakeVoteAdapter extends RecyclerView.Adapter<MakeVoteAdapter.VoteVi
     @Override
     public VoteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.recycler_item_vote, parent, false);
+        View view = layoutInflater.inflate(R.layout.recycler_item_add_vote, parent, false);
         return new MakeVoteAdapter.VoteViewHolder(view);
     }
 

@@ -10,9 +10,8 @@
         android:id="@+id/btn_check"
         android:layout_width="22dp"
         android:layout_height="22dp"
-        android:layout_marginTop="17dp"
+        android:layout_marginTop="14dp"
         android:layout_marginLeft="16dp"
-        android:layout_centerVertical="true"
         android:background="@drawable/board_checkbox_no" />
 
     <TextView
@@ -26,4 +25,33 @@
         android:text="투표 항목"
         android:textSize="18dp"
         android:textColor="@color/secondary_grey_black_7" />
+
+    <TextView
+        android:id="@+id/tv_voteCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/btn_voteCheck"
+        android:layout_marginTop="14dp"
+        android:layout_marginRight="16dp"
+        android:text="5표"
+        android:textSize="18dp"
+        android:textColor="@color/secondary_grey_black_7"
+        android:fontFamily="@font/pretendard_semi_bold" />
+
+    <android.widget.Button
+        android:id="@+id/btn_voteCheck"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="18dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/arrow_down" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycle_second"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="40dp"
+        android:nestedScrollingEnabled="false"/>
 </RelativeLayout>

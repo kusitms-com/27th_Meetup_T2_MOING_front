@@ -213,7 +213,7 @@
                         android:layout_height="50dp">
 
                         <ImageView
-                            android:id="@+id/iv_noread"
+                            android:id="@+id/iv_icon"
                             android:layout_width="18dp"
                             android:layout_height="18dp"
                             android:layout_centerVertical="true"
@@ -224,7 +224,7 @@
                             android:id="@+id/tv_noread"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_toRightOf="@+id/iv_noread"
+                            android:layout_toRightOf="@+id/iv_icon"
                             android:layout_marginLeft="12dp"
                             android:layout_centerVertical="true"
                             android:text="4명이 아직 안 읽었어요"
@@ -233,6 +233,7 @@
                             android:fontFamily="@font/pretendard_semi_bold"/>
 
                         <ImageView
+                            android:id="@+id/iv_noread"
                             android:layout_width="18dp"
                             android:layout_height="18dp"
                             android:layout_centerVertical="true"
@@ -245,6 +246,8 @@
                         android:id="@+id/recycle_noread"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="40dp"
                         android:visibility="gone"
                         android:nestedScrollingEnabled="false"/>
                 </LinearLayout>
