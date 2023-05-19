@@ -26,6 +26,8 @@ public class LoginResponse {
         private String refreshToken;
         @SerializedName("process")
         private String process;
+        @SerializedName("userId")
+        private Long userId;
 
         public String getAccessToken() {
             return accessToken;
@@ -37,6 +39,10 @@ public class LoginResponse {
 
         public String getProcess() {
             return process;
+        }
+
+        public Long getUserId() {
+            return userId;
         }
     }
 }

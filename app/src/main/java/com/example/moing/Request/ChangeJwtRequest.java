@@ -1,10 +1,10 @@
 package com.example.moing.Request;
 
-public class ChangeJwt {
+public class ChangeJwtRequest {
     private String refreshToken;
-    private int userId;
+    private Long userId;
 
-    public ChangeJwt(String refreshToken, int userId) {
+    public ChangeJwtRequest(String refreshToken, Long userId) {
         this.refreshToken = refreshToken;
         this.userId = userId;
     }
@@ -17,11 +17,11 @@ public class ChangeJwt {
         this.refreshToken = refreshToken;
     }
 
-    public int getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 }

@@ -1,4 +1,4 @@
-package com.example.moing.Request;
+package com.example.moing.Response;
 
 public class MakeTeamResponse {
     private int statusCode;
