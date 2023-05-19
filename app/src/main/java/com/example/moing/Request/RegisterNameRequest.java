@@ -1,4 +1,4 @@
-package com.example.moing.retrofit;
+package com.example.moing.Request;
 
 public class RegisterNameRequest {
 

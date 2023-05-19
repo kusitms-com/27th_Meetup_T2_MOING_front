@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
-        android:name=".GlobalApplication"
+        android:name=".login.GlobalApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -86,15 +86,15 @@
         </service>
 
         <activity
-            android:name=".RegisterInputAddressActivity"
+            android:name=".login.RegisterInputAddressActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".RegisterInputNameActivity"
+            android:name=".login.RegisterInputNameActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".login.LoginActivity"
             android:exported="true" />
         <activity
             android:name=".SplashActivity"
