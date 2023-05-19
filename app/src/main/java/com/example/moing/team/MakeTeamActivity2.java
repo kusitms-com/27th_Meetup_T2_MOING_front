@@ -7,7 +7,6 @@ import androidx.core.content.ContextCompat;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -24,7 +23,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.moing.R;
 
@@ -182,7 +180,7 @@ public class MakeTeamActivity2 extends AppCompatActivity {
             if(hiddenView.getVisibility() == View.VISIBLE) {
                 TransitionManager.beginDelayedTransition(cardView, new AutoTransition());
                 hiddenView.setVisibility(View.GONE);
-                btn_predict.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.arrow_down,0);
+                btn_predict.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.arrow_down2,0);
             }
 
             else {
@@ -227,7 +225,18 @@ public class MakeTeamActivity2 extends AppCompatActivity {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int day) {
                         month = month + 1;
-                        data = year + "/" + month + "/" + day;
+                        String strMonth, strDay;
+                        if (String.valueOf(month).length() <2)
+                            strMonth = "0"+month;
+
+                        else
+                            strMonth = String.valueOf(month);
+
+                        if (String.valueOf(day).length() < 2)
+                            strDay = "0"+day;
+                        else
+                            strDay = String.valueOf(day);
+                        data = year + "-" + strMonth + "-" + strDay;
                         Log.d("MAKETEAMACTIVITY2__", "시작일2 : " +  data);
                         btn_start.setText(data);
                         btn_start.setTextColor(ContextCompat.getColorStateList(MakeTeamActivity2.this, R.color.secondary_grey_black_3));
@@ -299,7 +308,7 @@ public class MakeTeamActivity2 extends AppCompatActivity {
         b.setTextColor(ContextCompat.getColorStateList(MakeTeamActivity2.this, R.color.secondary_grey_black_2));
         TransitionManager.beginDelayedTransition(cardView, new AutoTransition());
         hiddenView.setVisibility(View.GONE);
-        b.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.arrow_down,0);
+        b.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.arrow_down2,0);
         checkInputs();
         tv_predict.setTextColor(ContextCompat.getColorStateList(MakeTeamActivity2.this, R.color.secondary_grey_black_7));
         btn_predict.setSelected(false);

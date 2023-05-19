@@ -1,11 +1,14 @@
 package com.example.moing.retrofit;
 
 import com.example.moing.Request.LoginRequest;
+import com.example.moing.Request.MakeTeamRequest;
+import com.example.moing.Request.MakeTeamResponse;
 import com.example.moing.Request.RegisterAddressRequest;
 import com.example.moing.Response.LoginResponse;
 import com.example.moing.Response.RegisterAddressResponse;
 import com.example.moing.Response.RegisterNameResponse;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -26,4 +29,13 @@ public interface RetrofitAPI {
     @Headers({"Content-Type: application/json"})
     @POST("/api/v1/users/additional-info")
     Call<RegisterAddressResponse> AdditionalInfo(@Header("Authorization") String token, @Body RegisterAddressRequest registerAddressRequest);
+
+    /** 소모임 생성 **/
+    @POST("/api/v1/team")
+    Call<MakeTeamResponse> makeTeam(@Header("Authorization") String token, @Body MakeTeamRequest makeTeamRequest);
+
+
+
+
+
 }

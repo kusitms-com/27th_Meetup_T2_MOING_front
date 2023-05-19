@@ -229,7 +229,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:background="@drawable/button_press_to_select_pink"
-                    android:drawableRight="@drawable/arrow_down"
+                    android:drawableRight="@drawable/arrow_down2"
                     android:fontFamily="@font/pretendard_medium"
                     android:gravity="left"
                     android:hint="예상활동 기간을 선택해주세요"

@@ -1,5 +1,7 @@
 package com.example.moing.fcm;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -13,9 +15,17 @@ public class FCMService extends FirebaseMessagingService {
 
     // Refreshed Token 이 생성 또는 update 될 때 호출되는 메소드
     @Override
-    public void onNewToken(@NonNull String token){
-        // 기기 마다 다른 refreshed token - 서버에 전송
-        Log.d(TAG, "Refreshed token: "+token);
+    public void onNewToken(@NonNull String token) {
+        // 기기 마다 다른 FCM Token - 서버에 전송
+        Log.d(TAG, "fcmToken: " + token);
+
+        // SharedPreference 객체 생성
+        SharedPreferences sharedPreferences = getSharedPreferences("FCM Token", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        // FCM Token 저장
+        editor.putString("fcmToken", token);
+        editor.apply();
 
     }
 
@@ -24,7 +34,8 @@ public class FCMService extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
-        if(remoteMessage.getNotification() != null){
+        if (remoteMessage.getNotification() != null) {
+            Log.d(TAG, "Message Notification Title:" + remoteMessage.getNotification().getTitle());
             Log.d(TAG, "Message Notification Body:" + remoteMessage.getNotification().getBody());
         }
     }
