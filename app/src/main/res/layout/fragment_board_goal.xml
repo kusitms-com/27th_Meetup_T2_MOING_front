@@ -110,7 +110,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="16dp"
-                    android:background="@drawable/ic_board_fire_3x" />
+                    android:background="@drawable/ic_board_fire4_3x" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -152,15 +152,6 @@
                     android:text="이번주 미션을 성공하면 불꽃에게 불을 줄 수 있어요!"
                     android:textColor="@color/secondary_grey_black_8"
                     android:textSize="16dp" />
-
-                <ImageButton
-                    android:id="@+id/imgbtn_circle"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_alignTop="@+id/tv_weFire"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="16dp"
-                    android:background="@drawable/ic_info_circle" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
