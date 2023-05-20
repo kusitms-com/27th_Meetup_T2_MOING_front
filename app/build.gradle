@@ -38,6 +38,9 @@ dependencies {
     // SharedPreference
     implementation "androidx.security:security-crypto:1.0.0"
 
+    // 플러팅
+    implementation 'com.google.android.material:material:1.1.0-beta01'
+
     // 카카오 SDK 모듈 - 카카오 로그인
     implementation "com.kakao.sdk:v2-user:2.8.3"
 
