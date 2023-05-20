@@ -19,8 +19,10 @@ import com.example.moing.MainActivity;
 import com.example.moing.R;
 import com.example.moing.Request.RegisterAddressRequest;
 import com.example.moing.Response.RegisterAddressResponse;
+import com.example.moing.retrofit.ChangeJwt;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClient;
+import com.example.moing.retrofit.RetrofitClientJwt;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,14 +30,14 @@ import retrofit2.Response;
 
 public class RegisterInputAddressActivity extends AppCompatActivity {
 
-    private RetrofitAPI retrofitAPI;
+    private RetrofitAPI retrofitAPI, apiService;
     private String access;
     private String nickname;
 
     private static final String PREF_NAME = "Token";
     private static final String JWT_ACCESS_TOKEN = "JWT_access_token";
     private static final String FCM_TOKEN = "FCM_token";
-    private SharedPreferences sharedPreferences;
+    private SharedPreferences sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +58,6 @@ public class RegisterInputAddressActivity extends AppCompatActivity {
 
         //retrofit 이용
         retrofitAPI = RetrofitClient.getApiService();
-
-        // SharedPreferences 초기화
-        sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
 
         // 저장해둔 토큰 찾기
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
@@ -157,21 +156,68 @@ public class RegisterInputAddressActivity extends AppCompatActivity {
                     public void onResponse(Call<RegisterAddressResponse> call, Response<RegisterAddressResponse> response) {
                         if (response.isSuccessful()) {
                             RegisterAddressResponse registerAddressResponse = response.body();
+                            String msg = registerAddressResponse.getMessage();
+                            if(msg.equals("회원 가입을 완료했습니다")) {
+                                // 백에서 준 jwt
+                                String jwtToken = registerAddressResponse.getData().getAccessToken();
+                                Log.d("jwtToken", "jwtToken: " + jwtToken);
 
-                            // 백에서 준 jwt
-                            String jwtToken = registerAddressResponse.getData().getAccessToken();
-                            Log.d("jwtToken", "jwtToken: " + jwtToken);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.remove(JWT_ACCESS_TOKEN);
+                                editor.putString(JWT_ACCESS_TOKEN, "Bearer " + jwtToken);
+                                editor.apply();
 
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.remove(JWT_ACCESS_TOKEN);
-                            editor.putString(JWT_ACCESS_TOKEN, "Bearer " + jwtToken);
-                            editor.apply();
+                                // 홈 화면에서 부터 요청을 jwt 토큰을 헤더에 담아서 요청??
 
-                            // 홈 화면에서 부터 요청을 jwt 토큰을 헤더에 담아서 요청??
+                                Intent intent = new Intent(RegisterInputAddressActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
 
-                            Intent intent = new Intent(RegisterInputAddressActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finish();
+                            /** 만료된 토큰 처리 **/
+                            else if (msg.equals("만료된 토큰입니다.")) {
+                                Log.d("LoginActivity", "만료된 토큰입니다...");
+
+                                /** 토큰 변환 처리 **/
+                                ChangeJwt.updateJwtToken(RegisterInputAddressActivity.this);
+                                /** API 통신 **/
+                                String access_token = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
+                                retrofitAPI = RetrofitClient.getApiService();
+                                Call<RegisterAddressResponse> call2 = retrofitAPI.AdditionalInfo(token, request);
+                                call2.enqueue(new Callback<RegisterAddressResponse>() {
+                                    @Override
+                                    public void onResponse(Call<RegisterAddressResponse> call, Response<RegisterAddressResponse> response) {
+                                        if(response.isSuccessful()) {
+                                            RegisterAddressResponse addressResponse = response.body();
+                                            String msg = addressResponse.getMessage();
+                                            if(msg.equals("회원 가입을 완료했습니다")) {
+                                                // 백에서 준 jwt
+                                                String jwtToken = registerAddressResponse.getData().getAccessToken();
+                                                Log.d("jwtToken", "jwtToken: " + jwtToken);
+
+                                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                editor.remove(JWT_ACCESS_TOKEN);
+                                                editor.putString(JWT_ACCESS_TOKEN, "Bearer " + jwtToken);
+                                                editor.apply();
+
+                                                // 홈 화면에서 부터 요청을 jwt 토큰을 헤더에 담아서 요청??
+
+                                                Intent intent = new Intent(RegisterInputAddressActivity.this, MainActivity.class);
+                                                startActivity(intent);
+                                                finish();
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<RegisterAddressResponse> call, Throwable t) {
+
+                                    }
+                                });
+
+
+                            }
+
 
                         } else {
                             // API 요청이 실패했을 때
