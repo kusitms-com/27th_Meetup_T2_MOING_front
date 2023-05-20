@@ -26,7 +26,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="투표"
+            android:text="공지사항"
             android:textSize="18dp"
             android:textColor="@color/secondary_grey_black_3"
             android:fontFamily="@font/pretendard_semi_bold"
@@ -70,9 +70,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="28dp"
-                android:text="오프라인 모임 날짜 투표"
+                android:text="4월에 같이 읽을 책 추천 댓글로 남기기"
                 android:textColor="@color/secondary_grey_black_3"
-                android:textSize="24dp"
+                android:textSize="20dp"
                 android:fontFamily="@font/pretendard_semi_bold" />
 
             <LinearLayout
@@ -93,7 +93,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
-                    android:text="닉네임"
+                    android:text="뺭뺭"
                     android:textSize="16dp"
                     android:fontFamily="@font/pretendard_semi_bold"
                     android:textColor="@color/secondary_grey_black_6"
@@ -129,66 +129,11 @@
                 android:layout_marginLeft="48dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="4dp"
-                android:text="투표 합니다. 해주세요."
+                android:text="여러분, 벌써 4월이 찾아왔어요 ..이번 달에 읽을 책을 같이 정해봅시다! 댓글로 한 권씩 책 추천 해주세요!
+                저는 ‘스즈메의 문단속'에 한 표 던지겠습니다! 하하저는 ‘스즈메의 문단속'에 한 표 던지겠습니다! 하하저는 ‘스즈메의 문단속'에 한 표 던지겠습니다! 하하"
                 android:textSize="16dp"
                 android:textColor="@color/secondary_grey_black_3"
                 android:fontFamily="@font/pretendard_medium" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
-                android:id="@+id/recycle_vote"
-                android:nestedScrollingEnabled="false"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginHorizontal="16dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tv_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="5명 참여"
-                    android:textColor="@color/secondary_grey_black_6"
-                    android:fontFamily="@font/pretendard_semi_bold"
-                    android:textSize="16dp" />
-
-                <ImageView
-                    android:id="@+id/iv_anony"
-                    android:layout_width="6dp"
-                    android:layout_height="6dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_vote_anony"
-                    android:layout_marginLeft="4dp" />
-
-                <TextView
-                    android:id="@+id/tv_anony"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:text="익명"
-                    android:textColor="@color/secondary_grey_black_6"
-                    android:fontFamily="@font/pretendard_semi_bold"
-                    android:textSize="16dp" />
-
-            </LinearLayout>
-
-            <android.widget.Button
-                android:id="@+id/btn_complete"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="24dp"
-                android:background="@drawable/button_round_black12"
-                android:text="투표 완료"
-                android:textSize="18dp"
-                android:textColor="@color/secondary_grey_black_10"
-                android:fontFamily="@font/pretendard_semi_bold" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView_noread"
