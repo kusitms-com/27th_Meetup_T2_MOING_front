@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".NoticeWriteActivity"
+    android:background="@color/secondary_grey_black_14">
+
+    <LinearLayout
+        android:id="@+id/linear_close"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="horizontal">
+
+        <android.widget.Button
+            android:id="@+id/btn_close"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:background="@drawable/button_close"
+            android:backgroundTint="#A2A4A9"
+            android:layout_marginVertical="17dp"
+            android:layout_marginLeft="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="공지사항 작성하기"
+            android:textSize="18dp"
+            android:textColor="@color/secondary_grey_black_3"
+            android:fontFamily="@font/pretendard_semi_bold"
+            android:layout_marginVertical="12.5dp"
+            android:layout_marginLeft="32dp" />
+    </LinearLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linear_close"
+        android:layout_marginTop="50dp"
+        app:layout_constraintVertical_bias="1.0">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="32dp"
+                android:fontFamily="@font/pretendard_semi_bold"
+                android:text="공지 제목과 내용을 적어주세요"
+                android:textColor="@color/secondary_grey_black_3"
+                android:textSize="24dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="40dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:text="제목"
+                android:textColor="@color/secondary_grey_black_7"
+                android:textSize="16dp" />
+
+            <EditText
+                android:id="@+id/et_title"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="4dp"
+                android:inputType="textNoSuggestions"
+                android:background="@drawable/layout_round_black10"
+                android:backgroundTint="@color/secondary_grey_black_12"
+                android:gravity="center|left"
+                android:hint="15자 이내의 제목을 적어주세요"
+                android:paddingLeft="16dp"
+                android:textColorHint="@color/secondary_grey_black_7"
+                android:textSize="18dp"
+                android:textColor="@color/secondary_grey_black_2"
+                android:maxLength="15"
+                android:maxLines="1"
+                />
+
+            <TextView
+                android:id="@+id/tv_titleCount"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="16dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:gravity="right"
+                android:text="(0/15)"
+                android:textColor="@color/secondary_grey_black_7"
+                android:textSize="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="24dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:text="내용"
+                android:textColor="@color/secondary_grey_black_7"
+                android:textSize="16dp" />
+
+            <EditText
+                android:id="@+id/et_content"
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/layout_round_black10"
+                android:backgroundTint="@color/secondary_grey_black_12"
+                android:gravity="left"
+                android:hint="투표 관련 내용을 적어주세요"
+                android:padding="16dp"
+                android:textColorHint="@color/secondary_grey_black_7"
+                android:textSize="18dp"
+                android:textColor="@color/secondary_grey_black_2"
+                android:maxLength="300"/>
+
+
+            <TextView
+                android:id="@+id/tv_contentCount"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="16dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:gravity="right"
+                android:text="(0/300)"
+                android:textColor="@color/secondary_grey_black_7"
+                android:textSize="16dp" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <android.widget.Button
+        android:id="@+id/btn_upload"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginHorizontal="16dp"
+        android:background="@drawable/button_round_black12"
+        android:fontFamily="@font/pretendard_semi_bold"
+        android:text="업로드하기"
+        android:textColor="@color/secondary_grey_black_10"
+        android:textSize="18dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

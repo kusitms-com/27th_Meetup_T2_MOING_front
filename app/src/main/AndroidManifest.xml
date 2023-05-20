@@ -18,6 +18,9 @@
         android:theme="@style/Theme.Moing_Day"
         tools:targetApi="31">
         <activity
+            android:name=".NoticeWriteActivity"
+            android:exported="false" />
+        <activity
             android:name=".NoticeVoteActivity"
             android:exported="true">
             <intent-filter>
@@ -93,7 +96,7 @@
             android:exported="true" />
         <activity
             android:name=".SplashActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".MainActivity"
             android:exported="true" />
