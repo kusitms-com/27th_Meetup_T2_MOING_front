@@ -32,8 +32,9 @@ public class RegisterInputAddressActivity extends AppCompatActivity {
     private String access;
     private String nickname;
 
-    private static final String PREF_NAME = "JWT Token";
-
+    private static final String PREF_NAME = "Token";
+    private static final String JWT_ACCESS_TOKEN = "JWT_access_token";
+    private static final String FCM_TOKEN = "FCM_token";
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -60,7 +61,7 @@ public class RegisterInputAddressActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
 
         // 저장해둔 토큰 찾기
-        String accessToken = sharedPreferences.getString("access_token", null); // 액세스 토큰 검색
+        String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
         if (accessToken != null) {
             // 액세스 토큰이 존재하는 경우의 처리 로직
             access = accessToken; // access 변수에 토큰 값 저장
@@ -138,8 +139,8 @@ public class RegisterInputAddressActivity extends AppCompatActivity {
                 String address = editText.getText().toString();
 
                 // fcmToken 가져오기
-                SharedPreferences sharedPreferences = getSharedPreferences("FCM Token", Context.MODE_PRIVATE);
-                String fcmToken = sharedPreferences.getString("fcmToken", null);
+                SharedPreferences sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+                String fcmToken = sharedPreferences.getString(FCM_TOKEN, null);
 
                 // RegisterAddressRequest 객체를 생성하고 주소 정보를 담음
                 RegisterAddressRequest request = new RegisterAddressRequest(access, address, nickname, fcmToken);
@@ -162,7 +163,8 @@ public class RegisterInputAddressActivity extends AppCompatActivity {
                             Log.d("jwtToken", "jwtToken: " + jwtToken);
 
                             SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString("jwtToken", jwtToken);
+                            editor.remove(JWT_ACCESS_TOKEN);
+                            editor.putString(JWT_ACCESS_TOKEN, "Bearer " + jwtToken);
                             editor.apply();
 
                             // 홈 화면에서 부터 요청을 jwt 토큰을 헤더에 담아서 요청??

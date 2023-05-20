@@ -33,7 +33,7 @@ public class RetrofitClientJwt {
                         public Response intercept(Chain chain) throws IOException {
                             Request original = chain.request();
                             Request.Builder requestBuilder = original.newBuilder()
-                                    .header("Authorization", "Bearer " + token)
+                                    .header("Authorization", token)
                                     .method(original.method(), original.body());
                             Request request = requestBuilder.build();
                             return chain.proceed(request);

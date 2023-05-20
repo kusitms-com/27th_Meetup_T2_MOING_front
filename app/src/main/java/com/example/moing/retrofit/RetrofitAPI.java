@@ -4,6 +4,7 @@ import com.example.moing.Request.ChangeJwtRequest;
 import com.example.moing.Request.LoginRequest;
 import com.example.moing.Request.MakeTeamRequest;
 import com.example.moing.Response.ChangeJwtResponse;
+import com.example.moing.Response.CheckAdditionalInfo;
 import com.example.moing.Response.MakeTeamResponse;
 import com.example.moing.Request.RegisterAddressRequest;
 import com.example.moing.Response.LoginResponse;
@@ -38,6 +39,10 @@ public interface RetrofitAPI {
     /** Jwt 갱신 **/
     @POST("/api/v1/users/auth/refresh")
     Call<ChangeJwtResponse> changeJwt(@Body ChangeJwtRequest changeJwtRequest);
+
+    /** 추가정보 입력여부 확인 **/
+    @GET("/api/v1/users/additional-info")
+    Call<CheckAdditionalInfo> checkAdditionalInfo(@Header("Authorization") String token);
 
 
 

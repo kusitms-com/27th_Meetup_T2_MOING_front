@@ -30,7 +30,8 @@ public class RegisterInputNameActivity extends AppCompatActivity {
     private RetrofitAPI retrofitAPI;
     private String access;
 
-    private static final String PREF_NAME = "JWT Token";
+    private static final String PREF_NAME = "Token";
+    private static final String JWT_ACCESS_TOKEN = "JWT_access_token";
 
     private SharedPreferences sharedPreferences;
     @Override
@@ -56,7 +57,7 @@ public class RegisterInputNameActivity extends AppCompatActivity {
         // Initialize SharedPreferences
         sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
 
-        String accessToken = sharedPreferences.getString("access_token", null); // 액세스 토큰 검색
+        String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
         if (accessToken != null) {
             // 액세스 토큰이 존재하는 경우의 처리 로직
             access = accessToken; // access 변수에 토큰 값 저장

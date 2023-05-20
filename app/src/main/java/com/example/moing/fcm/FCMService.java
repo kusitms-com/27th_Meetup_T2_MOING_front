@@ -12,6 +12,8 @@ import com.google.firebase.messaging.RemoteMessage;
 /** FCM 기능들을 처리하는 클래스 **/
 public class FCMService extends FirebaseMessagingService {
     private static final String TAG = "FCMService";
+    private static final String PREF_NAME = "Token";
+    private static final String FCM_TOKEN = "FCM_token";
 
     // Refreshed Token 이 생성 또는 update 될 때 호출되는 메소드
     @Override
@@ -20,11 +22,11 @@ public class FCMService extends FirebaseMessagingService {
         Log.d(TAG, "fcmToken: " + token);
 
         // SharedPreference 객체 생성
-        SharedPreferences sharedPreferences = getSharedPreferences("FCM Token", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         // FCM Token 저장
-        editor.putString("fcmToken", token);
+        editor.putString(FCM_TOKEN, token);
         editor.apply();
 
     }

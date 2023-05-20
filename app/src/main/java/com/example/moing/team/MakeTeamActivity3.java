@@ -68,6 +68,9 @@ public class MakeTeamActivity3 extends AppCompatActivity {
     private String major, name, cnt, data, predictDate;
     private SharedPreferences sharedPreferences;
 
+    private static final String PREF_NAME = "Token";
+    private static final String JWT_ACCESS_TOKEN = "JWT_access_token";
+    private static final String JWT_REFRESH_TOKEN = "JWT_refresh_token";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +85,7 @@ public class MakeTeamActivity3 extends AppCompatActivity {
         major = intent.getStringExtra("major"); // 소모임 목표
 
         /** API 통신을 위한 헤더에 담을 토큰값 가져오기 **/
-        sharedPreferences = getSharedPreferences("JWT Token", Context.MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
 
         // 뒤로 가기
         ImageButton btnBack = findViewById(R.id.make_team3_btn_back);
@@ -126,7 +129,8 @@ public class MakeTeamActivity3 extends AppCompatActivity {
     /** 버튼 클릭 시 소모임 Data 전송 후 다음 화면 실행 **/
     View.OnClickListener onCreateTeamClickListener = view -> {
         // 구현 예정 - 소모임 Data Retrofit 사용하여 전달
-        String token = sharedPreferences.getString("jwtToken", null);
+        String token = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
+        Log.d("MAKETEAMACITIVITY3", token);
         String period = predictDate.substring(0,1);
         String category= "";
 
@@ -166,14 +170,8 @@ public class MakeTeamActivity3 extends AppCompatActivity {
                 MakeTeamResponse mtResponse = response.body();
                 String msg = mtResponse.getMessage();
                 // 연결 성공
-                if(msg.equals("소모임을 생성하였습니다."))
+                if(msg.equals("소모임을 생성하였습니다"))
                 {
-                    MakeTeamResponse.Data makeTeamData = mtResponse.getData();
-                    int teamId = makeTeamData.getTeamId();
-                    String invitationCode = makeTeamData.getInvitationCode();
-                    Log.d("MAKETEAMACTIVITY", String.valueOf(teamId));
-                    Log.d("MAKETEAMACTIVITY",invitationCode);
-
                     // S3를 통한 사진 업로드
                     File file = new File((getAbsolutePathFromUri(getApplicationContext(),uri)));
                     uploadWithTransferUtility(file.getName(),file);
@@ -187,6 +185,7 @@ public class MakeTeamActivity3 extends AppCompatActivity {
                 {
                     /** 만료된 토큰 처리 **/
                     ChangeJwt.updateJwtToken(MakeTeamActivity3.this);
+
                 }
 
             }

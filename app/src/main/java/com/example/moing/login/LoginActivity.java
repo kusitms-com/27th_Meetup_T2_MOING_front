@@ -15,9 +15,12 @@ import com.example.moing.R;
 import com.example.moing.Request.ChangeJwtRequest;
 import com.example.moing.Request.LoginRequest;
 import com.example.moing.Response.ChangeJwtResponse;
+import com.example.moing.Response.CheckAdditionalInfo;
 import com.example.moing.Response.LoginResponse;
+import com.example.moing.retrofit.ChangeJwt;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClient;
+import com.example.moing.retrofit.RetrofitClientJwt;
 import com.kakao.sdk.user.UserApiClient;
 
 import retrofit2.Call;
@@ -26,12 +29,14 @@ import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private RetrofitAPI retrofitAPI;
+    private RetrofitAPI retrofitAPI, apiService;
     private SharedPreferences sharedPreferences;
-    private static final String PREF_NAME = "JWT Token";
-    private static final String ACCESS_TOKEN_KEY = "access_token";
-    private static final String REFRESH_TOKEN_KEY = "refresh_token";
-    private static final String PROCESS_TOKEN_KEY = "process_token";
+    private static final String PREF_NAME = "Token";
+    private static final String JWT_ACCESS_TOKEN = "JWT_access_token";
+    private static final String JWT_REFRESH_TOKEN = "JWT_refresh_token";
+    private static final String USER_ID = "user_id";
+
+    private static final String PROCESS = "process";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
         String TAG = "accountLogin()";
         UserApiClient.getInstance().loginWithKakaoAccount(LoginActivity.this, (oAuthToken, error) -> {
             if (error != null) {
-                Log.e(TAG, "로그인 실패", error);
+                Log.e(TAG, "로그인 실패패", error);
             } else if (oAuthToken != null) {
                 Log.i(TAG, "로그인 성공(토큰): " + oAuthToken.getAccessToken());
                 LoginStart(oAuthToken.getAccessToken());
@@ -83,14 +88,14 @@ public class LoginActivity extends AppCompatActivity {
     private void saveTokens(String accessToken, String refreshToken, String process, Long userId) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         String strUserId = String.valueOf(userId);
-        editor.putString(ACCESS_TOKEN_KEY, accessToken);
-        editor.putString(REFRESH_TOKEN_KEY, refreshToken);
-        editor.putString(PROCESS_TOKEN_KEY, process);
-        editor.putString("userId", strUserId);
+        editor.putString(JWT_ACCESS_TOKEN, "Bearer " + accessToken);
+        editor.putString(JWT_REFRESH_TOKEN, refreshToken);
+        editor.putString(PROCESS, process);
+        editor.putLong(USER_ID, userId);
 
-        Log.d("Token", "Access Token: " + accessToken);
-        Log.d("Token", "Refresh Token: " + refreshToken);
-        Log.d("Token", "Process Token: " + process);
+        Log.d("MakeTeam_access_token", "Access Token: " + accessToken);
+        Log.d("MakeTeam_refresh", "Refresh Token: " + refreshToken);
+        Log.d("MakeTeam_process", "Process Token: " + process);
 
         editor.apply();
     }
@@ -136,11 +141,44 @@ public class LoginActivity extends AppCompatActivity {
                         }
                         /** 만료된 토큰 처리 **/
                         else if (msg.equals("만료된 토큰입니다.")) {
-                            Log.d("LoginActivity", "만료된 토큰입니다.");
-                            String refreshToken = sharedPreferences.getString("refresh_token", null); // refresh token 검색
-                            String strUserId = sharedPreferences.getString("userId", null); // userId 검색
-                            Long userId = Long.parseLong(strUserId);
-                            changeJwt(refreshToken, userId);
+                            Log.d("LoginActivity", "만료된 토큰입니다...");
+
+                            /** 토큰 변환 처리 **/
+                            ChangeJwt.updateJwtToken(LoginActivity.this);
+
+
+                            /** API 통신 예정 **/
+                            sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+                            String access_token = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
+                            apiService = RetrofitClientJwt.getApiService(access_token);
+                            Call<CheckAdditionalInfo> call2 = retrofitAPI.checkAdditionalInfo(access_token);
+                            call2.enqueue(new Callback<CheckAdditionalInfo>() {
+                                @Override
+                                public void onResponse(Call<CheckAdditionalInfo> call, Response<CheckAdditionalInfo> response) {
+                                    CheckAdditionalInfo info = response.body();
+                                    String msg = info.getMessage();
+                                    if(msg.equals("추가정보를 입력했습니다")) {
+                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                        startActivity(intent);
+                                    }
+                                    else {
+                                        Intent intent = new Intent(LoginActivity.this, RegisterInputNameActivity.class);
+                                        startActivity(intent);
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<CheckAdditionalInfo> call, Throwable t) {
+
+                                }
+                            });
+
+
+
+
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(intent);
+
                         }
 
                     }
@@ -156,25 +194,4 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void changeJwt(String refreshToken, Long id) {
-        ChangeJwtRequest request = new ChangeJwtRequest(refreshToken, id);
-        Call<ChangeJwtResponse> call = retrofitAPI.changeJwt(request);
-        call.enqueue(new Callback<ChangeJwtResponse>() {
-            @Override
-            public void onResponse(Call<ChangeJwtResponse> call, Response<ChangeJwtResponse> response) {
-                if(response.isSuccessful()) {
-                    ChangeJwtResponse jwtResponse = response.body();
-                    ChangeJwtResponse.Data data = jwtResponse.getData();
-                    String accessToken = data.getAccessToken();
-                    String refreshToken = data.getRefreshToken();
-                    /** 저장 **/
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ChangeJwtResponse> call, Throwable t) {
-                Log.d("LOGINACTIVITY", t.getMessage());
-            }
-        });
-    }
 }
