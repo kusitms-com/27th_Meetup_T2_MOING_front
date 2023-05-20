@@ -1,9 +1,13 @@
 package com.example.moing.mission;
 
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.moing.R;
@@ -18,8 +22,13 @@ public class MissionStatusActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mission_status);
 
-        // 구현 예정 - 더보기 버튼. 클릭 시 어떤 것을 띄우는지
-        // 구현 예정 - 인증 상태를 확인할 수 있는 컴포넌트 디자인 및 기능 추가
+        // 더미 - 삭제 예정
+        String myStatus = "COMPLETE";
+
+        // 내 인증 상태 확인 컴포넌트 - 진행 상태에 따라 다르게 나옴
+        ImageView ivStatus = findViewById(R.id.mission_status_iv_status);
+        TextView tvMissionTitle = findViewById(R.id.mission_status_tv_mission_title);
+        setMyStatus(myStatus, ivStatus, tvMissionTitle);
 
 
         // 뒤로가기 - 클릭 시 종료
@@ -78,4 +87,21 @@ public class MissionStatusActivity extends AppCompatActivity {
         @Override
         public void onTabReselected(TabLayout.Tab tab) {}
     };
+
+    private void setMyStatus(String myStatus, ImageView ivStatus, TextView tvMissionTitle){
+        if(myStatus.equals("COMPLETE"))
+        {
+            ivStatus.setBackground(ContextCompat.getDrawable(this, R.drawable.ic_mission_status_done));
+            tvMissionTitle.setPaintFlags(tvMissionTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        }
+        else if(myStatus.equals("PENDING")){
+            ivStatus.setBackground(ContextCompat.getDrawable(this, R.drawable.ic_mission_status_pending));
+            tvMissionTitle.setPaintFlags(tvMissionTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        }
+        else{
+            ivStatus.setBackground(ContextCompat.getDrawable(this, R.drawable.ic_mission_status_undone));
+            tvMissionTitle.setPaintFlags(tvMissionTitle.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+        }
+
+    }
 }

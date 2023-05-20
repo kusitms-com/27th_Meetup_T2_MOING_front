@@ -46,7 +46,7 @@
         app:layout_constraintTop_toBottomOf="@+id/mission_pending_iv_archive" />
 
     <LinearLayout
-        android:id="@+id/mission_undone_ll_none1"
+        android:id="@+id/mission_pending_ll_none1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
