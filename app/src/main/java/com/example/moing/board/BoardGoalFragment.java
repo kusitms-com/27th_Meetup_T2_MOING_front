@@ -1,5 +1,9 @@
 package com.example.moing.board;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -7,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +22,23 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.moing.R;
+import com.example.moing.Response.BoardFireResponse;
+import com.example.moing.Response.BoardMoimResponse;
+import com.example.moing.Response.MakeTeamResponse;
+import com.example.moing.retrofit.ChangeJwt;
+import com.example.moing.retrofit.RetrofitAPI;
+import com.example.moing.retrofit.RetrofitClientJwt;
 import com.example.moing.team.Team;
 import com.example.moing.team.TeamAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class BoardGoalFragment extends Fragment {
 
@@ -40,11 +56,24 @@ public class BoardGoalFragment extends Fragment {
     // Dot Indicator
     BoardDotFragment boardDotFragment;
 
+    private RetrofitAPI apiService;
+    private static final String PREF_NAME = "Token";
+    private static final String JWT_ACCESS_TOKEN = "JWT_access_token";
+    private SharedPreferences sharedPreferences = requireContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+
+    // API 연동시 필요한 변수
+    String name, profileImg, remainPeriod, nowTime;
+    Long teamId;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_board_goal, container, false);
+
+        // Intent로 값 받기
+        Intent intent = getActivity().getIntent();
+        //teamId = intent.getLongExtra("teamId");
 
         // 스크롤뷰
         scroll = view.findViewById(R.id.scrollView);
@@ -61,6 +90,7 @@ public class BoardGoalFragment extends Fragment {
         curDate = view.findViewById(R.id.tv_date);
         // 새로고침 버튼
         btnRefresh = view.findViewById(R.id.imgBtn_refresh);
+        btnRefresh.setOnClickListener(newClickListener);
         // 불 이미지
         fire = view.findViewById(R.id.iv_fire);
         // 유저 닉네임 텍스트뷰
@@ -116,6 +146,12 @@ public class BoardGoalFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(boardAdapter);
 
+        /** API 통신 **/
+        // 소모임 제목, 사진, d-day, 날짜
+        getApi();
+        // 새로고침 버튼
+        /** teamId -> Intent로 값 가져와야 함 **/
+        apiFire();
 
         // 스크롤 변화시 이미지 삭제
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -155,6 +191,11 @@ public class BoardGoalFragment extends Fragment {
         });
     };
 
+    // 새로 고침 버튼 클릭 시
+    View.OnClickListener newClickListener = v -> {
+        apiFire();
+    };
+
     // Dot Indicator 버튼 클릭 시
     View.OnClickListener dotClickListener = v -> {
         boardDotFragment = new BoardDotFragment();
@@ -181,4 +222,169 @@ public class BoardGoalFragment extends Fragment {
         noticeDarkSign.setVisibility(View.VISIBLE);
 
     };
+
+    /** 소모임 제목, 기간, 사진, 날짜 설정 **/
+    public void getApi() {
+        String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
+        apiService = RetrofitClientJwt.getApiService(accessToken);
+        Call<BoardMoimResponse> call = apiService.moimInfo(accessToken);
+        call.enqueue(new Callback<BoardMoimResponse>() {
+            @Override
+            public void onResponse(Call<BoardMoimResponse> call, Response<BoardMoimResponse> response) {
+                BoardMoimResponse moimResponse = response.body();
+                String msg = moimResponse.getMessage();
+                if(msg.equals("목표보드 프로필을 조회하였습니다")) {
+                    BoardMoimResponse.Data data = moimResponse.getData();
+                    name = data.getName();
+                    profileImg = data.getProfileImg();
+                    remainPeriod = data.getRemainingPeriod();
+                    nowTime = data.getNowTime();
+
+                    /** 데이터 확인 **/
+                    Log.d("BOARDGOALFRAGMENT", name);
+                    Log.d("BOARDGOALFRAGMENT", profileImg);
+                    Log.d("BOARDGOALFRAGMENT", remainPeriod);
+                    Log.d("BOARDGOALFRAGMENT", nowTime);
+
+                    // 소모임 이름 설정
+                    teamName.setText(name);
+                    // 소모임 사진 설정
+                    Glide.with(requireContext())
+                            .load(profileImg)
+                            .into(teamImg);
+                    // D-Day 설정
+                    teamDay.setText("종료 " + remainPeriod);
+                    // nowTime 설정
+                    curDate.setText(nowTime);
+                }
+
+                /** 만료된 토큰일 시 재실행 **/
+                else if (msg.equals("만료된 토큰입니다.")) {
+                    updateBoardInfoToken();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BoardMoimResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void updateBoardInfoToken() {
+        // Update Token
+        ChangeJwt.updateJwtToken(requireContext());
+        String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
+        apiService = RetrofitClientJwt.getApiService(accessToken);
+        Call<BoardMoimResponse> call2 = apiService.moimInfo(accessToken);
+        call2.enqueue(new Callback<BoardMoimResponse>() {
+            @Override
+            public void onResponse(Call<BoardMoimResponse> call, Response<BoardMoimResponse> response) {
+                BoardMoimResponse moimResponse = response.body();
+                String msg = moimResponse.getMessage();
+                if(msg.equals("목표보드 프로필을 조회하였습니다")) {
+                    BoardMoimResponse.Data data = moimResponse.getData();
+                    name = data.getName();
+                    profileImg = data.getProfileImg();
+                    remainPeriod = data.getRemainingPeriod();
+                    nowTime = data.getNowTime();
+
+                    /** 데이터 확인 **/
+                    Log.d("BOARDGOALFRAGMENT", name);
+                    Log.d("BOARDGOALFRAGMENT", profileImg);
+                    Log.d("BOARDGOALFRAGMENT", remainPeriod);
+                    Log.d("BOARDGOALFRAGMENT", nowTime);
+
+                    // 소모임 이름 설정
+                    teamName.setText(name);
+                    // 소모임 사진 설정
+                    Glide.with(requireContext())
+                            .load(profileImg)
+                            .into(teamImg);
+                    // D-Day 설정
+                    teamDay.setText("종료 " + remainPeriod);
+                    // nowTime 설정
+                    curDate.setText(nowTime);
+                }
+            }
+            @Override
+            public void onFailure(Call<BoardMoimResponse> call, Throwable t) {
+                Log.d("BoardGoalFragment", "만료된 토큰 - 연동 실패..");
+            }
+        });
+    }
+
+    public void apiFire() {
+        String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
+        apiService = RetrofitClientJwt.getApiService(accessToken);
+        /** teamId Intent로 값 가져와야 한다! **/
+        Call<BoardFireResponse> call = apiService.newBoardFire(accessToken, teamId);
+        call.enqueue(new Callback<BoardFireResponse>() {
+            @Override
+            public void onResponse(Call<BoardFireResponse> call, Response<BoardFireResponse> response) {
+                BoardFireResponse fireResponse = response.body();
+                String msg = fireResponse.getMessage();
+
+                if(msg.equals("개인별 개인별 미션 인증 현황 조회 성공")) {
+                    Long data = fireResponse.getData();
+                    checkFire(data);
+                }
+                else if (msg.equals("만료된 토큰입니다.")) {
+                    updateApiFireToken();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BoardFireResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void updateApiFireToken() {
+        ChangeJwt.updateJwtToken(requireContext());
+        String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
+        apiService = RetrofitClientJwt.getApiService(accessToken);
+        /** teamId Intent로 값 가져와야 한다! **/
+        Call<BoardFireResponse> call2 = apiService.newBoardFire(accessToken, teamId);
+        call2.enqueue(new Callback<BoardFireResponse>() {
+            @Override
+            public void onResponse(Call<BoardFireResponse> call, Response<BoardFireResponse> response) {
+                BoardFireResponse fireResponse = response.body();
+                String msg = fireResponse.getMessage();
+
+                if(msg.equals("개인별 개인별 미션 인증 현황 조회 성공")) {
+                    Long data = fireResponse.getData();
+                    checkFire(data);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BoardFireResponse> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    /** fire Data에 따른 상태 변화 메서드 **/
+    public void checkFire(Long num) {
+        if (num <= 19) {
+            // 배경색 변화
+            Drawable d = getResources().getDrawable(R.drawable.ic_board_fire1_3x);
+            fire.setBackground(d);
+        }
+        else if (num >= 20 && num <= 49) {
+            Drawable d = getResources().getDrawable(R.drawable.ic_board_fire2_3x);
+            fire.setBackground(d);
+        }
+        else if (num >= 50 && num <= 79) {
+            Drawable d = getResources().getDrawable(R.drawable.ic_board_fire3_3x);
+            fire.setBackground(d);
+        }
+        else {
+            Drawable d = getResources().getDrawable(R.drawable.ic_board_fire4_3x);
+            fire.setBackground(d);
+        }
+    }
 }

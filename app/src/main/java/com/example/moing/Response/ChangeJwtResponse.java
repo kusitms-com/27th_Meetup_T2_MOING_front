@@ -1,8 +1,13 @@
 package com.example.moing.Response;
 
+import com.google.gson.annotations.SerializedName;
+
 public class ChangeJwtResponse {
+
     private int statusCode;
+
     private String message;
+
     private ChangeJwtResponse.Data data;
 
     public int getStatusCode() {

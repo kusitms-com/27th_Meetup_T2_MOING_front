@@ -3,6 +3,8 @@ package com.example.moing.retrofit;
 import com.example.moing.Request.ChangeJwtRequest;
 import com.example.moing.Request.LoginRequest;
 import com.example.moing.Request.MakeTeamRequest;
+import com.example.moing.Response.BoardFireResponse;
+import com.example.moing.Response.BoardMoimResponse;
 import com.example.moing.Response.ChangeJwtResponse;
 import com.example.moing.Response.CheckAdditionalInfo;
 import com.example.moing.Response.MakeTeamResponse;
@@ -47,6 +49,19 @@ public interface RetrofitAPI {
     /** 추가정보 입력여부 확인 **/
     @GET("/api/v1/users/additional-info")
     Call<CheckAdditionalInfo> checkAdditionalInfo(@Header("Authorization") String token);
+
+    /** 목표보드 소모임 정보 보기 **/
+    @GET("/api/v1/team/{teamId}/goal-board")
+    Call<BoardMoimResponse> moimInfo(@Header("Authorization") String token);
+
+    /** 목표보드 소모임 불 새로고침 **/
+    @GET("/api/v1/{teamId}/missions/teamRate")
+    Call<BoardFireResponse> newBoardFire(@Header("Authorization") String token, @Path("teamId") Long teamId);
+
+
+
+
+
 
     /** 홈 화면 소모임 목록 GET **/
     @GET("/api/v1/team")
