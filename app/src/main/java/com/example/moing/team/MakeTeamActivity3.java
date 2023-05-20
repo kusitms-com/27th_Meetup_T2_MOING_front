@@ -158,7 +158,8 @@ public class MakeTeamActivity3 extends AppCompatActivity {
 
         RetrofitAPI apiService = RetrofitClientJwt.getApiService(token);
         MakeTeamRequest makeTeamRequest = new MakeTeamRequest(category, etIntroduce.getText().toString(), name,
-                Integer.parseInt(period), Integer.parseInt(cnt), uri.toString(), etResolution.getText().toString(), data);
+                Integer.parseInt(period), Integer.parseInt(cnt), getAbsolutePathFromUri(getApplicationContext(),uri),
+                etResolution.getText().toString(), data);
 
         Call<MakeTeamResponse> call = apiService.makeTeam(token, makeTeamRequest);
         call.enqueue(new Callback<MakeTeamResponse>() {

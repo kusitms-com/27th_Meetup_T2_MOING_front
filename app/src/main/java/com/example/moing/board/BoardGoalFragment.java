@@ -3,7 +3,10 @@ package com.example.moing.board;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -11,6 +14,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.MediaStore;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +33,7 @@ import com.bumptech.glide.Glide;
 import com.example.moing.R;
 import com.example.moing.Response.BoardFireResponse;
 import com.example.moing.Response.BoardMoimResponse;
+import com.example.moing.Response.BoardNoReadResponse;
 import com.example.moing.Response.MakeTeamResponse;
 import com.example.moing.retrofit.ChangeJwt;
 import com.example.moing.retrofit.RetrofitAPI;
@@ -33,6 +41,7 @@ import com.example.moing.retrofit.RetrofitClientJwt;
 import com.example.moing.team.Team;
 import com.example.moing.team.TeamAdapter;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +50,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class BoardGoalFragment extends Fragment {
+    private static final String TAG = "BoardGoalFragment";
 
     ScrollView scroll;
     TextView teamName, curDate, userName, tv_toggle;
@@ -64,6 +74,7 @@ public class BoardGoalFragment extends Fragment {
     // API 연동시 필요한 변수
     String name, profileImg, remainPeriod, nowTime;
     Long teamId;
+    List<BoardNoReadResponse.NoticeData> noticeDataList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -76,7 +87,8 @@ public class BoardGoalFragment extends Fragment {
 
         // Intent로 값 받기
         teamId = getActivity().getIntent().getLongExtra("teamId",0);
-        Log.d("test", String.valueOf(teamId));
+        Log.d(TAG, "teamId 값 : " + String.valueOf(teamId));
+        Log.d(TAG, "TeamId 타입 : " + teamId.getClass().getSimpleName());
 
         // 스크롤뷰
         scroll = view.findViewById(R.id.scrollView);
@@ -127,6 +139,9 @@ public class BoardGoalFragment extends Fragment {
 
 
 
+        /** 공지 안읽은 순을 위한 ArrayList **/
+        noticeDataList = new ArrayList<>();
+
         // 리사이클러뷰
         recyclerView = view.findViewById(R.id.recycle_toggle);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -142,6 +157,7 @@ public class BoardGoalFragment extends Fragment {
         boardList.add(new Board("내용1입니다.","제목 1입니다.",1));
         boardList.add(new Board("내용2입니다.","제목 2입니다.",2));
         boardList.add(new Board("내용3입니다.","제목 3입니다.",3));
+        boardList.add(new Board("내용4입니다.","제목 4입니다.",4));
 
         // 리싸이클러뷰 어댑터 설정
         // adapter 설정
@@ -151,9 +167,8 @@ public class BoardGoalFragment extends Fragment {
 
         /** API 통신 **/
         // 소모임 제목, 사진, d-day, 날짜
-        //getApi();
-        // 새로고침 버튼
-        /** teamId -> Intent로 값 가져와야 함 **/
+        getApi();
+        /** 불 그래픽 통신 수정 필요 **/
         //apiFire();
 
         // 스크롤 변화시 이미지 삭제
@@ -178,8 +193,8 @@ public class BoardGoalFragment extends Fragment {
                 Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
             }
         });
-        return view;
 
+        return view;
     }
 
     // 다운 버튼 클릭시
@@ -223,14 +238,14 @@ public class BoardGoalFragment extends Fragment {
         // 공지사항 버튼은 안보이는 걸 보이게 함.
         noticeLightSign.setVisibility(View.GONE);
         noticeDarkSign.setVisibility(View.VISIBLE);
-
     };
 
     /** 소모임 제목, 기간, 사진, 날짜 설정 **/
     public void getApi() {
-        String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
+        String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
+        Log.d(TAG, accessToken);
         apiService = RetrofitClientJwt.getApiService(accessToken);
-        Call<BoardMoimResponse> call = apiService.moimInfo(accessToken);
+        Call<BoardMoimResponse> call = apiService.moimInfo(accessToken, teamId);
         call.enqueue(new Callback<BoardMoimResponse>() {
             @Override
             public void onResponse(Call<BoardMoimResponse> call, Response<BoardMoimResponse> response) {
@@ -253,7 +268,7 @@ public class BoardGoalFragment extends Fragment {
                     teamName.setText(name);
                     // 소모임 사진 설정
                     Glide.with(requireContext())
-                            .load(profileImg)
+                            .load(new File(profileImg))
                             .into(teamImg);
                     // D-Day 설정
                     teamDay.setText("종료 " + remainPeriod);
@@ -263,53 +278,11 @@ public class BoardGoalFragment extends Fragment {
 
                 /** 만료된 토큰일 시 재실행 **/
                 else if (msg.equals("만료된 토큰입니다.")) {
-                    updateBoardInfoToken();
+                    ChangeJwt.updateJwtToken(requireContext());
+                    getApi();
                 }
             }
 
-            @Override
-            public void onFailure(Call<BoardMoimResponse> call, Throwable t) {
-
-            }
-        });
-    }
-
-    public void updateBoardInfoToken() {
-        // Update Token
-        ChangeJwt.updateJwtToken(requireContext());
-        String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
-        apiService = RetrofitClientJwt.getApiService(accessToken);
-        Call<BoardMoimResponse> call2 = apiService.moimInfo(accessToken);
-        call2.enqueue(new Callback<BoardMoimResponse>() {
-            @Override
-            public void onResponse(Call<BoardMoimResponse> call, Response<BoardMoimResponse> response) {
-                BoardMoimResponse moimResponse = response.body();
-                String msg = moimResponse.getMessage();
-                if(msg.equals("목표보드 프로필을 조회하였습니다")) {
-                    BoardMoimResponse.Data data = moimResponse.getData();
-                    name = data.getName();
-                    profileImg = data.getProfileImg();
-                    remainPeriod = data.getRemainingPeriod();
-                    nowTime = data.getNowTime();
-
-                    /** 데이터 확인 **/
-                    Log.d("BOARDGOALFRAGMENT", name);
-                    Log.d("BOARDGOALFRAGMENT", profileImg);
-                    Log.d("BOARDGOALFRAGMENT", remainPeriod);
-                    Log.d("BOARDGOALFRAGMENT", nowTime);
-
-                    // 소모임 이름 설정
-                    teamName.setText(name);
-                    // 소모임 사진 설정
-                    Glide.with(requireContext())
-                            .load(profileImg)
-                            .into(teamImg);
-                    // D-Day 설정
-                    teamDay.setText("종료 " + remainPeriod);
-                    // nowTime 설정
-                    curDate.setText(nowTime);
-                }
-            }
             @Override
             public void onFailure(Call<BoardMoimResponse> call, Throwable t) {
                 Log.d("BoardGoalFragment", "만료된 토큰 - 연동 실패..");
@@ -317,10 +290,11 @@ public class BoardGoalFragment extends Fragment {
         });
     }
 
+    /** 불씨 (그래픽) 변화 API 통신 **/
     public void apiFire() {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
         apiService = RetrofitClientJwt.getApiService(accessToken);
-        /** teamId Intent로 값 가져와야 한다! **/
+
         Call<BoardFireResponse> call = apiService.newBoardFire(accessToken, teamId);
         call.enqueue(new Callback<BoardFireResponse>() {
             @Override
@@ -328,12 +302,15 @@ public class BoardGoalFragment extends Fragment {
                 BoardFireResponse fireResponse = response.body();
                 String msg = fireResponse.getMessage();
 
-                if(msg.equals("개인별 개인별 미션 인증 현황 조회 성공")) {
+                Log.d(TAG, msg);
+
+                if(msg.equals("개인별 미션 인증 현황 조회 성공")) {
                     Long data = fireResponse.getData();
                     checkFire(data);
                 }
                 else if (msg.equals("만료된 토큰입니다.")) {
-                    updateApiFireToken();
+                    ChangeJwt.updateJwtToken(requireContext());
+                    apiFire();
                 }
             }
 
@@ -342,32 +319,6 @@ public class BoardGoalFragment extends Fragment {
 
             }
         });
-    }
-
-    public void updateApiFireToken() {
-        ChangeJwt.updateJwtToken(requireContext());
-        String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
-        apiService = RetrofitClientJwt.getApiService(accessToken);
-        /** teamId Intent로 값 가져와야 한다! **/
-        Call<BoardFireResponse> call2 = apiService.newBoardFire(accessToken, teamId);
-        call2.enqueue(new Callback<BoardFireResponse>() {
-            @Override
-            public void onResponse(Call<BoardFireResponse> call, Response<BoardFireResponse> response) {
-                BoardFireResponse fireResponse = response.body();
-                String msg = fireResponse.getMessage();
-
-                if(msg.equals("개인별 개인별 미션 인증 현황 조회 성공")) {
-                    Long data = fireResponse.getData();
-                    checkFire(data);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<BoardFireResponse> call, Throwable t) {
-
-            }
-        });
-
     }
 
     /** fire Data에 따른 상태 변화 메서드 **/
@@ -389,5 +340,51 @@ public class BoardGoalFragment extends Fragment {
             Drawable d = getResources().getDrawable(R.drawable.ic_board_fire4_3x);
             fire.setBackground(d);
         }
+    }
+
+    /** 공지 안 읽은 것만 조회 **/
+    public void noReadNotice() {
+        String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
+        apiService = RetrofitClientJwt.getApiService(accessToken);
+
+        Call<BoardNoReadResponse> call = apiService.noReadNotice(accessToken);
+        call.enqueue(new Callback<BoardNoReadResponse>() {
+            @Override
+            public void onResponse(Call<BoardNoReadResponse> call, Response<BoardNoReadResponse> response) {
+                BoardNoReadResponse noReadResponse = response.body();
+                String msg = noReadResponse.getMessage();
+                if (msg.equals("확인하지 않은 공지를 최신순으로 조회하였습니다")) {
+                    noticeDataList = noReadResponse.getData();
+                    checkNoRead(noticeDataList);
+                }
+                else if (msg.equals("만료된 토큰입니다.")) {
+                    ChangeJwt.updateJwtToken(requireContext());
+                    noReadNotice();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BoardNoReadResponse> call, Throwable t) {
+                Log.d(TAG, "최신순 공지 조회 연동 실패 ...");
+            }
+        });
+    }
+
+    public void checkNoRead(List<BoardNoReadResponse.NoticeData> dataList) {
+        int size = dataList.size();
+
+        // 확인하지 않은 공지가 "3개" 있어요 할때 3개만 글자 색상 변경
+        String noRead = tv_toggle.getText().toString();
+        SpannableString sp = new SpannableString(noRead); // 객체 생성
+        String notice = "확인하지 않은 공지가 " + size + "개 있어요";
+        String word = size + "개";
+        int start = notice.indexOf(word);
+        int end = start + word.length();
+        sp.setSpan(new ForegroundColorSpan(Color.parseColor("#FF725F")), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tv_toggle.setText(notice);
+        tv_toggle.setText(sp);
+
+        /** size가 0개일때와 아닐 때를 분기하여 코드 작성해주어야 함 **/
+
     }
 }

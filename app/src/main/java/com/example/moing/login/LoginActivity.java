@@ -29,7 +29,7 @@ import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private RetrofitAPI retrofitAPI, apiService;
+    private RetrofitAPI retrofitAPI;
     private SharedPreferences sharedPreferences;
     private static final String PREF_NAME = "Token";
     private static final String JWT_ACCESS_TOKEN = "JWT_access_token";
@@ -139,47 +139,6 @@ public class LoginActivity extends AppCompatActivity {
                                 Log.d("LoginStart", "토큰 얻기 실패" + response.message() + response.code());
                             }
                         }
-                        /** 만료된 토큰 처리 **/
-//                        else if (msg.equals("만료된 토큰입니다.")) {
-//                            Log.d("LoginActivity", "만료된 토큰입니다...");
-//
-//                            /** 토큰 변환 처리 **/
-//                            ChangeJwt.updateJwtToken(LoginActivity.this);
-//
-//                            /** API 통신 **/
-//                            sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-//                            String access_token = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
-//                            apiService = RetrofitClientJwt.getApiService(access_token);
-//                            Call<CheckAdditionalInfo> call2 = retrofitAPI.checkAdditionalInfo(access_token);
-//                            call2.enqueue(new Callback<CheckAdditionalInfo>() {
-//                                @Override
-//                                public void onResponse(Call<CheckAdditionalInfo> call, Response<CheckAdditionalInfo> response) {
-//                                    CheckAdditionalInfo info = response.body();
-//                                    String msg = info.getMessage();
-//                                    if(msg.equals("추가정보를 입력했습니다")) {
-//                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-//                                        startActivity(intent);
-//                                    }
-//                                    else {
-//                                        Intent intent = new Intent(LoginActivity.this, RegisterInputNameActivity.class);
-//                                        startActivity(intent);
-//                                    }
-//                                }
-//
-//                                @Override
-//                                public void onFailure(Call<CheckAdditionalInfo> call, Throwable t) {
-//
-//                                }
-//                            });
-//
-//
-//
-//
-//                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-//                            startActivity(intent);
-//
-//                        }
-
                     }
                 } else {
                     Log.d("LoginStart", "요청 실패" + response.message() + response.code());

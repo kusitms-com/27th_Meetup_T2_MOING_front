@@ -37,12 +37,14 @@ public class RegisterInputAddressActivity extends AppCompatActivity {
     private static final String PREF_NAME = "Token";
     private static final String JWT_ACCESS_TOKEN = "JWT_access_token";
     private static final String FCM_TOKEN = "FCM_token";
-    private SharedPreferences sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_input_address);
+
+        sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
 
         ImageView arrowLeft = (ImageView) findViewById(R.id.arrowLeft);
         ImageView startLight = (ImageView) findViewById(R.id.startLight);
@@ -173,52 +175,6 @@ public class RegisterInputAddressActivity extends AppCompatActivity {
                                 startActivity(intent);
                                 finish();
                             }
-
-                            /** 만료된 토큰 처리 **/
-                            else if (msg.equals("만료된 토큰입니다.")) {
-                                Log.d("LoginActivity", "만료된 토큰입니다...");
-
-                                /** 토큰 변환 처리 **/
-                                ChangeJwt.updateJwtToken(RegisterInputAddressActivity.this);
-                                /** API 통신 **/
-                                String access_token = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
-                                retrofitAPI = RetrofitClient.getApiService();
-                                Call<RegisterAddressResponse> call2 = retrofitAPI.AdditionalInfo(token, request);
-                                call2.enqueue(new Callback<RegisterAddressResponse>() {
-                                    @Override
-                                    public void onResponse(Call<RegisterAddressResponse> call, Response<RegisterAddressResponse> response) {
-                                        if(response.isSuccessful()) {
-                                            RegisterAddressResponse addressResponse = response.body();
-                                            String msg = addressResponse.getMessage();
-                                            if(msg.equals("회원 가입을 완료했습니다")) {
-                                                // 백에서 준 jwt
-                                                String jwtToken = registerAddressResponse.getData().getAccessToken();
-                                                Log.d("jwtToken", "jwtToken: " + jwtToken);
-
-                                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                                editor.remove(JWT_ACCESS_TOKEN);
-                                                editor.putString(JWT_ACCESS_TOKEN, "Bearer " + jwtToken);
-                                                editor.apply();
-
-                                                // 홈 화면에서 부터 요청을 jwt 토큰을 헤더에 담아서 요청??
-
-                                                Intent intent = new Intent(RegisterInputAddressActivity.this, MainActivity.class);
-                                                startActivity(intent);
-                                                finish();
-                                            }
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<RegisterAddressResponse> call, Throwable t) {
-
-                                    }
-                                });
-
-
-                            }
-
-
                         } else {
                             // API 요청이 실패했을 때
                         }

@@ -6,6 +6,7 @@ import com.example.moing.Request.MakeTeamRequest;
 import com.example.moing.Request.RegisterAddressRequest;
 import com.example.moing.Response.BoardFireResponse;
 import com.example.moing.Response.BoardMoimResponse;
+import com.example.moing.Response.BoardNoReadResponse;
 import com.example.moing.Response.ChangeJwtResponse;
 import com.example.moing.Response.CheckAdditionalInfo;
 import com.example.moing.Response.LoginResponse;
@@ -49,7 +50,7 @@ public interface RetrofitAPI {
 
     /** 목표보드 소모임 정보 보기 **/
     @GET("/api/v1/team/{teamId}/goal-board")
-    Call<BoardMoimResponse> moimInfo(@Header("Authorization") String token);
+    Call<BoardMoimResponse> moimInfo(@Header("Authorization") String token, @Path("teamId") Long teamId);
 
     /** 목표보드 소모임 불 새로고침 **/
     @GET("/api/v1/{teamId}/missions/teamRate")
@@ -58,5 +59,9 @@ public interface RetrofitAPI {
     /** 홈 화면 소모임 목록 GET **/
     @GET("/api/v1/team")
     Call<TeamListResponse> getTeamList(@Header("Authorization") String token);
+
+    /** 공지 안 읽은 것만 조회 **/
+    @GET("/api/v1/{teamId}/notice/unread")
+    Call<BoardNoReadResponse> noReadNotice(@Header("Authorization") String token);
 
 }

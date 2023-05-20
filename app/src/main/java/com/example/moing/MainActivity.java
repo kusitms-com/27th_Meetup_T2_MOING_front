@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
             // Token 을 가져오기 위한 SharedPreferences Token
             SharedPreferences sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
             String jwtAccessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
-
+            Log.d(TAG, jwtAccessToken);
             RetrofitAPI apiService = RetrofitClientJwt.getApiService(jwtAccessToken);
             Call<TeamListResponse> call = apiService.getTeamList(jwtAccessToken);
             call.enqueue(new Callback<TeamListResponse>() {

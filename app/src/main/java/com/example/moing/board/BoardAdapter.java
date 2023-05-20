@@ -15,6 +15,7 @@ import java.util.List;
 public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHolder> {
     private List<Board> boardList;
     private BoardGoalFragment context;
+    private int seeItem = 3; // 3개만 아이템을 보여주겠다!
 
     TextView boardTitle, boardContent;
     View boardLine;
@@ -91,6 +92,9 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
 
     @Override
     public int getItemCount() {
-        return boardList.size();
+        // 최대 3개만 보여주겠다!
+        return Math.min(boardList.size(), seeItem);
+        // 전체 다 반환하겠다!
+        // return boardList.size();
     }
 }
