@@ -45,11 +45,11 @@
         <View
             android:id="@+id/view_board_line"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="1dp"
             android:layout_marginHorizontal="16dp"
             android:layout_below="@id/tv_content"
-            android:layout_marginTop="8dp"
-            android:background="@color/secondary_grey_black_7"/>
+            android:layout_marginTop="10dp"
+            android:background="#202020"/>
 
     </RelativeLayout>
 

@@ -73,12 +73,6 @@ public class NoticeInfoActivity extends AppCompatActivity {
         // 투표 내용
         content = (TextView) findViewById(R.id.tv_content);
 
-        // 투표하기위한 리사이클러뷰
-        voteRecycle = findViewById(R.id.recycle_vote);
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        llm.setSmoothScrollbarEnabled(true);
-        llm.setAutoMeasureEnabled(true);
-
         // 투표 공지를 안 읽은 사람들을 위한 리사이클러뷰
         noReadRecycle = findViewById(R.id.recycle_noread);
         GridLayoutManager llm2 = new GridLayoutManager(this, 4);
