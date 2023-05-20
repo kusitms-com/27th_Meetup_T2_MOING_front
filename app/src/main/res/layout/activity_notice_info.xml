@@ -128,9 +128,9 @@
                 android:id="@+id/tv_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="48dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="18dp"
                 android:fontFamily="@font/pretendard_medium"
                 android:text="여러분, 벌써 4월이 찾아왔어요 ..이번 달에 읽을 책을 같이 정해봅시다! 댓글로 한 권씩 책 추천 해주세요!
                 저는 ‘스즈메의 문단속'에 한 표 던지겠습니다! 하하저는 ‘스즈메의 문단속'에 한 표 던지겠습니다! 하하저는 ‘스즈메의 문단속'에 한 표 던지겠습니다! 하하"
