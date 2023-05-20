@@ -9,7 +9,7 @@
     android:paddingTop="20dp"
     android:paddingRight="16dp"
     android:paddingBottom="20dp"
-    android:layout_marginBottom="10dp">
+    android:layout_marginBottom="12dp">
 
     <ImageView
         android:id="@+id/notice_iv_user_image"

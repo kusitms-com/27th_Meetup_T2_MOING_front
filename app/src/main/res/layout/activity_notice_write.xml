@@ -61,33 +61,60 @@
                 android:textSize="24dp" />
 
             <TextView
+                android:id="@+id/titleTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="40dp"
+                android:layout_marginBottom="2dp"
                 android:fontFamily="@font/pretendard_medium"
                 android:text="제목"
                 android:textColor="@color/secondary_grey_black_7"
                 android:textSize="16dp" />
 
-            <EditText
-                android:id="@+id/et_title"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="4dp"
-                android:inputType="textNoSuggestions"
-                android:background="@drawable/layout_round_black10"
-                android:backgroundTint="@color/secondary_grey_black_12"
-                android:gravity="center|left"
-                android:hint="15자 이내의 제목을 적어주세요"
-                android:paddingLeft="16dp"
-                android:textColorHint="@color/secondary_grey_black_7"
-                android:textSize="18dp"
-                android:textColor="@color/secondary_grey_black_2"
-                android:maxLength="15"
-                android:maxLines="1"
-                />
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/et_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:background="@drawable/layout_round_black10"
+                    android:backgroundTint="@color/secondary_grey_black_12"
+                    android:gravity="center|left"
+                    android:hint="15자 이내의 제목을 적어주세요"
+                    android:inputType="textNoSuggestions"
+                    android:maxLength="15"
+                    android:maxLines="1"
+                    android:paddingLeft="16dp"
+                    android:textColor="@color/secondary_grey_black_2"
+                    android:textColorHint="@color/secondary_grey_black_7"
+                    android:textSize="18dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="@+id/et_title"
+                    app:layout_constraintEnd_toEndOf="@+id/et_title"
+                    app:layout_constraintHorizontal_bias="0.942"
+                    app:layout_constraintStart_toStartOf="@+id/et_title"
+                    app:layout_constraintTop_toTopOf="@+id/et_title">
+                    <ImageView
+                        android:id="@+id/xIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:visibility="invisible"
+                        app:srcCompat="@drawable/x_icon" />
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:id="@+id/tv_titleCount"
@@ -103,6 +130,7 @@
                 android:textSize="16dp" />
 
             <TextView
+                android:id="@+id/contentTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"

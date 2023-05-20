@@ -16,6 +16,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.moing.board.BoardActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
@@ -64,7 +65,10 @@ public class NoticeVoteActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(NoticeVoteActivity.this, "공지 작성하기 버튼 클릭", Toast.LENGTH_SHORT).show();
-            }
+
+                Intent intent = new Intent(getApplicationContext(), NoticeWriteActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);}
         });
 
         // 공지사항
