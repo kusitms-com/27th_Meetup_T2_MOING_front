@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moing.R;
+import com.example.moing.Response.TeamListResponse;
 import com.example.moing.board.BoardActivity;
 
 import java.util.List;
@@ -23,13 +24,13 @@ public class TeamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int DEFAULT_TYPE = 0;
     private static final int TEAM_TYPE = 1;
     private static final int MAX_TEAM_NUM = 3;
-    private static List<Team> teamList = null;
+    private static List<TeamListResponse.Team> teamList = null;
     private static Context mainContext = null;
 
-    public TeamAdapter(List<Team> teamList, Context mainContext) {
+    public TeamAdapter(List<TeamListResponse.Team> teamList, Context mainContext) {
         TeamAdapter.teamList = teamList;
         TeamAdapter.mainContext = mainContext;
-        teamList.add(new Team(-1,"",-1,"","","",false));
+        teamList.add(new TeamListResponse.Team(-1));
     }
 
     @Override
@@ -67,16 +68,21 @@ public class TeamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
         // viewType 에 따라 text 및 image 설정
-        Team team = teamList.get(position);
+        TeamListResponse.Team team = teamList.get(position);
         switch (holder.getItemViewType()) {
             case DEFAULT_TYPE:
                 break;
             case TEAM_TYPE:
                 TeamViewHolder teamViewHolder = (TeamViewHolder) holder;
-                teamViewHolder.title.setText(team.name);
-                teamViewHolder.memberNum.setText(String.valueOf(team.personnel));
-                teamViewHolder.missionStart.setText(team.startDate);
-                teamViewHolder.missionEnd.setText(team.endDate);
+                teamViewHolder.title.setText(team.getName());
+                teamViewHolder.memberNum.setText(String.valueOf(team.getPersonnel()));
+                teamViewHolder.missionStart.setText(team.getStartDate());
+                teamViewHolder.missionEnd.setText(team.getEndDate());
+                teamViewHolder.itemView.setOnClickListener(view->{
+                    Intent intent = new Intent(view.getContext(), BoardActivity.class);
+                    intent.putExtra("teamId",team.getTeamId());
+                    view.getContext().startActivity(intent);
+                });
                 break;
         }
     }
@@ -130,11 +136,6 @@ public class TeamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             memberNum = itemView.findViewById(R.id.team_tv_team_member_num);
             missionStart = itemView.findViewById(R.id.team_tv_mission_start);
             missionEnd = itemView.findViewById(R.id.team_tv_team_mission_end);
-
-            itemView.setOnClickListener(view->{
-                Intent intent = new Intent(view.getContext(), BoardActivity.class);
-                view.getContext().startActivity(intent);
-            });
         }
     }
 }
