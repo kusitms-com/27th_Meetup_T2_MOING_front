@@ -59,7 +59,7 @@ public class BoardGoalFragment extends Fragment {
     private RetrofitAPI apiService;
     private static final String PREF_NAME = "Token";
     private static final String JWT_ACCESS_TOKEN = "JWT_access_token";
-    private SharedPreferences sharedPreferences = requireContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+    private SharedPreferences sharedPreferences;
 
     // API 연동시 필요한 변수
     String name, profileImg, remainPeriod, nowTime;
@@ -71,9 +71,12 @@ public class BoardGoalFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_board_goal, container, false);
 
+        // Token을 사용할 SharedPreference
+        sharedPreferences = requireContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);;
+
         // Intent로 값 받기
-        Intent intent = getActivity().getIntent();
-        //teamId = intent.getLongExtra("teamId");
+        teamId = getActivity().getIntent().getLongExtra("teamId",0);
+        Log.d("test", String.valueOf(teamId));
 
         // 스크롤뷰
         scroll = view.findViewById(R.id.scrollView);
@@ -148,10 +151,10 @@ public class BoardGoalFragment extends Fragment {
 
         /** API 통신 **/
         // 소모임 제목, 사진, d-day, 날짜
-        getApi();
+        //getApi();
         // 새로고침 버튼
         /** teamId -> Intent로 값 가져와야 함 **/
-        apiFire();
+        //apiFire();
 
         // 스크롤 변화시 이미지 삭제
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -193,7 +196,7 @@ public class BoardGoalFragment extends Fragment {
 
     // 새로 고침 버튼 클릭 시
     View.OnClickListener newClickListener = v -> {
-        apiFire();
+        //apiFire();
     };
 
     // Dot Indicator 버튼 클릭 시

@@ -24,13 +24,13 @@ public class TeamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int DEFAULT_TYPE = 0;
     private static final int TEAM_TYPE = 1;
     private static final int MAX_TEAM_NUM = 3;
-    private static List<TeamListResponse.Team> teamList = null;
-    private static Context mainContext = null;
+    private final List<TeamListResponse.Team> teamList;
+    private final Context mainContext;
 
     public TeamAdapter(List<TeamListResponse.Team> teamList, Context mainContext) {
-        TeamAdapter.teamList = teamList;
-        TeamAdapter.mainContext = mainContext;
         teamList.add(new TeamListResponse.Team(-1));
+        this.teamList = teamList;
+        this.mainContext = mainContext;
     }
 
     @Override
@@ -93,7 +93,7 @@ public class TeamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
 
-    public static class DefaultViewHolder extends RecyclerView.ViewHolder {
+    public class DefaultViewHolder extends RecyclerView.ViewHolder {
         Button btnAddTeam;
         ImageView ivTeam;
 
@@ -102,15 +102,15 @@ public class TeamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             btnAddTeam = itemView.findViewById(R.id.team_default_btn_add_team);
             ivTeam = itemView.findViewById(R.id.team_default_iv);
 
-            String text = "모임 추가하기 ("+(TeamAdapter.teamList.size()-1)+"/3)";
+            String text = "모임 추가하기 ("+(teamList.size()-1)+"/3)";
             btnAddTeam.setText(text);
 
-            if(TeamAdapter.teamList.size()-1 == TeamAdapter.MAX_TEAM_NUM){
+            if(teamList.size()-1 == TeamAdapter.MAX_TEAM_NUM){
                 // 최대 생성 가능 모임 (3)을 채웠을 경우 -> img 변경, 버튼 비활성화
                 ivTeam.setBackgroundResource(R.drawable.ic_make_team_full);
                 btnAddTeam.setClickable(false);
-                btnAddTeam.setBackgroundColor(ContextCompat.getColor(TeamAdapter.mainContext,R.color.secondary_grey_black_13));
-                btnAddTeam.setTextColor(ContextCompat.getColor(TeamAdapter.mainContext,R.color.secondary_grey_black_10));
+                btnAddTeam.setBackgroundColor(ContextCompat.getColor(mainContext,R.color.secondary_grey_black_13));
+                btnAddTeam.setTextColor(ContextCompat.getColor(mainContext,R.color.secondary_grey_black_10));
             }
             else {
                 // 버튼 활성화

@@ -1,18 +1,12 @@
 package com.example.moing.board;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-
-import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import com.example.moing.R;
 import com.google.android.material.tabs.TabLayout;
@@ -26,11 +20,18 @@ public class BoardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
 
+        // teamId 값 받아오기
+        long teamId = getIntent().getLongExtra("teamId", 0);
+        Bundle bundle = new Bundle();
+        bundle.putLong("teamId", teamId); // 전달할 값 설정
+
         // 목표보드 Fragment
         boardGoalFragment = new BoardGoalFragment();
+        boardGoalFragment.setArguments(bundle);
 
         // 미션진행 Fragment
         boardMissionFragment = new BoardMissionFragment();
+        boardMissionFragment.setArguments(bundle);
 
         // 홈 버튼
         ImageButton btn_home = (ImageButton) findViewById(R.id.imgBtn_home);
@@ -72,7 +73,5 @@ public class BoardActivity extends AppCompatActivity {
     }
 
     // 홈 버튼 클릭 시
-    View.OnClickListener homeClickListener = view -> {
-        finish();
-    };
+    View.OnClickListener homeClickListener = view -> finish();
 }

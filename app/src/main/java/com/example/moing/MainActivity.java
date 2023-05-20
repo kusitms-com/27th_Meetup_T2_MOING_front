@@ -14,11 +14,9 @@ import com.example.moing.Response.TeamListResponse;
 import com.example.moing.retrofit.ChangeJwt;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClientJwt;
-import com.example.moing.team.Team;
 import com.example.moing.team.TeamAdapter;
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -34,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
     private DotsIndicator dotsIndicator;
     private TextView tvCurTeam;
 
-    private long teamId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,14 +61,21 @@ public class MainActivity extends AppCompatActivity {
                 public void onResponse(@NonNull Call<TeamListResponse> call, @NonNull Response<TeamListResponse> response) {
                     // 연결 성공
                     if(response.isSuccessful()) {
-                        teamList = response.body().getData().getTeamBlocks();
-                        // 진행 중인 모임 표시
-                        tvCurTeam.setText("진행 중 모임  "+teamList.size());
-                        // adapter 설정
-                        TeamAdapter teamAdapter = new TeamAdapter(teamList,getApplicationContext());
-                        viewpager.setAdapter(teamAdapter);
-                        // DotIndicator 설정
-                        dotsIndicator.setViewPager2(viewpager);
+                        if (response.body() != null) {
+                            // 모임 리스트 가져오기
+                            teamList = response.body().getData().getTeamBlocks();
+
+                            // 진행 중인 모임 표시
+                            String curTeamText = "진행 중 모임 "+teamList.size();
+                            tvCurTeam.setText(curTeamText);
+
+                            // adapter 설정
+                            TeamAdapter teamAdapter = new TeamAdapter(teamList,getApplicationContext());
+                            viewpager.setAdapter(teamAdapter);
+
+                            // DotIndicator 설정
+                            dotsIndicator.setViewPager2(viewpager);
+                        }
                     }
                     else if (response.message().equals("만료된 토큰입니다.")) {
                         // 토큰 재발급 후 다시 호출
