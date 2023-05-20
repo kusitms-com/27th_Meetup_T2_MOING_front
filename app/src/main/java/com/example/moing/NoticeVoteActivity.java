@@ -1,14 +1,22 @@
 package com.example.moing;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.animation.ObjectAnimator;
+import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -20,10 +28,44 @@ public class NoticeVoteActivity extends AppCompatActivity {
 
     public ArrayList<NoticeItem> mNoticeItem;
 
+    private boolean fabMain_status = false;
+
+    private FloatingActionButton fabMain;
+    private ImageView fabVoteCreate;
+    private ImageView fabNoticeWrite;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notice_vote);
+
+        fabMain = findViewById(R.id.fabMain);
+        fabVoteCreate = findViewById(R.id.vote_create);
+        fabNoticeWrite = findViewById(R.id.notice_write);
+
+        // 메인플로팅 버튼 클릭
+        fabMain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleFab();
+
+            }
+        });
+        // 투표 생성하기 버튼 클릭
+        fabVoteCreate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(NoticeVoteActivity.this, "투표 생성하기 버튼 클릭", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // 공지 작성하기 버튼 클릭
+        fabNoticeWrite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(NoticeVoteActivity.this, "공지 작성하기 버튼 클릭", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         // 공지사항
         RecyclerView mRecyclerView = findViewById(R.id.recycler);
@@ -80,6 +122,7 @@ public class NoticeVoteActivity extends AppCompatActivity {
 
                 TextView tp = (TextView) tabHost1.getTabWidget().getChildAt(tabHost1.getCurrentTab()).findViewById(android.R.id.title);
                 tp.setTextColor(Color.parseColor("#FFFFFF"));
+
             }
         });
 
@@ -94,6 +137,43 @@ public class NoticeVoteActivity extends AppCompatActivity {
         ts2.setContent(R.id.content2);
         ts2.setIndicator("투표");
         tabHost1.addTab(ts2);
+
+    }
+
+    // 플로팅 액션 버튼 클릭시 애니메이션 효과
+    public void toggleFab() {
+        if (fabMain_status) {
+            // 플로팅 액션 버튼 닫기
+            // 애니메이션 추가
+            fabVoteCreate.setVisibility(View.INVISIBLE);
+            fabNoticeWrite.setVisibility(View.INVISIBLE);
+            ObjectAnimator fc_animation = ObjectAnimator.ofFloat(fabVoteCreate, "translationY", 0f);
+            fc_animation.start();
+            ObjectAnimator fe_animation = ObjectAnimator.ofFloat(fabNoticeWrite, "translationY", 0f);
+            fe_animation.start();
+            // 메인 플로팅 이미지 변경
+            fabMain.setImageResource(R.drawable.floating);
+
+        } else {
+            // 플로팅 액션 버튼 열기
+            fabVoteCreate.setVisibility(View.VISIBLE);
+            fabNoticeWrite.setVisibility(View.VISIBLE);
+
+            ObjectAnimator fc_animation = ObjectAnimator.ofFloat(fabVoteCreate, "translationY", -80f);
+            fc_animation.start();
+            ObjectAnimator fe_animation = ObjectAnimator.ofFloat(fabNoticeWrite, "translationY", -140f);
+            fe_animation.start();
+
+            ObjectAnimator fc_animation2 = ObjectAnimator.ofFloat(fabVoteCreate, "translationX", -40f);
+            fc_animation2.start();
+            ObjectAnimator fe_animation2 = ObjectAnimator.ofFloat(fabNoticeWrite, "translationX", -40f);
+            fe_animation2.start();
+
+            // 메인 플로팅 이미지 변경
+            fabMain.setImageResource(R.drawable.exit_floating);
+        }
+        // 플로팅 버튼 상태 변경
+        fabMain_status = !fabMain_status;
 
     }
 }
