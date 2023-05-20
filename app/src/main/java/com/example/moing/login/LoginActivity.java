@@ -146,8 +146,7 @@ public class LoginActivity extends AppCompatActivity {
                             /** 토큰 변환 처리 **/
                             ChangeJwt.updateJwtToken(LoginActivity.this);
 
-
-                            /** API 통신 예정 **/
+                            /** API 통신 **/
                             sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
                             String access_token = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
                             apiService = RetrofitClientJwt.getApiService(access_token);

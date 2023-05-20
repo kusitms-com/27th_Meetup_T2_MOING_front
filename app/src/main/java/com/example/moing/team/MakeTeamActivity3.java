@@ -41,6 +41,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.moing.R;
 import com.example.moing.Request.MakeTeamRequest;
+import com.example.moing.Response.CheckAdditionalInfo;
 import com.example.moing.Response.MakeTeamResponse;
 import com.example.moing.retrofit.ChangeJwt;
 import com.example.moing.retrofit.RetrofitAPI;
@@ -185,7 +186,33 @@ public class MakeTeamActivity3 extends AppCompatActivity {
                 {
                     /** 만료된 토큰 처리 **/
                     ChangeJwt.updateJwtToken(MakeTeamActivity3.this);
+                    sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+                    String access_token = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
+                    RetrofitAPI apiService = RetrofitClientJwt.getApiService(access_token);
 
+                    Call<MakeTeamResponse> call2 = apiService.makeTeam(token, makeTeamRequest);
+                    call2.enqueue(new Callback<MakeTeamResponse>() {
+                        @Override
+                        public void onResponse(Call<MakeTeamResponse> call, Response<MakeTeamResponse> response) {
+                            MakeTeamResponse mtResponse = response.body();
+                            String msg = mtResponse.getMessage();
+                            // 연결 성공
+                            if(msg.equals("소모임을 생성하였습니다")) {
+                                // S3를 통한 사진 업로드
+                                File file = new File((getAbsolutePathFromUri(getApplicationContext(),uri)));
+                                uploadWithTransferUtility(file.getName(),file);
+
+                                // 다음 화면
+                                Intent intent = new Intent(getApplicationContext(), MakeTeamActivity4.class);
+                                startActivity(intent);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<MakeTeamResponse> call, Throwable t) {
+                            Log.d("MAKETEAMACITIVTY3", "만료된 토큰 연동 실패 ...");
+                        }
+                    });
                 }
 
             }
