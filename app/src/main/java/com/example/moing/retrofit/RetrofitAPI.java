@@ -3,19 +3,16 @@ package com.example.moing.retrofit;
 import com.example.moing.Request.ChangeJwtRequest;
 import com.example.moing.Request.LoginRequest;
 import com.example.moing.Request.MakeTeamRequest;
+import com.example.moing.Request.RegisterAddressRequest;
 import com.example.moing.Response.BoardFireResponse;
 import com.example.moing.Response.BoardMoimResponse;
 import com.example.moing.Response.ChangeJwtResponse;
 import com.example.moing.Response.CheckAdditionalInfo;
-import com.example.moing.Response.MakeTeamResponse;
-import com.example.moing.Request.RegisterAddressRequest;
 import com.example.moing.Response.LoginResponse;
+import com.example.moing.Response.MakeTeamResponse;
 import com.example.moing.Response.RegisterAddressResponse;
 import com.example.moing.Response.RegisterNameResponse;
 import com.example.moing.Response.TeamListResponse;
-import com.example.moing.team.Team;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -58,14 +55,8 @@ public interface RetrofitAPI {
     @GET("/api/v1/{teamId}/missions/teamRate")
     Call<BoardFireResponse> newBoardFire(@Header("Authorization") String token, @Path("teamId") Long teamId);
 
-
-
-
-
-
     /** 홈 화면 소모임 목록 GET **/
     @GET("/api/v1/team")
     Call<TeamListResponse> getTeamList(@Header("Authorization") String token);
-
 
 }
