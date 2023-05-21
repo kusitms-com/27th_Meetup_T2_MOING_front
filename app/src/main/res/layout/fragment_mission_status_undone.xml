@@ -34,6 +34,15 @@
             android:textSize="16dp" />
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/mission_status_undone_iv_done_all"
+        android:layout_width="match_parent"
+        android:layout_height="124dp"
+        android:layout_margin="80dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_mission_status_done_all"
+        android:visibility="gone"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/mission_status_undone_rv"
         android:layout_width="match_parent"

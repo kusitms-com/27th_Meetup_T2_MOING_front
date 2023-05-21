@@ -18,22 +18,34 @@ import com.example.moing.team.TeamAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class MissionDoneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private static final int DONE_TYPE = 0;
     private static final int PENDING_TYPE = 1;
-    List<Mission> missionList;
+    private List<Mission> missionList;
+
+    private OnMissionClicklistener onMissionDoneClicklistener;
 
     public MissionDoneAdapter(List<Mission> missionList) {
         this.missionList = missionList;
     }
 
+    public interface OnMissionClicklistener {
+        void onItemClick(int status);
+    }
+
+    public void setOnItemClickListener(OnMissionClicklistener listener) {
+        this.onMissionDoneClicklistener = listener;
+    }
+
     @Override
     public int getItemViewType(int position) {
-        // 마지막 DefaultType
+        // COMPELTE -> 완료
         if (missionList.get(position).status.equals("COMPELTE")) {
             return DONE_TYPE;
         }
-        // 그 외 TeamType
+        // PENDING -> 건너뛰기
         return PENDING_TYPE;
     }
 
@@ -70,22 +82,32 @@ public class MissionDoneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             case DONE_TYPE:
                 MissionDoneAdapter.DoneViewHolder doneViewHolder = (DoneViewHolder) holder;
 
+                // 완료에 대한 리사이클러뷰들을 받아와 처리
+
                 // 첫번째는 나 표시
                 if(position == 0)
                     doneViewHolder.ivMe.setVisibility(View.VISIBLE);
 
-                // 완료에 대한 리사이클러뷰들을 받아와 처리
-
+                doneViewHolder.itemView.setOnClickListener(v ->{
+                    if(onMissionDoneClicklistener != null)
+                        onMissionDoneClicklistener.onItemClick(DONE_TYPE);
+                });
 
                 break;
             case PENDING_TYPE:
                 MissionDoneAdapter.PendingViewHolder pendingViewHolder = (PendingViewHolder) holder;
 
+                // 건너뛰기에 대한 리사이클러뷰들을 받아와 처리
+
                 // 첫번째는 나 표시
                 if(position == 0)
                     pendingViewHolder.ivMe.setVisibility(View.VISIBLE);
 
-                // 건너뛰기에 대한 리사이클러뷰들을 받아와 처리
+                pendingViewHolder.itemView.setOnClickListener(v ->{
+                    if(onMissionDoneClicklistener != null)
+                        onMissionDoneClicklistener.onItemClick(PENDING_TYPE);
+                });
+
 
                 break;
         }
@@ -98,7 +120,7 @@ public class MissionDoneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     class DoneViewHolder extends RecyclerView.ViewHolder{
         ImageView ivArchive;
-        ImageView ivProfile;
+        CircleImageView ivProfile;
         ImageView ivMe;
         TextView tvNickname;
 
@@ -112,7 +134,7 @@ public class MissionDoneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     class PendingViewHolder extends RecyclerView.ViewHolder{
-        ImageView ivProfile;
+        CircleImageView ivProfile;
         ImageView ivMe;
         TextView tvReason;
         TextView tvNickname;
