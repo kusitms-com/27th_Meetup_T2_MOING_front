@@ -9,8 +9,6 @@ import android.os.Handler;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.example.moing.login.LoginActivity;
-
 public class SplashActivity extends AppCompatActivity {
 
     @Override
@@ -21,7 +19,7 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(SplashActivity.this, NoticeWriteActivity.class);
+                Intent intent = new Intent(SplashActivity.this, MissionCreateActivity.class);
                 startActivity(intent);
                 finish();
             }

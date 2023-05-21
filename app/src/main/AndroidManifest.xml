@@ -19,24 +19,26 @@
         android:theme="@style/Theme.Moing_Day"
         tools:targetApi="31">
         <activity
+            android:name=".MissionReviseActivity"
+            android:exported="false" />
+        <activity
             android:name=".MissionCreateActivity"
             android:exported="false"
-            android:label="@string/title_activity_mission_create"
-            android:theme="@style/Theme.Moing_Day.NoActionBar" />
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".mission.MissionClickActivity"
             android:exported="false" />
         <activity
             android:name=".NoticeInfoActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize"></activity>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".NoticeWriteActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".NoticeVoteActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".board.VoteInfoActivity"
             android:exported="false" />
@@ -52,7 +54,7 @@
             android:exported="false" />
         <activity
             android:name=".board.BoardActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".team.MakeTeamActivity4"
             android:exported="false" />
