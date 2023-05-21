@@ -49,5 +49,6 @@ public class RegisterAddressResponse {
             this.process = process;
         }
     }
+
 }
 

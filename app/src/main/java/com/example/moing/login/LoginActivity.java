@@ -17,6 +17,7 @@ import com.example.moing.Request.LoginRequest;
 import com.example.moing.Response.ChangeJwtResponse;
 import com.example.moing.Response.CheckAdditionalInfo;
 import com.example.moing.Response.LoginResponse;
+import com.example.moing.board.BoardActivity;
 import com.example.moing.retrofit.ChangeJwt;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClient;
@@ -126,7 +127,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                 if (process.equals("로그인이 완료되었습니다")) {
                                     // 홈 화면(MainActivity)로 이동
-                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                    Intent intent = new Intent(LoginActivity.this, BoardActivity.class);
                                     startActivity(intent);
                                 }
                                 else {

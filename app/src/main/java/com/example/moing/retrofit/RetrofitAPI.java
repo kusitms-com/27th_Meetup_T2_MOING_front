@@ -4,6 +4,7 @@ import com.example.moing.Request.BoardMakeVoteRequest;
 import com.example.moing.Request.ChangeJwtRequest;
 import com.example.moing.Request.LoginRequest;
 import com.example.moing.Request.MakeTeamRequest;
+import com.example.moing.Request.MissionCreateRequest;
 import com.example.moing.Request.RegisterAddressRequest;
 import com.example.moing.Response.AllVoteResponse;
 import com.example.moing.Response.BoardFireResponse;
@@ -16,6 +17,8 @@ import com.example.moing.Response.CheckAdditionalInfo;
 import com.example.moing.Response.LoginResponse;
 import com.example.moing.Response.MakeTeamResponse;
 import com.example.moing.Response.AllNoticeResponse;
+import com.example.moing.Response.MissionCreateResponse;
+import com.example.moing.Response.MissionListResponse;
 import com.example.moing.Response.RegisterAddressResponse;
 import com.example.moing.Response.RegisterNameResponse;
 import com.example.moing.Response.TeamListResponse;
@@ -84,4 +87,13 @@ public interface RetrofitAPI {
     /** 투표 생성 **/
     @POST("/api/v1/{teamId}/vote")
     Call<BoardMakeVoteResponse> makeVote(@Header("Authorization") String token, @Path("teamId") Long teamId, @Body BoardMakeVoteRequest boardMakeVoteRequest);
+
+    /** 미션 리스트 조회 **/
+    @GET("api/v1/{teamId}/missions")
+    Call<MissionListResponse> MissionList(@Header("Authorization") String token, @Path("teamId") Long teamId);
+
+    /** 미션 생성 **/
+    @POST("api/v1/{teamId}/mission/new")
+    Call<MissionCreateResponse> makeMission(@Header("Authorization") String token, @Path("teamId") Long teamId, @Body MissionCreateRequest missionCreateRequest);
+
 }
