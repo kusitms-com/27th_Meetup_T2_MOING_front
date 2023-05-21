@@ -77,6 +77,23 @@ public class TeamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         TeamListResponse.Team team = teamList.get(position);
         switch (holder.getItemViewType()) {
             case DEFAULT_TYPE:
+                DefaultViewHolder defaultViewHolder = (DefaultViewHolder) holder;
+                String text = "모임 추가하기 (" + (teamList.size() - 1) + "/3)";
+                defaultViewHolder.btnAddTeam.setText(text);
+
+                if (teamList.size() - 1 == TeamAdapter.MAX_TEAM_NUM) {
+                    // 최대 생성 가능 모임 (3)을 채웠을 경우 -> img 변경, 버튼 비활성화
+                    defaultViewHolder.ivTeam.setBackgroundResource(R.drawable.ic_make_team_full);
+                    defaultViewHolder.btnAddTeam.setClickable(false);
+                    defaultViewHolder.btnAddTeam.setBackgroundColor(ContextCompat.getColor(mainContext, R.color.secondary_grey_black_13));
+                    defaultViewHolder.btnAddTeam.setTextColor(ContextCompat.getColor(mainContext, R.color.secondary_grey_black_10));
+                } else {
+                    // 버튼 활성화
+                    defaultViewHolder.btnAddTeam.setOnClickListener(view -> {
+                        Intent intent = new Intent(view.getContext(), AddTeamActivity.class);
+                        view.getContext().startActivity(intent);
+                    });
+                }
                 break;
             case TEAM_TYPE:
                 TeamViewHolder teamViewHolder = (TeamViewHolder) holder;
@@ -125,23 +142,6 @@ public class TeamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             super(itemView);
             btnAddTeam = itemView.findViewById(R.id.team_default_btn_add_team);
             ivTeam = itemView.findViewById(R.id.team_default_iv);
-
-            String text = "모임 추가하기 (" + (teamList.size() - 1) + "/3)";
-            btnAddTeam.setText(text);
-
-            if (teamList.size() - 1 == TeamAdapter.MAX_TEAM_NUM) {
-                // 최대 생성 가능 모임 (3)을 채웠을 경우 -> img 변경, 버튼 비활성화
-                ivTeam.setBackgroundResource(R.drawable.ic_make_team_full);
-                btnAddTeam.setClickable(false);
-                btnAddTeam.setBackgroundColor(ContextCompat.getColor(mainContext, R.color.secondary_grey_black_13));
-                btnAddTeam.setTextColor(ContextCompat.getColor(mainContext, R.color.secondary_grey_black_10));
-            } else {
-                // 버튼 활성화
-                btnAddTeam.setOnClickListener(view -> {
-                    Intent intent = new Intent(view.getContext(), AddTeamActivity.class);
-                    view.getContext().startActivity(intent);
-                });
-            }
         }
     }
 
