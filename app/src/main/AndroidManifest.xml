@@ -19,21 +19,26 @@
         android:theme="@style/Theme.Moing_Day"
         tools:targetApi="31">
         <activity
+            android:name=".MissionReviseActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MissionCreateActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
             android:name=".mission.MissionClickActivity"
             android:exported="false" />
         <activity
             android:name=".NoticeInfoActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize">
-        </activity>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".NoticeWriteActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".NoticeVoteActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".board.VoteInfoActivity"
             android:exported="false" />
@@ -49,7 +54,7 @@
             android:exported="false" />
         <activity
             android:name=".board.BoardActivity"
-            android:exported="false">
+            android:exported="true">
         </activity>
         <activity
             android:name=".team.MakeTeamActivity4"
@@ -124,10 +129,10 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".mission.MissionStatusActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
 
         <service
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"

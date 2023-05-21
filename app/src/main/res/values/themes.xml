@@ -21,4 +21,13 @@
         <item name="android:textSize">20dp</item>
         <item name="android:fontFamily">@font/pretendard_semi_bold</item>
     </style>
+
+    <style name="Theme.Moing_Day.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.Moing_Day.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.Moing_Day.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

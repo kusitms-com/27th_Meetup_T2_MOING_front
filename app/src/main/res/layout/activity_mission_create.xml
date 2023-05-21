@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MissionCreateActivity"
+    android:background="@color/secondary_grey_black_14">
+
+    <LinearLayout
+        android:id="@+id/linear_close"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="horizontal">
+
+        <android.widget.Button
+            android:id="@+id/btn_close"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/button_close"
+            android:backgroundTint="#A2A4A9"
+            android:layout_marginVertical="11dp"
+            android:layout_marginLeft="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="신규미션 생성하기"
+            android:textSize="18dp"
+            android:textColor="@color/secondary_grey_black_3"
+            android:fontFamily="@font/pretendard_semi_bold"
+            android:layout_marginVertical="12.5dp"
+            android:layout_marginLeft="32dp" />
+    </LinearLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linear_close"
+        android:layout_marginTop="50dp"
+        app:layout_constraintVertical_bias="1.0">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="32dp"
+                android:fontFamily="@font/pretendard_semi_bold"
+                android:text="미션을 생성해볼까요?"
+                android:textColor="@color/secondary_grey_black_3"
+                android:textSize="24dp" />
+
+            <TextView
+                android:id="@+id/titleTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="2dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:text="미션 제목"
+                android:textColor="@color/secondary_grey_black_7"
+                android:textSize="16dp" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/et_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:background="@drawable/border_all"
+                    android:gravity="center|left"
+                    android:hint="15자 이내의 제목을 적어주세요"
+                    android:inputType="textNoSuggestions"
+                    android:maxLength="15"
+                    android:maxLines="1"
+                    android:paddingLeft="16dp"
+                    android:textColor="@color/secondary_grey_black_2"
+                    android:textColorHint="@color/secondary_grey_black_7"
+                    android:textSize="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="@+id/et_title"
+                    app:layout_constraintEnd_toEndOf="@+id/et_title"
+                    app:layout_constraintHorizontal_bias="0.942"
+                    app:layout_constraintStart_toStartOf="@+id/et_title"
+                    app:layout_constraintTop_toTopOf="@+id/et_title">
+                    <ImageView
+                        android:id="@+id/xIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:visibility="invisible"
+                        app:srcCompat="@drawable/x_icon" />
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/tv_titleCount"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="16dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:gravity="right"
+                android:text="(0/15)"
+                android:textColor="@color/secondary_grey_black_7"
+                android:textSize="16dp" />
+
+            <TextView
+                android:id="@+id/deadlineTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="2dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:text="미션 마감일"
+                android:textColor="@color/secondary_grey_black_7"
+                android:textSize="16dp" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="270dp"
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:id="@+id/et_calendar"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="8dp"
+                            android:background="@drawable/border_all"
+                            android:gravity="center|left"
+                            android:hint="마감 날짜를 선택해주세요"
+                            android:inputType="textNoSuggestions"
+                            android:maxLength="15"
+                            android:maxLines="1"
+                            android:paddingLeft="16dp"
+                            android:textColor="@color/secondary_grey_black_2"
+                            android:textColorHint="@color/secondary_grey_black_7"
+                            android:textSize="16dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintBottom_toBottomOf="@+id/et_calendar"
+                            app:layout_constraintEnd_toEndOf="@+id/et_calendar"
+                            app:layout_constraintHorizontal_bias="0.942"
+                            app:layout_constraintStart_toStartOf="@+id/et_calendar"
+                            app:layout_constraintTop_toTopOf="@+id/et_calendar">
+
+                            <ImageView
+                                android:id="@+id/calendarIcon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:adjustViewBounds="true"
+                                app:srcCompat="@drawable/calendar_icon" />
+                        </LinearLayout>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:id="@+id/et_time"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_marginRight="16dp"
+                            android:background="@drawable/border_all"
+                            android:gravity="center|left"
+                            android:hint="10:00"
+                            android:inputType="textNoSuggestions"
+                            android:maxLength="15"
+                            android:maxLines="1"
+                            android:textAlignment="center"
+                            android:textColor="@color/secondary_grey_black_2"
+                            android:textColorHint="@color/secondary_grey_black_7"
+                            android:textSize="16dp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/contentTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="24dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:text="미션 내용"
+                android:textColor="@color/secondary_grey_black_7"
+                android:textSize="16dp" />
+
+            <EditText
+                android:id="@+id/et_content"
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/border_all"
+                android:gravity="left"
+                android:hint="미션의 목적과 내용을 알려주세요"
+                android:padding="16dp"
+                android:textColorHint="@color/secondary_grey_black_7"
+                android:textSize="14dp"
+                android:textColor="@color/secondary_grey_black_2"
+                android:maxLength="300"/>
+
+            <TextView
+                android:id="@+id/tv_contentCount"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="16dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:gravity="right"
+                android:text="(0/100)"
+                android:textColor="@color/secondary_grey_black_7"
+                android:textSize="16dp" />
+
+            <TextView
+                android:id="@+id/ruleTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="24dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:text="인증 규칙"
+                android:textColor="@color/secondary_grey_black_7"
+                android:textSize="16dp" />
+
+            <EditText
+                android:id="@+id/et_rule"
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/border_all"
+                android:gravity="left"
+                android:hint="모임원들에게 미션을 인증할 수 있는 방법을 알려주세요"
+                android:padding="16dp"
+                android:textColorHint="@color/secondary_grey_black_7"
+                android:textSize="14dp"
+                android:textColor="@color/secondary_grey_black_2"
+                android:maxLength="300"/>
+
+
+            <TextView
+                android:id="@+id/tv_ruleCount"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="16dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:gravity="right"
+                android:text="(0/100)"
+                android:textColor="@color/secondary_grey_black_7"
+                android:textSize="16dp" />
+
+            <TextView
+                android:id="@+id/ruleGuideTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="24dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:text="MOING에서는 사진 1장으로 미션을 인증할 수 있어요!"
+                android:textColor="#66676A"
+                android:textSize="12dp"
+                android:layout_marginBottom="150dp"
+                />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <android.widget.Button
+        android:id="@+id/btn_create"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginHorizontal="16dp"
+        android:background="@drawable/button_round_black12"
+        android:fontFamily="@font/pretendard_semi_bold"
+        android:text="미션 생성하기"
+        android:textColor="@color/secondary_grey_black_10"
+        android:textSize="18dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
