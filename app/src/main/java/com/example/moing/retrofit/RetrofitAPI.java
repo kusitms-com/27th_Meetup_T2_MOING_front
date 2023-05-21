@@ -1,16 +1,21 @@
 package com.example.moing.retrofit;
 
+import com.example.moing.Request.BoardMakeVoteRequest;
 import com.example.moing.Request.ChangeJwtRequest;
 import com.example.moing.Request.LoginRequest;
 import com.example.moing.Request.MakeTeamRequest;
 import com.example.moing.Request.RegisterAddressRequest;
+import com.example.moing.Response.AllVoteResponse;
 import com.example.moing.Response.BoardFireResponse;
+import com.example.moing.Response.BoardMakeVoteResponse;
 import com.example.moing.Response.BoardMoimResponse;
-import com.example.moing.Response.BoardNoReadResponse;
+import com.example.moing.Response.BoardNoReadNoticeResponse;
+import com.example.moing.Response.BoardNoReadVoteResponse;
 import com.example.moing.Response.ChangeJwtResponse;
 import com.example.moing.Response.CheckAdditionalInfo;
 import com.example.moing.Response.LoginResponse;
 import com.example.moing.Response.MakeTeamResponse;
+import com.example.moing.Response.AllNoticeResponse;
 import com.example.moing.Response.RegisterAddressResponse;
 import com.example.moing.Response.RegisterNameResponse;
 import com.example.moing.Response.TeamListResponse;
@@ -62,6 +67,21 @@ public interface RetrofitAPI {
 
     /** 공지 안 읽은 것만 조회 **/
     @GET("/api/v1/{teamId}/notice/unread")
-    Call<BoardNoReadResponse> noReadNotice(@Header("Authorization") String token);
+    Call<BoardNoReadNoticeResponse> noReadNotice(@Header("Authorization") String token, @Path("teamId") Long teamId);
 
+    /** 투표 안 읽은 것만 조회 **/
+    @GET("/api/v1/{teamId}/vote/unread")
+    Call<BoardNoReadVoteResponse> noReadVote(@Header("Authorization") String token, @Path("teamId") Long teamId);
+
+    /** 공지 전체 조회 **/
+    @GET("/api/v1/{teamId}/notice")
+    Call<AllNoticeResponse> viewNotice(@Header("Authorization") String token, @Path("teamId") Long teamId);
+
+    /** 투표 전체 조회 **/
+    @GET("/api/v1/{teamId}/vote")
+    Call<AllVoteResponse> viewVote(@Header("Authorization") String token, @Path("teamId") Long teamId);
+
+    /** 투표 생성 **/
+    @POST("/api/v1/{teamId}/vote")
+    Call<BoardMakeVoteResponse> makeVote(@Header("Authorization") String token, @Path("teamId") Long teamId, @Body BoardMakeVoteRequest boardMakeVoteRequest);
 }

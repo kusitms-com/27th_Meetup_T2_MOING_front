@@ -2,12 +2,12 @@ package com.example.moing.Response;
 
 import java.util.List;
 
-public class BoardNoReadResponse {
+public class BoardNoReadNoticeResponse {
     private String message;
     private int statusCode;
     private List<NoticeData> data;
 
-    public BoardNoReadResponse(String message, int statusCode, List<NoticeData> data) {
+    public BoardNoReadNoticeResponse(String message, int statusCode, List<NoticeData> data) {
         this.message = message;
         this.statusCode = statusCode;
         this.data = data;
@@ -26,12 +26,13 @@ public class BoardNoReadResponse {
     }
 
     public static class NoticeData {
-        private String content;
         private String title;
+        private String content;
 
-        public NoticeData(String content, String title) {
-            this.content = content;
+        public NoticeData(String title, String content) {
             this.title = title;
+            this.content = content;
+
         }
 
         public String getContent() {

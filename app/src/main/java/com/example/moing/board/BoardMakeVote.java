@@ -5,6 +5,9 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -18,12 +21,23 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.moing.NoticeVoteActivity;
 import com.example.moing.R;
+import com.example.moing.Request.BoardMakeVoteRequest;
+import com.example.moing.Response.BoardMakeVoteResponse;
+import com.example.moing.retrofit.ChangeJwt;
+import com.example.moing.retrofit.RetrofitAPI;
+import com.example.moing.retrofit.RetrofitClientJwt;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapter.OnEditTextChangedListener{
+    private static final String TAG = "BoardMakeVote";
 
     RecyclerView recyclerView;
     Button btn_close, btn_erase_content, addContent, deleteContent, upload;
@@ -34,11 +48,25 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapter.
     List<MakeVote> deleteMakeVote = new ArrayList<>();
     private int addContentCount;
     private MakeVoteAdapter makeVoteAdapter;
+    private Long teamId;
+
+    private RetrofitAPI apiService;
+    private static final String PREF_NAME = "Token";
+    private static final String JWT_ACCESS_TOKEN = "JWT_access_token";
+    private SharedPreferences sharedPreferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board_make_vote);
+
+        // Intent 값 전달 받기
+        Intent intent = getIntent();
+        teamId = intent.getLongExtra("teamId", 0);
+
+        // Token을 사용할 SharedPreference
+        sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
 
         // 투표 만들기 취소 버튼 & 클릭 리스너
         btn_close = (Button) findViewById(R.id.btn_close);
@@ -56,7 +84,6 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapter.
         btn_erase_content = (Button) findViewById(R.id.btn_erase);
         btn_erase_content.setOnClickListener(contentEraseClickListener);
         btn_erase_content.setClickable(false);
-
 
         // 투표 항목 추가하기 & 리스너
         addContent = (Button) findViewById(R.id.imgbtn_add);
@@ -80,10 +107,11 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapter.
 
         // 리싸이클러뷰 어댑터 설정
         // adapter 설정
-        makeVoteAdapter = new MakeVoteAdapter(makeVoteList, this, this);
         recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(makeVoteAdapter);
         recyclerView.setHasFixedSize(true);
+
+        makeVoteAdapter = new MakeVoteAdapter(makeVoteList, this, this);
+        recyclerView.setAdapter(makeVoteAdapter);
 
         // 익명, 복수 투표
         anony = (CheckBox) findViewById(R.id.btn_anony);
@@ -138,7 +166,6 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapter.
             btn_erase_content.setClickable(true);
             btn_erase_content.setTextColor(Color.parseColor("#F43A6F"));
         }
-
     };
 
     /** 선택한 항목 지우기 버튼 클릭 **/
@@ -226,17 +253,7 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapter.
 
     /** 업로드하기 버튼 **/
     View.OnClickListener uploadClickListener = v -> {
-//        Intent intent = new Intent(getApplicationContext(), BoardActivity.class);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        startActivity(intent);
-
-        String s = "";
-        for (MakeVote vote : makeVoteAdapter.getVoteList())
-            s += vote.getVoteContent();
-
-        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
-
-        /** POST 요청 수행해야 한다. **/
+        makeVote();
     };
 
     // 각 EditText들의 null값 여부 확인
@@ -285,5 +302,44 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapter.
             upload.setTextColor(ContextCompat.getColorStateList(BoardMakeVote.this, R.color.secondary_grey_black_10));
             upload.setBackgroundColor(Color.parseColor("#202020"));
         }
+    }
+
+    /** API 통신 **/
+    public void makeVote() {
+        String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
+        apiService = RetrofitClientJwt.getApiService(accessToken);
+        List<String> requestList = new ArrayList<>();
+
+        for (MakeVote vote : makeVoteAdapter.getVoteList())
+            requestList.add(vote.getVoteContent());
+
+        String str_title = title.getText().toString();
+        String str_content = content.getText().toString();
+
+        Log.d(TAG, "teamId : " + teamId);
+
+        BoardMakeVoteRequest br = new BoardMakeVoteRequest(requestList, str_content, str_title, multi.isChecked(), anony.isChecked());
+        Call<BoardMakeVoteResponse> call = apiService.makeVote(accessToken, teamId, br);
+        call.enqueue(new Callback<BoardMakeVoteResponse>() {
+            @Override
+            public void onResponse(Call<BoardMakeVoteResponse> call, Response<BoardMakeVoteResponse> response) {
+                BoardMakeVoteResponse voteResponse = response.body();
+                String msg = voteResponse.getMessage();
+                if(msg.equals("투표를 생성하였습니다")) {
+                    Intent intent = new Intent(getApplicationContext(), BoardActivity.class);
+                    //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                }
+                else if (msg.equals("만료된 토큰입니다.")) {
+                    ChangeJwt.updateJwtToken(BoardMakeVote.this);
+                    makeVote();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BoardMakeVoteResponse> call, Throwable t) {
+                Log.d(TAG, "투표 생성 실패...");
+            }
+        });
     }
 }
