@@ -39,7 +39,7 @@
 
     <ImageView
         android:id="@+id/mission_status_done_popup_iv_image"
-        android:layout_width="188dp"
+        android:layout_width="match_parent"
         android:layout_height="256dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/ic_board_fire4_3x"
