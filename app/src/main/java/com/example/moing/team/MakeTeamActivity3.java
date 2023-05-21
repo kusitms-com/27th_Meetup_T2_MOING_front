@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
@@ -23,29 +21,21 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferNetworkLossHandler;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.moing.R;
 import com.example.moing.Request.MakeTeamRequest;
-import com.example.moing.Response.CheckAdditionalInfo;
 import com.example.moing.Response.MakeTeamResponse;
 import com.example.moing.retrofit.ChangeJwt;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClientJwt;
+import com.example.moing.s3.ImageUtils;
+import com.example.moing.s3.S3Utils;
 
 import java.io.File;
 
@@ -54,9 +44,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MakeTeamActivity3 extends AppCompatActivity {
-    private static final String TAG = "MakeTeamActivity3";
     private static final int READ_EXTERNAL_STORAGE_REQUEST = 0;
-    private Uri uri;
+
     private EditText etIntroduce;
     private EditText etResolution;
     private Button btnImageUpload;
@@ -71,7 +60,10 @@ public class MakeTeamActivity3 extends AppCompatActivity {
 
     private static final String PREF_NAME = "Token";
     private static final String JWT_ACCESS_TOKEN = "JWT_access_token";
-    private static final String JWT_REFRESH_TOKEN = "JWT_refresh_token";
+
+    private File imageFile;  // 업로드할 이미지 파일
+    private String uniqueFileNameWithExtension; // 업로드할 이미지 파일의 이름
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,7 +77,7 @@ public class MakeTeamActivity3 extends AppCompatActivity {
         predictDate = intent.getStringExtra("predict"); // 소모임 예상 활동 기간
         major = intent.getStringExtra("major"); // 소모임 목표
 
-        /** API 통신을 위한 헤더에 담을 토큰값 가져오기 **/
+        /* API 통신을 위한 헤더에 담을 토큰값 가져오기 **/
         sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
 
         // 뒤로 가기
@@ -158,68 +150,73 @@ public class MakeTeamActivity3 extends AppCompatActivity {
 
         RetrofitAPI apiService = RetrofitClientJwt.getApiService(token);
         MakeTeamRequest makeTeamRequest = new MakeTeamRequest(category, etIntroduce.getText().toString(), name,
-                Integer.parseInt(period), Integer.parseInt(cnt), getAbsolutePathFromUri(getApplicationContext(),uri),
+                Integer.parseInt(period), Integer.parseInt(cnt), uniqueFileNameWithExtension,
                 etResolution.getText().toString(), data);
 
         Call<MakeTeamResponse> call = apiService.makeTeam(token, makeTeamRequest);
         call.enqueue(new Callback<MakeTeamResponse>() {
             @Override
-            public void onResponse(Call<MakeTeamResponse> call, Response<MakeTeamResponse> response) {
+            public void onResponse(@NonNull Call<MakeTeamResponse> call, @NonNull Response<MakeTeamResponse> response) {
                 // 응답 성공 시
                 Log.d("MAKETEAMACTIVITY3", "응답 성공!!!");
 
                 //
                 MakeTeamResponse mtResponse = response.body();
-                String msg = mtResponse.getMessage();
-                // 연결 성공
-                if(msg.equals("소모임을 생성하였습니다"))
-                {
-                    // S3를 통한 사진 업로드
-                    File file = new File((getAbsolutePathFromUri(getApplicationContext(),uri)));
-                    uploadWithTransferUtility(file.getName(),file);
-
-                    // 다음 화면
-                    Intent intent = new Intent(getApplicationContext(), MakeTeamActivity4.class);
-                    startActivity(intent);
+                String msg = null;
+                if (mtResponse != null) {
+                    msg = mtResponse.getMessage();
                 }
+                // 연결 성공
+                if (msg != null) {
+                    if(msg.equals("소모임을 생성하였습니다"))
+                    {
+                        Log.d("test","생성완료");
+                        // s3를 통한 사진 업로드
+                        S3Utils.uploadImageToS3(getApplicationContext(),uniqueFileNameWithExtension,imageFile);
 
-                else if (msg.equals("만료된 토큰입니다."))
-                {
-                    /** 만료된 토큰 처리 **/
-                    ChangeJwt.updateJwtToken(MakeTeamActivity3.this);
-                    sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-                    String access_token = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
-                    RetrofitAPI apiService = RetrofitClientJwt.getApiService(access_token);
+                        // 다음 화면
+                        Intent intent = new Intent(getApplicationContext(), MakeTeamActivity4.class);
+                        startActivity(intent);
+                    }
 
-                    Call<MakeTeamResponse> call2 = apiService.makeTeam(token, makeTeamRequest);
-                    call2.enqueue(new Callback<MakeTeamResponse>() {
-                        @Override
-                        public void onResponse(Call<MakeTeamResponse> call, Response<MakeTeamResponse> response) {
-                            MakeTeamResponse mtResponse = response.body();
-                            String msg = mtResponse.getMessage();
-                            // 연결 성공
-                            if(msg.equals("소모임을 생성하였습니다")) {
-                                // S3를 통한 사진 업로드
-                                File file = new File((getAbsolutePathFromUri(getApplicationContext(),uri)));
-                                uploadWithTransferUtility(file.getName(),file);
+                    else if (msg.equals("만료된 토큰입니다."))
+                    {
+                        /* 만료된 토큰 처리 **/
+                        ChangeJwt.updateJwtToken(MakeTeamActivity3.this);
+                        sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+                        String access_token = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
+                        RetrofitAPI apiService = RetrofitClientJwt.getApiService(access_token);
 
-                                // 다음 화면
-                                Intent intent = new Intent(getApplicationContext(), MakeTeamActivity4.class);
-                                startActivity(intent);
+                        Call<MakeTeamResponse> call2 = apiService.makeTeam(token, makeTeamRequest);
+                        call2.enqueue(new Callback<MakeTeamResponse>() {
+                            @Override
+                            public void onResponse(@NonNull Call<MakeTeamResponse> call, @NonNull Response<MakeTeamResponse> response) {
+                                MakeTeamResponse mtResponse = response.body();
+                                assert mtResponse != null;
+                                String msg = mtResponse.getMessage();
+                                // 연결 성공
+                                if(msg.equals("소모임을 생성하였습니다")) {
+                                    // s3를 통한 사진 업로드
+                                    S3Utils.uploadImageToS3(getApplicationContext(),uniqueFileNameWithExtension,imageFile);
+
+                                    // 다음 화면
+                                    Intent intent = new Intent(getApplicationContext(), MakeTeamActivity4.class);
+                                    startActivity(intent);
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onFailure(Call<MakeTeamResponse> call, Throwable t) {
-                            Log.d("MAKETEAMACITIVTY3", "만료된 토큰 연동 실패 ...");
-                        }
-                    });
+                            @Override
+                            public void onFailure(@NonNull Call<MakeTeamResponse> call, @NonNull Throwable t) {
+                                Log.d("MAKETEAMACITIVTY3", "만료된 토큰 연동 실패 ...");
+                            }
+                        });
+                    }
                 }
 
             }
 
             @Override
-            public void onFailure(Call<MakeTeamResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<MakeTeamResponse> call, @NonNull Throwable t) {
                 // 응답 실패 시
                 Log.d("MAKETEAMACTIVITY3", "응답 실패 ...");
             }
@@ -232,15 +229,13 @@ public class MakeTeamActivity3 extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             // API 레벨 23 이상 READ_EXTERNAL_STORAGE 권환 필요
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    // 권한 X - 요청
-                    ActivityCompat.requestPermissions(MakeTeamActivity3.this, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE_REQUEST);
-                } else {
-                    // 권한 O - 갤러리 접근
-                    Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    galleryLauncher.launch(intent);
-                }
+            if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                // 권한 X - 요청
+                ActivityCompat.requestPermissions(MakeTeamActivity3.this, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE_REQUEST);
+            } else {
+                // 권한 O - 갤러리 접근
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                galleryLauncher.launch(intent);
             }
         }
     };
@@ -252,11 +247,12 @@ public class MakeTeamActivity3 extends AppCompatActivity {
                 public void onActivityResult(ActivityResult result) {
                     // 선택된 이미지 처리
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                         uri = result.getData().getData();
+                        // 업로드할 이미지 파일의 uri
+                        Uri imageFileUri = result.getData().getData();
 
                         // Glide 를 통한 이미지 로딩
                         Glide.with(getApplicationContext())
-                                .load(uri)
+                                .load(imageFileUri)
                                 .transform(new RoundedCorners(10))
                                 .into(ivImageUpload);
 
@@ -266,22 +262,30 @@ public class MakeTeamActivity3 extends AppCompatActivity {
                         btnImageUploadRe.setVisibility(View.VISIBLE);
 
                         checkInputs();
+
+                        // 파일의 절대경로 Get
+                        String filePath = ImageUtils.getAbsolutePathFromUri(getApplicationContext(), imageFileUri);
+                        if (filePath != null) {
+                            // 선택한 사진을 파일로 변환
+                            imageFile = new File(filePath);
+                            // UUID를 사용하여 고유한 파일 이름 생성 ( 파일명.파일확장자.UUID)
+                            uniqueFileNameWithExtension = ImageUtils.generateUniqueFileName(filePath);
+                        }
                     }
                 }
             }
     );
 
-
     /** EditText focus 시 제목 색상 변경 **/
     private void setFocus(EditText editText, TextView textView, TextView textViewCnt) {
         editText.setOnFocusChangeListener((view, isFocused) -> {
             if(isFocused){
-                textView.setTextColor(getResources().getColor(R.color.main_dark_200));
-                textViewCnt.setTextColor(getResources().getColor(R.color.main_dark_200));
+                textView.setTextColor(ContextCompat.getColor(this,R.color.main_dark_200));
+                textViewCnt.setTextColor(ContextCompat.getColor(this,R.color.main_dark_200));
             }
             else{
-                textView.setTextColor(getResources().getColor(R.color.secondary_grey_black_7));
-                textViewCnt.setTextColor(getResources().getColor(R.color.secondary_grey_black_7));
+                textView.setTextColor(ContextCompat.getColor(this,R.color.secondary_grey_black_7));
+                textViewCnt.setTextColor(ContextCompat.getColor(this,R.color.secondary_grey_black_7));
             }
         });
     }
@@ -320,63 +324,5 @@ public class MakeTeamActivity3 extends AppCompatActivity {
         }
     }
 
-    /** AWS S3에 파일 업로드를 수행하는 메소드  **/
-    public void uploadWithTransferUtility(String fileName, File file) {
-
-        // accessKey 와 secretKey 를 사용하는 기본 자격 증명 객체
-        AWSCredentials awsCredentials = new BasicAWSCredentials("AKIA5L3BRFIIWLIJ62JQ", "xywH1VJjcAxp0xcEyFuVrOnknLp3XtWsyT2KaFEx");    // IAM 생성하며 받은 것 입력
-
-        // AWS S3 서비스와 상호 작용하기 위한 클라이언트 객체
-        AmazonS3Client s3Client = new AmazonS3Client(awsCredentials, Region.getRegion(Regions.AP_NORTHEAST_2));
-
-        // Amazon S3 전송 관리를 쉽게 할 수 있도록 하는 고급 API - for Image File Upload
-        TransferUtility transferUtility = TransferUtility.builder().s3Client(s3Client).context(getApplicationContext()).build();
-        TransferNetworkLossHandler.getInstance(getApplicationContext());
-        TransferObserver uploadObserver = transferUtility.upload("moing-images", fileName, file);    // (bucket api, file, file)
-
-        uploadObserver.setTransferListener(new TransferListener() {
-            @Override
-            public void onStateChanged(int id, TransferState state) {
-                //if (state == TransferState.COMPLETED) { // 업로드 성공 }
-            }
-
-            @Override
-            public void onProgressChanged(int id, long current, long total) {
-                int done = (int) (((double) current / total) * 100.0);
-                Log.d(TAG, "UPLOAD - - ID: $id, percent done = $done");
-            }
-
-            @Override
-            public void onError(int id, Exception ex) {
-                Log.d(TAG, "UPLOAD ERROR - - ID: $id - - EX:" + ex.toString());
-            }
-        });
-    }
-
-    /** Uri 에서 절대경로를 get하는 메소드**/
-    public static String getAbsolutePathFromUri(Context context, Uri uri) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            // Android Q 이상에서는 uri.getPath()가 /document/... 형태로 반환되므로
-            // getContentResolver().query()를 사용하여 실제 경로를 가져와야 합니다.
-            try (Cursor cursor = context.getContentResolver().query(uri, null, null, null)) {
-                if (cursor != null && cursor.moveToFirst()) {
-                    return cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA));
-                }
-            }
-        } else {
-            String[] projection = {MediaStore.Images.Media.DATA};
-            Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
-            if (cursor != null) {
-                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                if (cursor.moveToFirst()) {
-                    String path = cursor.getString(column_index);
-                    cursor.close();
-                    return path;
-                }
-                cursor.close();
-            }
-        }
-        return null;
-    }
 
 }

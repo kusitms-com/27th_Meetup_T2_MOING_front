@@ -49,45 +49,45 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-        private void setTeamList(){
-            // Token 을 가져오기 위한 SharedPreferences Token
-            SharedPreferences sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-            String jwtAccessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
-            Log.d(TAG, jwtAccessToken);
-            RetrofitAPI apiService = RetrofitClientJwt.getApiService(jwtAccessToken);
-            Call<TeamListResponse> call = apiService.getTeamList(jwtAccessToken);
-            call.enqueue(new Callback<TeamListResponse>() {
-                @Override
-                public void onResponse(@NonNull Call<TeamListResponse> call, @NonNull Response<TeamListResponse> response) {
-                    // 연결 성공
-                    if(response.isSuccessful()) {
-                        if (response.body() != null) {
-                            // 모임 리스트 가져오기
-                            teamList = response.body().getData().getTeamBlocks();
+    private void setTeamList() {
+        // Token 을 가져오기 위한 SharedPreferences Token
+        SharedPreferences sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        String jwtAccessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
+        Log.d(TAG, jwtAccessToken);
+        RetrofitAPI apiService = RetrofitClientJwt.getApiService(jwtAccessToken);
+        Call<TeamListResponse> call = apiService.getTeamList(jwtAccessToken);
+        call.enqueue(new Callback<TeamListResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<TeamListResponse> call, @NonNull Response<TeamListResponse> response) {
+                // 연결 성공
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        // 모임 리스트 가져오기
+                        teamList = response.body().getData().getTeamBlocks();
 
-                            // 진행 중인 모임 표시
-                            String curTeamText = "진행 중 모임 "+teamList.size();
-                            tvCurTeam.setText(curTeamText);
+                        // 진행 중인 모임 표시
+                        String curTeamText = "진행 중 모임 " + teamList.size();
+                        tvCurTeam.setText(curTeamText);
 
-                            // adapter 설정
-                            TeamAdapter teamAdapter = new TeamAdapter(teamList,getApplicationContext());
-                            viewpager.setAdapter(teamAdapter);
+                        // adapter 설정
+                        TeamAdapter teamAdapter = new TeamAdapter(teamList, getApplicationContext());
+                        viewpager.setAdapter(teamAdapter);
 
-                            // DotIndicator 설정
-                            dotsIndicator.setViewPager2(viewpager);
-                        }
+                        // DotIndicator 설정
+                        dotsIndicator.setViewPager2(viewpager);
                     }
-                    else if (response.message().equals("만료된 토큰입니다.")) {
-                        // 토큰 재발급 후 다시 호출
-                        ChangeJwt.updateJwtToken(MainActivity.this);
-                        setTeamList();
-                    }
+                } else if (response.message().equals("만료된 토큰입니다.")) {
+                    // 토큰 재발급 후 다시 호출
+                    ChangeJwt.updateJwtToken(MainActivity.this);
+                    setTeamList();
                 }
-                @Override
-                public void onFailure(@NonNull Call<TeamListResponse> call, @NonNull Throwable t) {
-                    // 응답 실패
-                    Log.d(TAG, "getTeamList Fail");
-                }
-            });
-        }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<TeamListResponse> call, @NonNull Throwable t) {
+                // 응답 실패
+                Log.d(TAG, "getTeamList Fail");
+            }
+        });
+    }
 }
