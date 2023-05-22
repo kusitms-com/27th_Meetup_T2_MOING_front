@@ -19,6 +19,9 @@ import com.example.moing.Response.InviteTeamResponse;
 import com.example.moing.Response.LoginResponse;
 import com.example.moing.Response.MakeTeamResponse;
 import com.example.moing.Response.AllNoticeResponse;
+import com.example.moing.Response.MissionClearResponse;
+import com.example.moing.Response.MissionInfoResponse;
+import com.example.moing.Response.MissionSkipResponse;
 import com.example.moing.Response.RegisterAddressResponse;
 import com.example.moing.Response.RegisterNameResponse;
 import com.example.moing.Response.TeamListResponse;
@@ -91,6 +94,19 @@ public interface RetrofitAPI {
     @POST("/api/v1/{teamId}/vote")
     Call<BoardMakeVoteResponse> makeVote(@Header("Authorization") String token, @Path("teamId") Long teamId, @Body BoardMakeVoteRequest boardMakeVoteRequest);
 
+
+    /** 미션 인증 **/
+    @POST("api/v1/{teamId}/missions/{missionId}/submit")
+    Call<MissionClearResponse> missionClear(@Header("Authorization") String token, @Path("teamId") Long teamId, @Path("missionId") Long missionId);
+
+    /** 미션 한 개 상세 조회 **/
+    @GET("api/v1/{teamId}/missions/{missionId}")
+    Call<MissionInfoResponse> getMission(@Header("Authorization") String token, @Path("teamId") Long teamId, @Path("missionId") Long missionId);
+
+    /** 미션 건너뛰기 **/
+    @POST("api/v1/{teamId}/missions/{missionId}/skip")
+    Call<MissionSkipResponse> skipMyMission(@Header("Authorization") String token, @Path("teamId") Long teamId, @Path("missionId") Long missionId, @Body String reason);
+
     /** 소모임 정보 조회 (수정을 위한 정보 조회) **/
     @GET("/api/v1/team/{teamId}")
     Call<TeamResponse> getTeam(@Header("Authorization") String token, @Path("teamId") Long teamId);
@@ -106,6 +122,4 @@ public interface RetrofitAPI {
     /** 초대 코드를 통한 소모임 참 **/
     @POST("/api/v1/team/join")
     Call<InviteTeamResponse> postAuthInvitationCode(@Header("Authorization") String token, @Body String invitationCode);
-
-
 }
