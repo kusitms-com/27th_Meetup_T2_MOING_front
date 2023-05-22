@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager2 viewpager;
     private DotsIndicator dotsIndicator;
     private TextView tvCurTeam;
+    private TextView tvNickName;
 
 
     @Override
@@ -38,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // 유저 닉네임
+        tvNickName = findViewById(R.id.main_tv_name);
         // 현재 소모임 수
         tvCurTeam = findViewById(R.id.main_tv_cur_team);
         // 소모임 목록 ViewPager
@@ -69,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
                 // 연결 성공
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
+                        // 닉네임 설정
+                        tvNickName.setText(response.body().getData().getUserNickName());
+
                         // 모임 리스트 가져오기
                         teamList = response.body().getData().getTeamBlocks();
 
