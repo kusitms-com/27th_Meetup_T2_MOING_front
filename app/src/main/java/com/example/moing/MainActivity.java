@@ -49,6 +49,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setTeamList();
+    }
+
+
     private void setTeamList() {
         // Token 을 가져오기 위한 SharedPreferences Token
         SharedPreferences sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);

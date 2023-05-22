@@ -162,7 +162,7 @@
                 android:textSize="18dp"
                 android:inputType="phone"
                 android:singleLine="true"
-                android:nextFocusDown="@id/btn_start"
+                android:nextFocusDown="@id/base_cardView"
                 android:maxLength="2"/>
 
             <TextView
@@ -176,33 +176,6 @@
                 android:text="20명 이내로 입력해주세요."
                 android:textColor="#F43A6F"
                 android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/tv_startDay"
-                android:layout_width="120dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="24dp"
-                android:fontFamily="@font/pretendard_medium"
-                android:text="소모임 시작일"
-                android:textColor="@color/secondary_grey_black_7"
-                android:textSize="16dp" />
-
-            <android.widget.Button
-                android:id="@+id/btn_start"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginRight="16dp"
-                android:background="@drawable/edittext_round_corner_rectangle"
-                android:drawableRight="@drawable/ic_calendar"
-                android:fontFamily="@font/pretendard_medium"
-                android:gravity="left"
-                android:hint="날짜를 선택해주세요"
-                android:textColorHint="@color/secondary_grey_black_7"
-                android:nextFocusDown="@id/btn_predict"
-                android:textSize="18dp" />
 
             <TextView
                 android:id="@+id/tv_predict"

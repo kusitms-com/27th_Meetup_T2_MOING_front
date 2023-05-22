@@ -139,27 +139,11 @@
                 android:id="@+id/board_fix_iv_image_upload"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:minWidth="330dp"
                 android:minHeight="220dp"
                 android:scaleType="fitXY"
-                android:visibility="gone"
                 app:srcCompat="@drawable/button_round_black12" />
-
-            <android.widget.Button
-                android:id="@+id/board_fix_btn_image_upload"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/button_round_black12"
-                android:drawableLeft="@drawable/ic_gallery"
-                android:drawablePadding="12dp"
-                android:minHeight="100dp"
-                android:paddingLeft="100dp"
-                android:paddingRight="100dp"
-                android:fontFamily="@font/pretendard_semi_bold"
-                android:text="사진 업로드하기"
-                android:textColor="@color/secondary_grey_black_6"
-                android:textSize="18dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -181,8 +165,7 @@
                 android:fontFamily="@font/pretendard_semi_bold"
                 android:text="다시 선택하기"
                 android:textColor="@color/secondary_grey_black_4"
-                android:textSize="18dp"
-                android:visibility="invisible"/>
+                android:textSize="18dp" />
 
         </LinearLayout>
     </ScrollView>
