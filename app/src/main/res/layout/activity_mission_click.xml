@@ -30,7 +30,7 @@
             android:layout_marginVertical="12.5dp"
             android:layout_marginLeft="32dp"
             android:fontFamily="@font/pretendard_semi_bold"
-            android:text="미션 제목"
+            android:text="제목"
             android:textColor="@color/secondary_grey_black_3"
             android:textSize="18dp" />
 
@@ -96,19 +96,39 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_state"
+            <RelativeLayout
+                android:id="@+id/relative_first"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="32dp"
                 android:background="@drawable/layout_top_round_black12"
-                android:backgroundTint="@color/secondary_grey_black_10"
-                android:fontFamily="@font/pretendard_semi_bold"
-                android:gravity="center"
-                android:text="아직 인증하지 않았어요!"
-                android:textColor="@color/secondary_grey_black_8"
-                android:textSize="20dp" />
+                android:backgroundTint="@color/secondary_grey_black_10">
+
+                <TextView
+                    android:id="@+id/tv_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/secondary_grey_black_10"
+                    android:fontFamily="@font/pretendard_semi_bold"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:text="아직 인증하지 않았어요!"
+                    android:textColor="@color/secondary_grey_black_8"
+                    android:textSize="20dp" />
+                
+                <ImageView
+                    android:id="@+id/iv_smile"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_toRightOf="@+id/tv_state"
+                    android:layout_marginLeft="10dp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_mission_clear"
+                    android:visibility="invisible"/>
+
+            </RelativeLayout>
+
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -152,21 +172,22 @@
                     android:textColor="@color/secondary_grey_black_1"
                     android:textSize="20dp" />
 
-                <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-                    android:id="@+id/mission_pic"
+                <ImageView
+                    android:id="@+id/iv_pic"
                     android:layout_width="match_parent"
                     android:layout_height="240dp"
                     android:layout_below="@+id/tv_title2"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="24dp"
                     android:background="@drawable/layout_round_radius8_black12"
-                    app:src="@drawable/ic_fire" />
+                    android:scaleType="centerCrop"
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/btn_fix"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/mission_pic"
+                    android:layout_below="@id/iv_pic"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="32dp"
@@ -174,7 +195,8 @@
                     android:fontFamily="@font/pretendard_semi_bold"
                     android:text="인증사진 수정하기"
                     android:textColor="@color/secondary_grey_black_5"
-                    android:textSize="18dp" />
+                    android:textSize="18dp"
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/btn_auth"
@@ -194,7 +216,7 @@
                     android:layout_width="160dp"
                     android:layout_height="60dp"
                     android:layout_below="@+id/tv_title2"
-                    android:layout_marginLeft="24dp"
+                    android:layout_marginLeft="8dp"
                     android:layout_marginTop="24dp"
                     android:layout_toRightOf="@+id/btn_auth"
                     android:backgroundTint="@color/secondary_grey_black_10"
@@ -204,6 +226,7 @@
                     android:textSize="18dp" />
 
                 <TextView
+                    android:id="@+id/tv_reason"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/btn_across"
@@ -283,6 +306,7 @@
                     android:textSize="16dp" />
 
                 <TextView
+                    android:id="@+id/tv_mission_rule"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tv_rule"

@@ -19,6 +19,13 @@
         android:theme="@style/Theme.Moing_Day"
         tools:targetApi="31">
         <activity
+            android:name=".mission.MissionPassActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".MissionReviseActivity"
             android:exported="false" />
         <activity
@@ -27,12 +34,8 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".mission.MissionClickActivity"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:exported="true">
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".NoticeInfoActivity"
@@ -60,8 +63,7 @@
             android:exported="false" />
         <activity
             android:name=".board.BoardActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true"></activity>
         <activity
             android:name=".team.MakeTeamActivity4"
             android:exported="false" />
@@ -127,7 +129,11 @@
         <activity
             android:name=".SplashActivity"
             android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".MainActivity"
