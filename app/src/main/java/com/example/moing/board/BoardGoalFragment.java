@@ -1,5 +1,7 @@
 package com.example.moing.board;
 
+import static com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,13 +10,6 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -29,7 +24,13 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.moing.NoticeVoteActivity;
 import com.example.moing.R;
 import com.example.moing.Response.BoardFireResponse;
@@ -39,8 +40,9 @@ import com.example.moing.Response.BoardNoReadVoteResponse;
 import com.example.moing.retrofit.ChangeJwt;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClientJwt;
+import com.example.moing.s3.DownloadImageCallback;
+import com.example.moing.s3.S3Utils;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,7 +89,7 @@ public class BoardGoalFragment extends Fragment {
 
         // Intent로 값 받기
         teamId = getActivity().getIntent().getLongExtra("teamId", 0);
-        Log.d(TAG, "teamId 값 : " + String.valueOf(teamId));
+        Log.d(TAG, "teamId 값 : " + teamId);
 
         // 버튼 클릭 리스너 객체 생성
         BtnOnClickListener btnOnClickListener = new BtnOnClickListener();
@@ -189,6 +191,13 @@ public class BoardGoalFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // 소모임 정보 수정 후 정보 업데이트
+        getApi();
+    }
+
     private class BtnOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
@@ -259,17 +268,30 @@ public class BoardGoalFragment extends Fragment {
                     Log.d("BOARDGOALFRAGMENT", remainPeriod);
                     Log.d("BOARDGOALFRAGMENT", nowTime);
 
+
+
                     // 소모임 이름 설정
                     teamName.setText(name);
-                    if (isAdded()) {
-                        Glide.with(getContext())
-                                .load(new File(profileImg))
-                                .into(teamImg);
-                    }
-//                    // 소모임 사진 설정
-//                    Glide.with(getContext())
-//                            .load(new File(profileImg))
-//                            .into(teamImg);
+
+                    // S3 이미지 다운로드 -> 이미지 뷰에 설정
+                    // 소모임 사진 설정
+                    S3Utils.downloadImageFromS3(profileImg, new DownloadImageCallback() {
+                        @Override
+                        public void onImageDownloaded(byte[] data) {
+                            runOnUiThread(() -> Glide.with(getContext())
+                                    .asBitmap()
+                                    .load(data)
+                                    .centerCrop()
+                                    .transform(new RoundedCorners(24))
+                                    .into(teamImg));
+                        }
+
+                        @Override
+                        public void onImageDownloadFailed() {
+
+                        }
+                    });
+
                     // D-Day 설정
                     teamDay.setText("종료 " + remainPeriod);
                     // nowTime 설정

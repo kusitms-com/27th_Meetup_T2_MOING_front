@@ -55,7 +55,7 @@ public class MakeTeamActivity3 extends AppCompatActivity {
     private ImageView ivProgressBar;
 
     //Intent Data
-    private String major, name, cnt, data, predictDate;
+    private String major, name, cnt, date, predictDate;
     private SharedPreferences sharedPreferences;
 
     private static final String PREF_NAME = "Token";
@@ -73,7 +73,7 @@ public class MakeTeamActivity3 extends AppCompatActivity {
         Intent intent = getIntent();
         name = intent.getStringExtra("name"); // 소모임 이름
         cnt = intent.getStringExtra("member"); // 소모임 구성원 수
-        data = intent.getStringExtra("startDate"); // 소모임 시작일
+        date = intent.getStringExtra("startDate"); // 소모임 시작일
         predictDate = intent.getStringExtra("predict"); // 소모임 예상 활동 기간
         major = intent.getStringExtra("major"); // 소모임 목표
 
@@ -149,9 +149,10 @@ public class MakeTeamActivity3 extends AppCompatActivity {
         }
 
         RetrofitAPI apiService = RetrofitClientJwt.getApiService(token);
+
         MakeTeamRequest makeTeamRequest = new MakeTeamRequest(category, etIntroduce.getText().toString(), name,
                 Integer.parseInt(period), Integer.parseInt(cnt), uniqueFileNameWithExtension,
-                etResolution.getText().toString(), data);
+                etResolution.getText().toString(), date);
 
         Call<MakeTeamResponse> call = apiService.makeTeam(token, makeTeamRequest);
         call.enqueue(new Callback<MakeTeamResponse>() {
