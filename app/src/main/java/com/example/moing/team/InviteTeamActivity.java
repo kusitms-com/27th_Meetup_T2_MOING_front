@@ -1,12 +1,17 @@
 package com.example.moing.team;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -16,14 +21,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.moing.R;
+import com.example.moing.Response.InviteTeamResponse;
+import com.example.moing.retrofit.ChangeJwt;
+import com.example.moing.retrofit.RetrofitAPI;
+import com.example.moing.retrofit.RetrofitClientJwt;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class InviteTeamActivity extends AppCompatActivity {
+    private static final String TAG = "InviteTeamActivity";
+    private static final String PREF_NAME = "Token";
+    private static final String JWT_ACCESS_TOKEN = "JWT_access_token";
     ImageButton btn_back;
     EditText et_code;
     Button btn_check, btn_realCheck;
     TextView tv_code, tv3, tv4;
     public String checkCode;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,34 +55,21 @@ public class InviteTeamActivity extends AppCompatActivity {
         tv4 = (TextView) findViewById(R.id.tv4);
 
         // 뒤로 가기 버튼
-        btn_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        btn_back.setOnClickListener(v -> finish());
 
         // 버튼 먼저 눌렀을 때 참여 코드 인증해달라고 Toast 문구 띄우기
-        btn_check.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "참여 코드를 입력해주세요.", Toast.LENGTH_SHORT).show();
-            }
-        });
+        btn_check.setOnClickListener(v -> Toast.makeText(getApplicationContext(), "참여 코드를 입력해주세요.", Toast.LENGTH_SHORT).show());
 
         // 코드 입력 버튼 눌렀을 때 참여코드 뜨게 하기
-        et_code.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    tv3.setVisibility(View.INVISIBLE);
-                    tv_code.setVisibility(View.VISIBLE);
-                    btn_check.setClickable(false);
-                    btn_check.setVisibility(View.INVISIBLE);
-                    btn_realCheck.setVisibility(View.VISIBLE);
-                }
-                return false;
+        et_code.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                tv3.setVisibility(View.INVISIBLE);
+                tv_code.setVisibility(View.VISIBLE);
+                btn_check.setClickable(false);
+                btn_check.setVisibility(View.INVISIBLE);
+                btn_realCheck.setVisibility(View.VISIBLE);
             }
+            return false;
         });
 
         // 한글자 이상 입력시 참여코드 뜨게 하기
@@ -87,27 +91,61 @@ public class InviteTeamActivity extends AppCompatActivity {
         });
 
         // 참여코드 인증버튼 클릭
-        btn_realCheck.setOnClickListener(new View.OnClickListener() {
+        btn_realCheck.setOnClickListener(v -> {
+            // POST 통신 후 값이 맞다면 인증화면으로 넘어가고, 아니면 빨간색으로 해주는 처리 해줘야된다.
+            // 지금은 다음 페이지 구현을 위해 임의로 값 지정하여 넘어간다 !!
+            checkCode = et_code.getText().toString();
+            putTeamUpdate(checkCode);
+        });
+    }
+
+    /**
+     * 입력한 초대코드 전달 -> 성공시 소모임 가입 완료
+     **/
+    private void putTeamUpdate(String invitationCode) {
+        // Token 을 가져오기 위한 SharedPreferences Token
+        SharedPreferences sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        String jwtAccessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
+        Log.d(TAG, jwtAccessToken);
+
+        RetrofitAPI apiService = RetrofitClientJwt.getApiService(jwtAccessToken);
+        Call<InviteTeamResponse> call = apiService.postAuthInvitationCode(jwtAccessToken,invitationCode);
+        call.enqueue(new Callback<InviteTeamResponse>() {
+            @SuppressLint("ShowToast")
             @Override
-            public void onClick(View v) {
-                // POST 통신 후 값이 맞다면 인증화면으로 넘어가고, 아니면 빨간색으로 해주는 처리 해줘야된다.
-                // 지금은 다음 페이지 구현을 위해 임의로 값 지정하여 넘어간다 !!
-
-                checkCode = et_code.getText().toString();
-                //Toast.makeText(getApplicationContext(), checkCode, Toast.LENGTH_SHORT).show();
-                if(checkCode.equals("hyunseok")) {
-                    Intent intent = new Intent(getApplicationContext(), InviteSuccessTeamActivity.class);
-                    startActivity(intent);
-                }
-
-                // 인증 결과가 틀린 경우
-                else {
+            public void onResponse(@NonNull Call<InviteTeamResponse> call, @NonNull Response<InviteTeamResponse> response) {
+                // 연결 성공
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        Log.d(TAG, response.body().toString());
+                        // 인증 완료
+                        Intent intent = new Intent(getApplicationContext(), InviteSuccessTeamActivity.class);
+                        startActivity(intent);
+                    }
+                } else {
+                    switch (response.message()){
+                        case "만료된 토큰입니다.":
+                            ChangeJwt.updateJwtToken(getApplicationContext());
+                            putTeamUpdate(invitationCode);
+                            break;
+                        case "이미 해당 소모임에 참여했습니다":
+                            Toast.makeText(getApplicationContext(), "이미 해당 소모임에 참여했습니다",Toast.LENGTH_SHORT).show();
+                            break;
+                        case "참여코드 값이 잘못되었습니다":
+                            Toast.makeText(getApplicationContext(), "참여코드 값이 잘못되었습니다",Toast.LENGTH_SHORT).show();
+                            break;
+                    }
                     tv_code.setTextColor(ContextCompat.getColorStateList(InviteTeamActivity.this, R.color.secondary_grey_black_7));
                     et_code.setBackgroundResource(R.drawable.edittext_checkcode_result_false);
                     tv4.setVisibility(View.VISIBLE);
                     et_code.setText(null);
                     btn_realCheck.setBackgroundResource(R.drawable.button_round_black12);
                 }
+            }
+            @Override
+            public void onFailure(@NonNull Call<InviteTeamResponse> call, @NonNull Throwable t) {
+                // 응답 실패
+                Log.d(TAG, "실패");
             }
         });
     }

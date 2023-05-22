@@ -5,9 +5,11 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,18 +17,39 @@ import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.moing.R;
+import com.example.moing.Response.InvitationCodeResponse;
+import com.example.moing.Response.TeamResponse;
+import com.example.moing.retrofit.ChangeJwt;
+import com.example.moing.retrofit.RetrofitAPI;
+import com.example.moing.retrofit.RetrofitClientJwt;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class BoardDotFragment extends BottomSheetDialogFragment {
+    private static final String TAG = "BoardDotFragment";
+    private static final String PREF_NAME = "Token";
+    private static final String JWT_ACCESS_TOKEN = "JWT_access_token";
     private Dialog inviteDialog;
     private Dialog inviteDialogImpossible;
+    private Long teamId;
+
+    public BoardDotFragment() {
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_board_dot, container, false);
+
+        // Intent로 값 받기
+        teamId = getActivity().getIntent().getLongExtra("teamId", 0);
 
         // 닫기 버튼
         ImageButton btnClose = view.findViewById(R.id.board_dot_btn_close);
@@ -52,31 +75,29 @@ public class BoardDotFragment extends BottomSheetDialogFragment {
 
         return view;
     }
+
     // 뒤로 가기
     View.OnClickListener closeClickListener = v -> dismiss();
 
     // 초대 코드 복사 팝업 띄우기
-    View.OnClickListener linkClickListener = v ->{
-        // 초대 코드 설정
-        showInviteDialogImpossible();
-        showInviteDialog();
+    View.OnClickListener linkClickListener = v -> {
+        getInvitationCode();
         dismiss();
     };
 
     // 소모임 정보 수정 액티비티 실행
-    View.OnClickListener fixClickListener = v -> {
-        Intent intent = new Intent(getContext(), BoardFixTeamActivity.class);
-        startActivity(intent);
-    };
+    View.OnClickListener fixClickListener = v -> getTeamInfo();
 
     // 초대 코드 복사 팝업
-    private void showInviteDialog(){
-        inviteDialog.show(); // 다이얼로그 띄우기
-        inviteDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); // 투명 배경
-
+    private void showInviteDialog(String invitationCode) {
         TextView tvInviteCode = inviteDialog.findViewById(R.id.board_invite_code_tv_code);
         ImageButton btnClose = inviteDialog.findViewById(R.id.board_invite_code_btn_close);
         ImageButton btnPaste = inviteDialog.findViewById(R.id.board_invite_code_btn_paste);
+
+        tvInviteCode.setText(invitationCode);
+
+        inviteDialog.show(); // 다이얼로그 띄우기
+        inviteDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); // 투명 배경
 
         // 창 닫기
         btnClose.setOnClickListener(v -> inviteDialog.dismiss());
@@ -95,11 +116,101 @@ public class BoardDotFragment extends BottomSheetDialogFragment {
         inviteDialogImpossible.show(); // 다이얼로그 띄우기
         inviteDialogImpossible.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); // 투명 배경
 
-        ImageButton btnClose =  inviteDialogImpossible.findViewById(R.id.board_invite_code_impossible_btn_close);
+        ImageButton btnClose = inviteDialogImpossible.findViewById(R.id.board_invite_code_impossible_btn_close);
         View llWhole = inviteDialogImpossible.findViewById(R.id.board_invite_code_impossible_ll);
 
         // 터치시 종료
-        llWhole.setOnClickListener(v->inviteDialogImpossible.dismiss());
-        btnClose.setOnClickListener(v->inviteDialogImpossible.dismiss());
+        llWhole.setOnClickListener(v -> inviteDialogImpossible.dismiss());
+        btnClose.setOnClickListener(v -> inviteDialogImpossible.dismiss());
+    }
+
+    /**
+     * 소모임 정보 조회 (소모임 정보 수정을 위한 조회, 소모임장만 가능)
+     **/
+    private void getTeamInfo() {
+        // Token 을 가져오기 위한 SharedPreferences Token
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        String jwtAccessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
+        Log.d(TAG, jwtAccessToken);
+
+        RetrofitAPI apiService = RetrofitClientJwt.getApiService(jwtAccessToken);
+        Call<TeamResponse> call = apiService.getTeam(jwtAccessToken, teamId);
+        call.enqueue(new Callback<TeamResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<TeamResponse> call, @NonNull Response<TeamResponse> response) {
+
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        // 연결 성공 -> 소모임 정보 수정 액티비티 실행 및 값 전달
+                        Log.d(TAG, response.body().toString());
+                        Intent intent = new Intent(getContext(), BoardFixTeamActivity.class);
+                        intent.putExtra("teamId",teamId);
+                        intent.putExtra("name", response.body().getData().getName());
+                        intent.putExtra("endDate", response.body().getData().getEndDate());
+                        intent.putExtra("profileImg", response.body().getData().getProfileImg());
+
+                        startActivity(intent);
+                    }
+                } else {
+                    switch (response.message()) {
+                        case "만료된 토큰입니다.":
+                            ChangeJwt.updateJwtToken(getContext());
+                            getTeamInfo();
+                            break;
+                        case "소모임장이 아니어서 할 수 없습니다.":
+                            showInviteDialogImpossible();
+                            break;
+                    }
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<TeamResponse> call, @NonNull Throwable t) {
+                // 응답 실패
+                Log.d(TAG, "getTeamList Fail");
+            }
+        });
+    }
+
+    /**
+     * 소모임 정보 조회 (소모임 정보 수정을 위한 조회, 소모임장만 가능)
+     **/
+    private void getInvitationCode() {
+        // Token 을 가져오기 위한 SharedPreferences Token
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        String jwtAccessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
+        Log.d(TAG, jwtAccessToken);
+
+        RetrofitAPI apiService = RetrofitClientJwt.getApiService(jwtAccessToken);
+        Call<InvitationCodeResponse> call = apiService.getInvitationCode(jwtAccessToken, teamId);
+        call.enqueue(new Callback<InvitationCodeResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<InvitationCodeResponse> call, @NonNull Response<InvitationCodeResponse> response) {
+                // 연결 성공
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        Log.d(TAG, response.body().toString());
+                        // 초대 코드 전달 (팝업 띄우기)
+                        showInviteDialog(response.body().getData().getInvitationCode());
+
+                    }
+                } else {
+                    switch (response.message()) {
+                        case "만료된 토큰입니다.":
+                            ChangeJwt.updateJwtToken(getContext());
+                            getTeamInfo();
+                            break;
+                        case "소모임장이 아니어서 할 수 없습니다.":
+                            showInviteDialogImpossible();
+                            break;
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<InvitationCodeResponse> call, @NonNull Throwable t) {
+                // 응답 실패
+                Log.d(TAG, "getTeamList Fail");
+            }
+        });
     }
 }
