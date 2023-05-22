@@ -93,7 +93,7 @@ public interface RetrofitAPI {
     Call<MissionListResponse> MissionList(@Header("Authorization") String token, @Path("teamId") Long teamId);
 
     /** 미션 생성 **/
-    @POST("api/v1/{teamId}/mission/new")
+    @POST("api/v1/{teamId}/missions")
     Call<MissionCreateResponse> makeMission(@Header("Authorization") String token, @Path("teamId") Long teamId, @Body MissionCreateRequest missionCreateRequest);
 
 }

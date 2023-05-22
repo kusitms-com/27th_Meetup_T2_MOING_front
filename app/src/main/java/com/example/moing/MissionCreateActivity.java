@@ -136,7 +136,12 @@ public class MissionCreateActivity extends AppCompatActivity {
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                                 // 사용자가 선택한 날짜 처리
                                 // year, monthOfYear, dayOfMonth 변수에 선택한 날짜 정보가 전달됨
-                                String selectedDate = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
+
+                                // 월과 일이 한 자리 수인 경우 앞에 0을 붙여줍니다.
+                                String monthString = (monthOfYear + 1) < 10 ? "0" + (monthOfYear + 1) : String.valueOf(monthOfYear + 1);
+                                String dayString = dayOfMonth < 10 ? "0" + dayOfMonth : String.valueOf(dayOfMonth);
+
+                                String selectedDate = year + "-" + monthString + "-" + dayString;
                                 et_calendar.setText(selectedDate);
                             }
                         }, year, month, day);

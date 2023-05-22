@@ -73,13 +73,14 @@ public class BoardMissionFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(requireContext(), MissionCreateActivity.class);
+                intent.putExtra("teamId", teamId);
                 startActivity(intent);
             }
         });
 
 
         /** 공지사항 **/
-        MissionList(teamId);  // 수정된 부분
+        MissionList(teamId);
 
         return view;
     }
@@ -103,7 +104,7 @@ public class BoardMissionFragment extends Fragment {
                     adapter.notifyDataSetChanged();
 
                     if (missionList.size() == 0) {
-                        // 공지사항이 없는 경우 처리
+                        // 미션이 없는 경우 처리
                     }
 
                     adapter.setOnItemClickListener(new MissionListAdapter.OnItemClickListener() {
