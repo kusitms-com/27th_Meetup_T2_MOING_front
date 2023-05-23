@@ -201,7 +201,7 @@ public class NoticeWriteActivity extends AppCompatActivity {
 
                     Long noticeId = noticeData.getNoticeId();
 
-                    Intent intent = new Intent(NoticeWriteActivity.this, NoticeVoteActivity.class);
+                    Intent intent = new Intent(NoticeWriteActivity.this, NoticeInfoActivity.class);
                     intent.putExtra("teamId", teamId);
                     intent.putExtra("noticeId", noticeId);
                     Log.d("공지생성", String.valueOf(noticeId));

@@ -50,7 +50,7 @@ public class BoardMissionFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private List<MissionListResponse.MissionData> missionList;  // 추가된 부분
 
-    Long teamId;
+    Long teamId, missionId;
 
     TextView et_content;
     ImageView createBtn;
@@ -122,8 +122,6 @@ public class BoardMissionFragment extends Fragment {
                         @Override
                         public void onItemClick(int pos) {
                             /** 해당 공지사항으로 이동 **/
-                            String s = pos + "번 미션 선택!";
-                            Toast.makeText(requireContext(), s, Toast.LENGTH_SHORT).show();
                         }
                     });
                 } else if (msg.equals("만료된 토큰입니다.")) {
