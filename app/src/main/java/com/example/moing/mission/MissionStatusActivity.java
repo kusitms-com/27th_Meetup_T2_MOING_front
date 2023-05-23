@@ -1,15 +1,20 @@
 package com.example.moing.mission;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,6 +48,9 @@ public class MissionStatusActivity extends AppCompatActivity implements Serializ
     private Fragment fragmentUnDone;
     private TabLayout tabs;
 
+    private long teamId = 1;
+    private long missionId = 6;
+
 
 
     @Override
@@ -67,6 +75,16 @@ public class MissionStatusActivity extends AppCompatActivity implements Serializ
 
         // TabLayout - 인증 완료 / 인증 미완료
         tabs = findViewById(R.id.mission_status_tl);
+
+        // 보러가기 - 미션 인증하기로 이동
+        Button btnGo = findViewById(R.id.mission_status_btn_go);
+        btnGo.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(),MissionClickActivity.class);
+            intent.putExtra("teamId",teamId);
+            intent.putExtra("missionId",missionId);
+            startActivity(intent);
+            finish();
+        });
 
         // 더미 - 삭제 예정
         long teamId = 1;
@@ -194,6 +212,9 @@ public class MissionStatusActivity extends AppCompatActivity implements Serializ
             }
 
             if (showFragment != null && hideFragment != null) {
+                if(showFragment == fragmentUnDone)
+                    showCustomToast();
+
                 getSupportFragmentManager().beginTransaction()
                         .show(showFragment)
                         .hide(hideFragment)
@@ -228,4 +249,20 @@ public class MissionStatusActivity extends AppCompatActivity implements Serializ
         }
 
     }
+
+    // 커스텀 Toast 메시지 표시
+    public void showCustomToast() {
+        // 커스텀 레이아웃 파일 인플레이션
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.custom_toast_mission_undone, null);
+
+        // Toast 객체 생성 및 커스텀 레이아웃 설정
+        Toast toast = new Toast(getApplicationContext());
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setView(layout);
+
+        // Toast 메시지 표시
+        toast.show();
+    }
+
 }

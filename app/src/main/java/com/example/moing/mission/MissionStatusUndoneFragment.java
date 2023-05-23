@@ -16,6 +16,7 @@ import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -141,6 +142,8 @@ public class MissionStatusUndoneFragment extends Fragment {
             // 불 던지기 api 통신
             postThrowFire(mission.getUserMissionId());
 
+            showCustomToast(mission.getNickname());
+
             undoneDialog.dismiss();
         });
     }
@@ -176,4 +179,20 @@ public class MissionStatusUndoneFragment extends Fragment {
         });
     }
 
+    // 커스텀 Toast 메시지 표시
+    public void showCustomToast(String nickName) {
+        // 커스텀 레이아웃 파일 인플레이션
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.custon_toast_throw_fire, null);
+        TextView tvNickName = layout.findViewById(R.id.custom_toast_tv_nickname);
+        tvNickName.setText(nickName);
+
+        // Toast 객체 생성 및 커스텀 레이아웃 설정
+        Toast toast = new Toast(getContext());
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setView(layout);
+
+        // Toast 메시지 표시
+        toast.show();
+    }
 }
