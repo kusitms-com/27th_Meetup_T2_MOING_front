@@ -1,10 +1,10 @@
-package com.example.moing.board;
+package com.example.moing.Response;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class VoteInfo {
+public class BoardVoteInfoResponse {
     @SerializedName("statusCode")
     private int statusCode;
 
@@ -17,28 +17,14 @@ public class VoteInfo {
     public int getStatusCode() {
         return statusCode;
     }
-
-    public void setStatusCode(int statusCode) {
-        this.statusCode = statusCode;
-    }
-
     public String getMessage() {
         return message;
     }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
     public voteData getData() {
         return data;
     }
 
-    public void setData(voteData data) {
-        this.data = data;
-    }
-
-    public VoteInfo(int statusCode, String message, voteData data) {
+    public BoardVoteInfoResponse(int statusCode, String message, voteData data) {
         this.statusCode = statusCode;
         this.message = message;
         this.data = data;
@@ -56,7 +42,7 @@ public class VoteInfo {
         private String createdDate;
 
         @SerializedName("userId")
-        private int userId;
+        private Long userId;
 
         @SerializedName("nickName")
         private String nickName;
@@ -70,73 +56,54 @@ public class VoteInfo {
         @SerializedName("voteChoices")
         private List<VoteChoice> voteChoices;
 
+        @SerializedName("multiple")
+        private boolean multiple;
+
+        @SerializedName("anonymous")
+        private boolean anonymous;
+
         public String getTitle() {
             return title;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
         }
 
         public String getMemo() {
             return memo;
         }
 
-        public void setMemo(String memo) {
-            this.memo = memo;
-        }
-
         public String getCreatedDate() {
             return createdDate;
         }
 
-        public void setCreatedDate(String createdDate) {
-            this.createdDate = createdDate;
-        }
-
-        public int getUserId() {
+        public Long getUserId() {
             return userId;
-        }
-
-        public void setUserId(int userId) {
-            this.userId = userId;
         }
 
         public String getNickName() {
             return nickName;
         }
 
-        public void setNickName(String nickName) {
-            this.nickName = nickName;
-        }
-
         public String getUserImageUrl() {
             return userImageUrl;
         }
-
-        public void setUserImageUrl(String userImageUrl) {
-            this.userImageUrl = userImageUrl;
-        }
-
         public List<String> getNotReadUsersNickName() {
             return notReadUsersNickName;
         }
 
-        public void setNotReadUsersNickName(List<String> notReadUsersNickName) {
-            this.notReadUsersNickName = notReadUsersNickName;
+        public boolean isMultiple() {
+            return multiple;
+        }
+
+        public boolean isAnonymous() {
+            return anonymous;
         }
 
         public List<VoteChoice> getVoteChoices() {
             return voteChoices;
         }
 
-        public void setVoteChoices(List<VoteChoice> voteChoices) {
-            this.voteChoices = voteChoices;
-        }
-
         /** voteData 생성자 **/
-        public voteData(String title, String memo, String createdDate, int userId, String nickName,
-                    String userImageUrl, List<String> notReadUsersNickName, List<VoteChoice> voteChoices) {
+        public voteData(String title, String memo, String createdDate, Long userId, String nickName, String userImageUrl,
+                        List<String> notReadUsersNickName, List<VoteChoice> voteChoices, boolean multiple, boolean anonymous) {
             this.title = title;
             this.memo = memo;
             this.createdDate = createdDate;
@@ -145,6 +112,8 @@ public class VoteInfo {
             this.userImageUrl = userImageUrl;
             this.notReadUsersNickName = notReadUsersNickName;
             this.voteChoices = voteChoices;
+            this.multiple = multiple;
+            this.anonymous = anonymous;
         }
     }
 
@@ -172,24 +141,12 @@ public class VoteInfo {
             return content;
         }
 
-        public void setContent(String content) {
-            this.content = content;
-        }
-
         public int getNum() {
             return num;
         }
 
-        public void setNum(int num) {
-            this.num = num;
-        }
-
         public List<String> getVoteUserNickName() {
             return voteUserNickName;
-        }
-
-        public void setVoteUserNickName(List<String> voteUserNickName) {
-            this.voteUserNickName = voteUserNickName;
         }
 
         public VoteChoice(String content, int num, List<String> voteUserNickName) {

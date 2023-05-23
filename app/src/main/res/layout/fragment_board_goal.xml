@@ -96,26 +96,28 @@
             <RelativeLayout
                 android:id="@+id/relative_second"
                 android:layout_width="match_parent"
-                android:layout_height="280dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/relative_first"
                 android:background="@color/secondary_grey_black_13">
 
                 <ImageView
                     android:id="@+id/iv_fire"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="240dp"
+                    android:scaleType="centerCrop"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="16dp"
                     android:background="@drawable/ic_board_fire4_3x" />
 
                 <TextView
+                    android:id="@+id/tv_hot"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/iv_fire"
                     android:layout_marginVertical="16dp"
+                    android:layout_marginBottom="24dp"
                     android:fontFamily="@font/pretendard_medium"
                     android:gravity="center"
-                    android:text="HOT 모임! 아 핫핫 모임! 🔥"
                     android:textColor="@color/secondary_grey_black_2"
                     android:textSize="20dp" />
             </RelativeLayout>
@@ -124,6 +126,7 @@
                 android:layout_below="@+id/relative_second"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
+
                 android:background="@drawable/layout_bottom_round_black12">
 
                 <TextView

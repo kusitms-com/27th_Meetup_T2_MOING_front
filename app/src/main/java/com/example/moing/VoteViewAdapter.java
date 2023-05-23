@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.moing.Response.AllVoteResponse;
 
 import java.util.List;
@@ -50,6 +52,7 @@ public class VoteViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         VoteViewHolder vh = (VoteViewHolder) holder;
 
         /** 이미지 빼고 연동했습니다. **/
+        Glide.with(context).load(item.getUserImageUrl()).into(vh.image);
         vh.image.setBackgroundResource(R.drawable.notice_profile); // 닉네임
         vh.name.setText(item.getNickName()); // 이름
         vh.crown.setBackgroundResource(R.drawable.notice_crown); // 왕관

@@ -9,14 +9,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moing.R;
+import com.example.moing.Response.BoardVoteInfoResponse;
 
 import java.util.List;
 
 public class VoteInfoAdapterSecond extends RecyclerView.Adapter<VoteInfoAdapterSecond.VoteSecondViewHolder> {
-    private List<VoteInfo.VoteChoice> items; // 리사이클러뷰 안에 들어갈 값 저장
-    private List<String> userList;
+    private List<BoardVoteInfoResponse.VoteChoice> items; // 리사이클러뷰 안에 들어갈 값 저장
+    private List<List<String>> userList;
 
-    public VoteInfoAdapterSecond(List<VoteInfo.VoteChoice> items, List<String> userList) {
+    public VoteInfoAdapterSecond(List<BoardVoteInfoResponse.VoteChoice> items, List<List<String>> userList) {
         this.items = items;
         this.userList = userList;
     }
@@ -31,13 +32,19 @@ public class VoteInfoAdapterSecond extends RecyclerView.Adapter<VoteInfoAdapterS
 
     @Override
     public void onBindViewHolder(@NonNull VoteInfoAdapterSecond.VoteSecondViewHolder holder, int position) {
-        String user = userList.get(position);
+        /** 해당 위치의 사용자 데이터를 가져와 ViewHolder에 바인딩 **/
+        String user = getUserForPosition(position);
         holder.name.setText(user);
     }
 
+    /** 투표를 한 사람들의 모든 수를 반환한다. **/
     @Override
     public int getItemCount() {
-        return userList.size();
+        int totalItemCount = 0;
+        for (List<String> userList : userList) {
+            totalItemCount += userList.size();
+        }
+        return totalItemCount;
     }
 
     public class VoteSecondViewHolder extends RecyclerView.ViewHolder {
@@ -47,5 +54,17 @@ public class VoteInfoAdapterSecond extends RecyclerView.Adapter<VoteInfoAdapterS
 
             name = itemView.findViewById(R.id.tv_recycle_name);
         }
+    }
+
+    /** 이중 List에서 position 값을 통해 사용자 하나의 데이터를 가져온다 **/
+    private String getUserForPosition(int position) {
+        int count = 0;
+        for (List<String> userList : userList) {
+            if (position < count + userList.size()) {
+                return userList.get(position - count);
+            }
+            count += userList.size();
+        }
+        return null;
     }
 }

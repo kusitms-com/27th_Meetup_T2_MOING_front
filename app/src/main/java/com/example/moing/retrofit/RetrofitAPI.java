@@ -12,6 +12,8 @@ import com.example.moing.Response.BoardMakeVoteResponse;
 import com.example.moing.Response.BoardMoimResponse;
 import com.example.moing.Response.BoardNoReadNoticeResponse;
 import com.example.moing.Response.BoardNoReadVoteResponse;
+import com.example.moing.Response.BoardVoteCommentResponse;
+import com.example.moing.Response.BoardVoteInfoResponse;
 import com.example.moing.Response.ChangeJwtResponse;
 import com.example.moing.Response.CheckAdditionalInfo;
 import com.example.moing.Response.InvitationCodeResponse;
@@ -93,6 +95,16 @@ public interface RetrofitAPI {
     /** 투표 생성 **/
     @POST("/api/v1/{teamId}/vote")
     Call<BoardMakeVoteResponse> makeVote(@Header("Authorization") String token, @Path("teamId") Long teamId, @Body BoardMakeVoteRequest boardMakeVoteRequest);
+
+    /** 투표 결과 상세(하나만) 조회 **/
+    @GET("/api/v1/{teamId}/vote/{voteId}")
+    Call<BoardVoteInfoResponse> voteDetailInfo(@Header("Authorization") String token, @Path("teamId") Long teamId, @Path("voteId") Long voteId);
+
+    /**
+     * 투표 댓글 목록 조회
+     **/
+    @GET("/api/v1/{teamId}/vote/{voteId}/comment")
+    Call<BoardVoteCommentResponse> voteCommentInfo(@Header("Authorization") String token, @Path("teamId") Long teamId, @Path("voteId") Long voteId);
 
 
     /** 미션 인증 **/

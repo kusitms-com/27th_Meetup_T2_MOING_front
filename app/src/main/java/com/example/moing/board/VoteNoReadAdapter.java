@@ -33,7 +33,7 @@ public class VoteNoReadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        // VoteInfo.voteData voteData = noReadList.get(position);
+        // BoardVoteInfoResponse.voteData voteData = noReadList.get(position);
         String item_name = noReadList.get(position);
         VoteNoReadAdapter.VoteNoReadViewHolder vh = ( VoteNoReadAdapter.VoteNoReadViewHolder) holder;
         vh.name.setText(item_name);

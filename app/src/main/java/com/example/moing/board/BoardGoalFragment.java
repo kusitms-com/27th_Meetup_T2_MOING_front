@@ -55,7 +55,7 @@ public class BoardGoalFragment extends Fragment {
 
     ScrollView scroll;
     TextView teamName, curDate, userName, tv_toggle, tv_all, tv_all2;
-    TextView btn_notice, btn_vote;
+    TextView btn_notice, btn_vote, tv_hot;
     ImageView notice_sign, vote_sign;
     ImageButton dot, down;
     ImageView teamImg, btnRefresh, fire, imgTeam, imgUser;
@@ -110,6 +110,8 @@ public class BoardGoalFragment extends Fragment {
         btnRefresh = view.findViewById(R.id.imgBtn_refresh);
         // 불 이미지
         fire = view.findViewById(R.id.iv_fire);
+        // 불 텍스트
+        tv_hot = view.findViewById(R.id.tv_hot);
         // 유저 닉네임 텍스트뷰
         userName = view.findViewById(R.id.tv_userHere);
         // 팀 불 프로그레스 이미지
@@ -329,8 +331,11 @@ public class BoardGoalFragment extends Fragment {
                 Log.d(TAG, msg);
 
                 if (msg.equals("개인별 개인별 미션 인증 현황 조회 성공")) {
-                    Long data = fireResponse.getData();
-                    checkFire(data);
+                    BoardFireResponse.Data data = fireResponse.getData();
+                    checkFire(data.getPercent());
+                    Log.d(TAG, data.getFireCopy());
+                    tv_hot.setText(data.getFireCopy());
+
                 } else if (msg.equals("만료된 토큰입니다.")) {
                     ChangeJwt.updateJwtToken(requireContext());
                     apiFire();
@@ -481,7 +486,6 @@ public class BoardGoalFragment extends Fragment {
         ColorStateList co = ColorStateList.valueOf(requireContext().getResources().getColor(R.color.secondary_grey_black_1));
         ColorStateList co2 = ColorStateList.valueOf(requireContext().getResources().getColor(R.color.secondary_grey_black_13));
 
-        Log.d(TAG, "수행완료1");
         // List의 개수가 0개일 때
         if (num ==0) {
             recyclerView.setVisibility(View.GONE);
@@ -490,36 +494,30 @@ public class BoardGoalFragment extends Fragment {
             tv_all.setVisibility(View.VISIBLE);
             tv_all2.setVisibility(View.VISIBLE);
 
-            Log.d(TAG, "수행완료2");
             if(str.equals("공지")) {
                 notice_sign.setVisibility(View.INVISIBLE);
                 btn_notice.setBackgroundTintList(co);
                 btn_vote.setBackgroundTintList(co2);
-                Log.d(TAG, "수행완료3");
             }
             else {
                 vote_sign.setVisibility(View.INVISIBLE);
                 btn_notice.setBackgroundTintList(co2);
                 btn_vote.setBackgroundTintList(co);
-                Log.d(TAG, "수행완료4");
             }
         }
 
         // List의 개수가 한 개 이상일 때
         else {
-            Log.d(TAG, "수행완료5");
             recyclerView.setVisibility(View.VISIBLE);
             tv_all.setVisibility(View.GONE);
             tv_all2.setVisibility(View.GONE);
 
             if(str.equals("공지")) {
-                Log.d(TAG, "수행완료6");
                 notice_sign.setVisibility(View.VISIBLE);
                 btn_notice.setBackgroundTintList(co);
                 btn_vote.setBackgroundTintList(co2);
             }
             else {
-                Log.d(TAG, "수행완료7");
                 vote_sign.setVisibility(View.VISIBLE);
                 btn_notice.setBackgroundTintList(co2);
                 btn_vote.setBackgroundTintList(co);

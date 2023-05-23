@@ -27,6 +27,7 @@ import com.example.moing.Response.AllNoticeResponse;
 import com.example.moing.Response.AllVoteResponse;
 import com.example.moing.board.BoardActivity;
 import com.example.moing.board.BoardMakeVote;
+import com.example.moing.board.VoteInfoActivity;
 import com.example.moing.retrofit.ChangeJwt;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClientJwt;
@@ -237,9 +238,16 @@ public class NoticeVoteActivity extends AppCompatActivity {
                     mRecyclerView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
 
-                    if(noticeList.size() == 0) {
+                    /** 리사이클러뷰 아이템 클릭 이벤트 처리 **/
+                    adapter.setOnItemClickListener(new NoticeViewAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(int pos) {
+                            String s = pos + "번 아이템 선택!!";
+                            Toast.makeText(NoticeVoteActivity.this, s, Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
-                    }
+
                     Long num = noticeResponse.getData().getNotReadNum();
                     checkNoRead(num, "공지");
 
@@ -282,8 +290,31 @@ public class NoticeVoteActivity extends AppCompatActivity {
                     mRecyclerView2.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
 
+                    List<Long> voteIdList = new ArrayList<>();
+                    for (AllVoteResponse.VoteBlock v : voteList) {
+                        voteIdList.add(v.getVoteId());
+                        Log.d(TAG, String.valueOf(v.getVoteId()));
+                    }
+                    Log.d(TAG, "총 투표 목록 개수 : " + String.valueOf(voteIdList.size()));
+
+                    /** **/
+                    adapter.voteClickListener(new NoticeViewAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(int pos) {
+                            /** 해당 투표로 이동 **/
+                            String s = pos + "번 메뉴 선택!";
+                            Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+
+                            Long voteId = voteIdList.get(pos);
+                            Intent intent = new Intent(NoticeVoteActivity.this, VoteInfoActivity.class);
+                            intent.putExtra("voteId", voteId);
+                            intent.putExtra("teamId", teamId);
+                            startActivity(intent);
+                        }
+                    });
+
                     Long num = voteResponse.getData().getNotReadNum();
-                    checkNoRead(num, "공지");
+                    checkNoRead(num, "투표");
                 }
                 else if (msg.equals("만료된 토큰입니다.")) {
                     ChangeJwt.updateJwtToken(NoticeVoteActivity.this);

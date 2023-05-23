@@ -3,9 +3,9 @@ package com.example.moing.Response;
 public class BoardFireResponse {
     private int statusCode;
     private String message;
-    private Long data;
+    private Data data;
 
-    public BoardFireResponse(int statusCode, String message, Long data) {
+    public BoardFireResponse(int statusCode, String message, Data data) {
         this.statusCode = statusCode;
         this.message = message;
         this.data = data;
@@ -19,7 +19,25 @@ public class BoardFireResponse {
         return message;
     }
 
-    public Long getData() {
+    public Data getData() {
         return data;
+    }
+
+    public static class Data {
+        private Long percent;
+        private String fireCopy;
+
+        public Data(Long percent, String fireCopy) {
+            this.percent = percent;
+            this.fireCopy = fireCopy;
+        }
+
+        public Long getPercent() {
+            return percent;
+        }
+
+        public String getFireCopy() {
+            return fireCopy;
+        }
     }
 }
