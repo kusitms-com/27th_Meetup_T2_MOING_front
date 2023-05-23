@@ -8,9 +8,10 @@
 
     <ImageView
         android:id="@+id/mission_done_iv_archive"
-        android:layout_width="160dp"
+        android:layout_width="match_parent"
         android:layout_height="144dp"
-        android:background="@drawable/ic_board_fire4_3x"
+        android:src="@drawable/ic_board_fire4_3x"
+        android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>

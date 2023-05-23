@@ -22,6 +22,7 @@ import com.example.moing.Response.AllNoticeResponse;
 import com.example.moing.Response.MissionClearResponse;
 import com.example.moing.Response.MissionInfoResponse;
 import com.example.moing.Response.MissionSkipResponse;
+import com.example.moing.Response.MissionStatusListResponse;
 import com.example.moing.Response.RegisterAddressResponse;
 import com.example.moing.Response.RegisterNameResponse;
 import com.example.moing.Response.TeamListResponse;
@@ -119,7 +120,15 @@ public interface RetrofitAPI {
     @PUT("/api/v1/team/{teamId}")
     Call<TeamUpdateResponse> putTeamUpdate(@Header("Authorization") String token, @Path("teamId") Long teamId, @Body TeamUpdateRequest teamUpdateRequest);
 
-    /** 초대 코드를 통한 소모임 참 **/
+    /** 초대 코드를 통한 소모임 참여 **/
     @POST("/api/v1/team/join")
     Call<InviteTeamResponse> postAuthInvitationCode(@Header("Authorization") String token, @Body String invitationCode);
+
+    /** 미션 인증 현황들 조회 **/
+    @GET("/api/v1/{teamId}/missions/{missionId}/status")
+    Call<MissionStatusListResponse> getMissionStatusList(@Header("Authorization") String token, @Path("teamId") Long teamId, @Path("missionId") Long missionId);
+
+    /** 불 던지기 **/
+    @POST("api/v1/{teamId}/missions/{missionId}/fire/{usermissionId}")
+    Call<String> postThrowFire(@Header("Authorization") String token, @Path("teamId") Long teamId, @Path("missionId") Long missionId, @Path("usermissionId") Long usermissionId);
 }

@@ -1,11 +1,14 @@
 package com.example.moing.mission;
 
 import android.app.Dialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,30 +22,71 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moing.R;
+import com.example.moing.Response.MissionStatusListResponse;
+import com.example.moing.retrofit.ChangeJwt;
+import com.example.moing.retrofit.RetrofitAPI;
+import com.example.moing.retrofit.RetrofitClientJwt;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MissionStatusUndoneFragment extends Fragment {
+    private static final String TAG = "MissionStatusUndoneFragment";
+    private static final String PREF_NAME = "Token";
+    private static final String JWT_ACCESS_TOKEN = "JWT_access_token";
     private Dialog undoneDialog;
+    private ArrayList<MissionStatusListResponse.UserMission> undoneList;
+    private ArrayList<Integer> fireList;
+    private MissionUndoneAdapter adapter;
+
+    // 더미 - 삭제 예정
+    private long teamId;
+    private long missionId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_mission_status_undone, container, false);
 
-        List<Mission> missionList = new ArrayList<>();
-        missionList.add(new Mission(1,"1","img","COMPELTE","archive","submitDate"));
-        missionList.add(new Mission(2,"1","img","COMPELTE","archive","submitDate"));
-        missionList.add(new Mission(4,"1","img","PENDING","archive","submitDate"));
-        missionList.add(new Mission(1,"1","img","PENDING","archive","submitDate"));
-        missionList.add(new Mission(1,"1","img","COMPELTE","archive","submitDate"));
-        missionList.add(new Mission(2,"1","img","COMPELTE","archive","submitDate"));
-        missionList.add(new Mission(4,"1","img","PENDING","archive","submitDate"));
-        missionList.add(new Mission(1,"1","img","PENDING","archive","submitDate"));
+        // 더미 - 삭제 예정
+        teamId = 1;
+        missionId = 6;
+
+        // MissionStatusActivity에서 전달받은 인증 미완료 리스트
+        Bundle bundle = getArguments();
+        undoneList = (ArrayList<MissionStatusListResponse.UserMission>) (bundle != null ? bundle.getSerializable("undoneList") : null);
+
+        // MissionStatusActivity에서 전달받은 인증 완료 리스트
+        fireList = (ArrayList<Integer>) (bundle != null ? bundle.getSerializable("fireList") : null);
 
         // 리사이클러뷰
         RecyclerView recyclerView = rootView.findViewById(R.id.mission_status_undone_rv);
+        setupRecyclerView(recyclerView);
 
+        // 미완료 인원 수 설정
+        TextView tvNum = rootView.findViewById(R.id.mission_status_undone_tv_num);
+        int size = undoneList != null ? undoneList.size() : 0;
+        String text = size+"명";
+        tvNum.setText(text);
+
+        // 미완료 0명 - 모두 완료 했을 경우 이미지
+        ImageView ivDoneAll = rootView.findViewById(R.id.mission_status_undone_iv_done_all);
+        if(size == 0)
+            ivDoneAll.setVisibility(View.VISIBLE);
+        else
+            ivDoneAll.setVisibility(View.GONE);
+
+        // 미션 건너뛰기 다이얼로그
+        undoneDialog = new Dialog(getContext());
+        undoneDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // 타이틀 제거
+        undoneDialog.setContentView(R.layout.fragment_mission_status_undone_popup); // xml 레이아웃 파일 연결
+
+        return rootView;
+    }
+
+    private void setupRecyclerView(RecyclerView recyclerView) {
         // 리사이클러뷰에 사용할 레이아웃매니저 - Grid 2개의 열
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
         recyclerView.setLayoutManager(layoutManager);
@@ -57,31 +101,14 @@ public class MissionStatusUndoneFragment extends Fragment {
         });
 
         // 리사이클러뷰에 사용할 어댑터 설정
-        MissionUndoneAdapter adapter = new MissionUndoneAdapter(missionList);
+        adapter = new MissionUndoneAdapter(undoneList, fireList, getContext());
         recyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener(this::showUndoneDialog);
-
-        TextView tvNum = rootView.findViewById(R.id.mission_status_undone_tv_num);
-        String text = missionList.size()+"명";
-        tvNum.setText(text);
-
-        // 미완료 0명 - 모두 완료 했을 경우 이미지
-        ImageView ivDoneAll = rootView.findViewById(R.id.mission_status_undone_iv_done_all);
-        if(missionList.size() == 0)
-            ivDoneAll.setVisibility(View.VISIBLE);
-        else
-            ivDoneAll.setVisibility(View.GONE);
-
-        // 미션 건너뛰기 다이얼로그
-        undoneDialog = new Dialog(getContext());
-        undoneDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // 타이틀 제거
-        undoneDialog.setContentView(R.layout.fragment_mission_status_undone_popup); // xml 레이아웃 파일 연결
-
-        return rootView;
     }
 
+
     // 미완료 상태 다이얼로그 띄우기 - 불 던지기 다이얼로그
-    private void showUndoneDialog(ImageView ivProfile, ImageView ivFire, int position){
+    private void showUndoneDialog(MissionUndoneAdapter.UndoneViewHolder holder, int position, MissionStatusListResponse.UserMission mission){
         undoneDialog.show(); // 다이얼로그 띄우기
         undoneDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); // 투명 배경
 
@@ -89,18 +116,63 @@ public class MissionStatusUndoneFragment extends Fragment {
         ImageButton btnThrow = undoneDialog.findViewById(R.id.mission_status_undone_popup_btn_throw);
         TextView tvThrow = undoneDialog.findViewById(R.id.mission_status_undone_popup_tv_throw);
 
+        // 누가 누구에게 던지는지 표시
+        String text = mission.getNickname()+"님이 아직 미션을 완료하지 못했네요!\n" + mission.getNickname()+"님의 발등에 불을 떨어트려볼까요?";
+        tvThrow.setText(text);
+
         // 창 닫기
         btnClose.setOnClickListener(v -> undoneDialog.dismiss());
 
         // 불 던지기
         btnThrow.setOnClickListener(v -> {
             // 맞은 사람 표시
-            ivProfile.setColorFilter(Color.parseColor("#2C0E0E9C"));
-            ivFire.setVisibility(View.VISIBLE);
+            holder.ivProfile.setColorFilter(Color.parseColor("#2C0E0E9C"));
+            holder.ivFire.setVisibility(View.VISIBLE);
 
-            // 불 맞은 리스트에 해당 아이템 추가 - 리스트에 추가해서 전달 - 구현예정
+            // 불 맞은 리스트에 해당 아이템 추가
+            fireList.add(mission.getUserMissionId());
+
+            // fireList 업데이트
+            adapter.setFireList(fireList);
+
+            // 클릭 못하게 설정
+            holder.itemView.setClickable(false);
+
+            // 불 던지기 api 통신
+            postThrowFire(mission.getUserMissionId());
 
             undoneDialog.dismiss();
+        });
+    }
+
+    private void postThrowFire(long usermissionId) {
+        // Token 을 가져오기 위한 SharedPreferences Token
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        String jwtAccessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
+        Log.d(TAG, jwtAccessToken);
+
+        RetrofitAPI apiService = RetrofitClientJwt.getApiService(jwtAccessToken);
+        Call<String> call = apiService.postThrowFire(jwtAccessToken,teamId,missionId,usermissionId);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(@androidx.annotation.NonNull Call<String> call, @androidx.annotation.NonNull Response<String> response) {
+                // 연결 성공
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        Log.d(TAG, response.message());
+                    }
+                } else if (response.message().equals("만료된 토큰입니다.")) {
+                    // 토큰 재발급 후 다시 호출
+                    ChangeJwt.updateJwtToken(getContext());
+                    postThrowFire(usermissionId);
+                }
+            }
+
+            @Override
+            public void onFailure(@androidx.annotation.NonNull Call<String> call, @androidx.annotation.NonNull Throwable t) {
+                // 응답 실패
+                Log.d(TAG, "postThrowFire Fail");
+            }
         });
     }
 
