@@ -20,12 +20,12 @@ public class MissionListResponse {
     }
 
     public static class MissionData {
-        private int missionId;
+        private Long missionId;
         private String title;
         private String dueTo;
         private String status;
 
-        public int getMissionId() {
+        public Long getMissionId() {
             return missionId;
         }
 

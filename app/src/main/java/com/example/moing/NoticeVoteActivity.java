@@ -49,7 +49,7 @@ public class NoticeVoteActivity extends AppCompatActivity {
     private ImageView fabVoteCreate;
     private ImageView fabNoticeWrite;
     private ImageButton back;
-    private Long teamId, noticeId;
+    private Long teamId, noticeId, voteId;
     private TextView tv_first, tv_second, tv_nothing;
 
     private RetrofitAPI apiService;
@@ -71,6 +71,7 @@ public class NoticeVoteActivity extends AppCompatActivity {
         Intent intent = getIntent();
         teamId = intent.getLongExtra("teamId", 0);
         noticeId = intent.getLongExtra("noticeId", 0);
+        voteId = intent.getLongExtra("voteId", 0);
 
         // Token을 사용할 SharedPreference
         sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
@@ -332,8 +333,7 @@ public class NoticeVoteActivity extends AppCompatActivity {
 //                            String s = pos + "번 메뉴 선택!";
 //                            Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
 
-
-                            Long voteId = voteIdList.get(pos);
+                            voteId = voteIdList.get(pos);
                             Intent intent = new Intent(NoticeVoteActivity.this, VoteInfoActivity.class);
                             intent.putExtra("voteId", voteId);
                             intent.putExtra("teamId", teamId);
