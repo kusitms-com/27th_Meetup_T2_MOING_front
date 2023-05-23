@@ -1,5 +1,7 @@
 package com.example.moing.mission;
 
+import static com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread;
+
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -18,29 +20,35 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.moing.R;
+import com.example.moing.Response.MissionStatusListResponse;
+import com.example.moing.s3.DownloadImageCallback;
+import com.example.moing.s3.S3Utils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
+import java.util.Locale;
 
 public class MissionStatusDoneFragment extends Fragment {
     private static final int DONE_TYPE = 0;
     private static final int PENDING_TYPE = 1;
     private Dialog doneDialog;
     private Dialog pendingDialog;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mission_status_done, container, false);
 
-        List<Mission> missionList = new ArrayList<>();
-        missionList.add(new Mission(1,"1","img","COMPELTE","archive","submitDate"));
-        missionList.add(new Mission(2,"1","img","COMPELTE","archive","submitDate"));
-        missionList.add(new Mission(4,"1","img","PENDING","archive","submitDate"));
-        missionList.add(new Mission(1,"1","img","PENDING","archive","submitDate"));
-        missionList.add(new Mission(1,"1","img","COMPELTE","archive","submitDate"));
-        missionList.add(new Mission(2,"1","img","COMPELTE","archive","submitDate"));
-        missionList.add(new Mission(4,"1","img","PENDING","archive","submitDate"));
-        missionList.add(new Mission(1,"1","img","PENDING","archive","submitDate"));
+        // MissionStatusActivity에서 전달받은 인증 완료 리스트
+        Bundle bundle = getArguments();
+        ArrayList<MissionStatusListResponse.UserMission> doneList = (ArrayList<MissionStatusListResponse.UserMission>) (bundle != null ? bundle.getSerializable("doneList") : null);
+
+        // "나"를 표현하기 위한 나의 상태
+        boolean isExist = bundle.getBoolean("isExist");
 
         // 리사이클러뷰
         RecyclerView recyclerView = view.findViewById(R.id.mission_status_done_rv);
@@ -59,16 +67,16 @@ public class MissionStatusDoneFragment extends Fragment {
         });
 
         // 리사이클러뷰에 사용할 어댑터 설정
-        MissionDoneAdapter adapter = new MissionDoneAdapter(missionList);
+        MissionDoneAdapter adapter = new MissionDoneAdapter(doneList,getContext(),isExist);
         recyclerView.setAdapter(adapter);
-        adapter.setOnItemClickListener(status -> {
+        adapter.setOnItemClickListener((status, mission) -> {
             // 아이템 클릭 시 팝업 창을 띄우는 로직
             switch (status) {
                 case DONE_TYPE:
-                    showDoneDialog();
+                    showDoneDialog(mission);
                     break;
                 case PENDING_TYPE:
-                    showPendingDialog();
+                    showPendingDialog(mission);
                     break;
             }
 
@@ -85,12 +93,14 @@ public class MissionStatusDoneFragment extends Fragment {
         pendingDialog.setContentView(R.layout.fragment_mission_status_pending_popup); // xml 레이아웃 파일 연결
 
         TextView tvNum = view.findViewById(R.id.mission_status_done_tv_num);
-        String text = missionList.size()+"명";
+        int size = doneList != null ? doneList.size() : 0;  // 완료 인원 명수
+        // 완료 인원 표시
+        String text = size +"명";
         tvNum.setText(text);
 
         // 완료 0 명 - 모두 미완료인 경우 이미지
         ImageView ivDoneAll = view.findViewById(R.id.mission_status_done_iv_undone_all);
-        if(missionList.size() == 0)
+        if(size == 0)
             ivDoneAll.setVisibility(View.VISIBLE);
         else
             ivDoneAll.setVisibility(View.GONE);
@@ -100,33 +110,102 @@ public class MissionStatusDoneFragment extends Fragment {
     }
 
     // 미션 완료 다이얼로그 띄우기
-    private void showDoneDialog(){
+    private void showDoneDialog(MissionStatusListResponse.UserMission mission){
+
+        ImageButton btnClose = doneDialog.findViewById(R.id.mission_status_done_popup_btn_close);   // 창 닫기
+        ImageView ivProfile = doneDialog.findViewById(R.id.mission_status_done_popup_iv_profile);   // 프로필 이미지
+        ImageView ivImage = doneDialog.findViewById(R.id.mission_status_done_popup_iv_image);       // 미션 인증 이미지
+        TextView tvNickname = doneDialog.findViewById(R.id.mission_status_done_popup_tv_nickname);  // 닉네임
+        TextView tvDate = doneDialog.findViewById(R.id.mission_status_done_popup_tv_date);          // 인증한 날짜
+
+        // 창 닫기 클릭 리스너 설정
+        btnClose.setOnClickListener(v -> doneDialog.dismiss());
+
+        // 프로필 이미지 설정
+        Glide.with(getContext())
+                .load(mission.getProfileImg())
+                .into(ivProfile);
+
+        // 미션 인증 사진 설정
+        S3Utils.downloadImageFromS3(mission.getArchive(), new DownloadImageCallback() {
+            @Override
+            public void onImageDownloaded(byte[] data) {
+                runOnUiThread(() -> Glide.with(getContext())
+                        .asBitmap()
+                        .load(data)
+                        .transform(new RoundedCorners(24))
+                        .into(ivImage));
+            }
+            @Override
+            public void onImageDownloadFailed() {
+
+            }
+        });
+
+        // 프로필 이미지 설정
+        Glide.with(getContext())
+                .load(mission.getProfileImg())
+                .into(ivProfile);
+
+        // 닉네임 설정
+        tvNickname.setText(mission.getNickname());
+
+        // 인증한 날짜 설정
+        String inputDate = mission.getSubmitDate();
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault());
+        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        try {
+            Date date = inputFormat.parse(inputDate);
+            String formattedDate = outputFormat.format(date);
+            tvDate.setText(formattedDate);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         doneDialog.show(); // 다이얼로그 띄우기
         doneDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); // 투명 배경
-
-        ImageButton btnClose = doneDialog.findViewById(R.id.mission_status_done_popup_btn_close);
-        ImageView ivProfile = doneDialog.findViewById(R.id.mission_status_done_popup_iv_profile);
-        ImageView ivImage = doneDialog.findViewById(R.id.mission_status_done_popup_iv_image);
-        TextView tvNickname = doneDialog.findViewById(R.id.mission_status_done_popup_tv_nickname);
-        TextView tvDate = doneDialog.findViewById(R.id.mission_status_done_popup_tv_date);
-
-        // 창 닫기
-        btnClose.setOnClickListener(v -> doneDialog.dismiss());
     }
 
     // 미션 건너뛰기 다이얼로그 띄우기
-    private void showPendingDialog(){
+    private void showPendingDialog(MissionStatusListResponse.UserMission mission){
+
+        ImageButton btnClose = pendingDialog.findViewById(R.id.mission_status_pending_popup_btn_close); // 창 닫기
+        ImageView ivProfile = pendingDialog.findViewById(R.id.mission_status_pending_popup_iv_profile); // 프로필 이미지
+        TextView tvReason = pendingDialog.findViewById(R.id.mission_status_pending_popup_tv_reason);    // 미션 건너뛰기 사유
+        TextView tvNickname = pendingDialog.findViewById(R.id.mission_status_pending_popup_tv_nickname);// 닉네임
+        TextView tvDate = pendingDialog.findViewById(R.id.mission_status_pending_popup_tv_date);        // 인증한 날짜
+
+        // 창 닫기 클릭 리스너 설정
+        btnClose.setOnClickListener(v -> pendingDialog.dismiss());
+
+        // 프로필 이미지 설정
+        Glide.with(getContext())
+                .load(mission.getProfileImg())
+                .into(ivProfile);
+
+        // 미션 건너뛰기 사유 설정
+        tvReason.setText(mission.getArchive());
+
+        // 닉네임 설정
+        tvNickname.setText(mission.getNickname());
+
+        // 인증한 날짜 설정
+        String inputDate = mission.getSubmitDate();
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault());
+        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        try {
+            Date date = inputFormat.parse(inputDate);
+            String formattedDate = outputFormat.format(date);
+            tvDate.setText(formattedDate);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         pendingDialog.show(); // 다이얼로그 띄우기
         pendingDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); // 투명 배경
 
-        ImageButton btnClose = pendingDialog.findViewById(R.id.mission_status_pending_popup_btn_close);
-        ImageView ivProfile = pendingDialog.findViewById(R.id.mission_status_pending_popup_iv_profile);
-        TextView tvReason = pendingDialog.findViewById(R.id.mission_status_pending_popup_tv_reason);
-        TextView tvNickname = pendingDialog.findViewById(R.id.mission_status_pending_popup_tv_nickname);
-        TextView tvDate = pendingDialog.findViewById(R.id.mission_status_pending_popup_tv_date);
-
-        // 창 닫기
-        btnClose.setOnClickListener(v -> pendingDialog.dismiss());
     }
 
 }

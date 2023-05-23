@@ -26,6 +26,9 @@ public class TeamListResponse {
     }
 
     public class Data {
+        @SerializedName("userNickName")
+        private String userNickName;
+
         @SerializedName("inProgressNum")
         private int inProgressNum;
 
@@ -39,6 +42,7 @@ public class TeamListResponse {
         public List<Team> getTeamBlocks() {
             return teamBlocks;
         }
+        public String getUserNickName() { return userNickName; }
     }
 
     public static class Team {

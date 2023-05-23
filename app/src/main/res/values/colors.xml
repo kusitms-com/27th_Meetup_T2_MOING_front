@@ -43,6 +43,7 @@
     <color name="main_white_900">#6B261D</color>
 
     <color name="sub_light_1">#CBB9FF</color>
+    <color name="sub_dark_1">#5022DC</color>
     <!-- Default (삭제 예정)-->
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>

@@ -9,8 +9,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.moing.Response.AllVoteResponse;
 
 import java.util.List;
@@ -49,7 +52,18 @@ public class VoteViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         AllVoteResponse.VoteBlock item = dataList.get(position);
         VoteViewHolder vh = (VoteViewHolder) holder;
 
-        /** 이미지 빼고 연동했습니다. **/
+
+        // 읽은 경우
+        if(item.getRead()) {
+            int color = ContextCompat.getColor(context, R.color.secondary_grey_black_14); // R.color.### 대신 실제 사용하는 색상 리소스를 입력하세요
+            vh.background.setBackgroundColor(color);
+        }
+        else {
+            int color = ContextCompat.getColor(context, R.color.secondary_grey_black_12); // R.color.### 대신 실제 사용하는 색상 리소스를 입력하세요
+            vh.background.setBackgroundColor(color);
+        }
+
+        Glide.with(context).load(item.getUserImageUrl()).into(vh.image);
         vh.image.setBackgroundResource(R.drawable.notice_profile); // 닉네임
         vh.name.setText(item.getNickName()); // 이름
         vh.crown.setBackgroundResource(R.drawable.notice_crown); // 왕관
@@ -71,6 +85,7 @@ public class VoteViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         private ImageView image, dot, crown, iv_msg;
         private ConstraintLayout background;
         private TextView name, title, content, cnt;
+        private TextView line;
 
         public VoteViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -84,6 +99,7 @@ public class VoteViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             content = itemView.findViewById(R.id.notice_tv_content);
             iv_msg = itemView.findViewById(R.id.notice_iv_message);
             cnt = itemView.findViewById(R.id.comment_count);
+            line = itemView.findViewById(R.id.view_line);
 
             // 아이템 클릭 이벤트 추가
             itemView.setOnClickListener(new View.OnClickListener() {

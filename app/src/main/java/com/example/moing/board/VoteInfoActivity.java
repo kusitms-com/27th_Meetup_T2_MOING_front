@@ -7,7 +7,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.animation.LayoutTransition;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -24,12 +28,31 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.example.moing.NoticeVoteActivity;
 import com.example.moing.R;
+import com.example.moing.Request.BoardMakeVoteRequest;
+import com.example.moing.Request.BoardVoteDoRequest;
+import com.example.moing.Request.BoardVoteMakeCommentRequest;
+import com.example.moing.Response.BoardMakeVoteResponse;
+import com.example.moing.Response.BoardVoteCommentResponse;
+import com.example.moing.Response.BoardVoteInfoResponse;
+import com.example.moing.Response.BoardVoteMakeCommentResponse;
+import com.example.moing.retrofit.ChangeJwt;
+import com.example.moing.retrofit.RetrofitAPI;
+import com.example.moing.retrofit.RetrofitClientJwt;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class VoteInfoActivity extends AppCompatActivity {
+    private static final String TAG = "VoteInfoActivity";
+
     Button back, voteComplete;
     ImageButton modal, send;
     TextView title, nickName, time, content, voteCount, tvAnony, tv_noread;
@@ -40,24 +63,39 @@ public class VoteInfoActivity extends AppCompatActivity {
     EditText et_comment;
 
     // 투표 리스트
-    private List<VoteInfo.VoteChoice> voteChoiceList;
+    private List<BoardVoteInfoResponse.VoteChoice> voteChoiceList;
     // 투표 선택한 리스트
-    private List<VoteInfo.VoteChoice> voteSelected;
+    private List<BoardVoteInfoResponse.VoteChoice> voteSelected;
     // 투표한 사람들의 이름 리스트
     private List<String> voteUserNameList;
     // 투표 안 읽은 사람의 리스트
     private List<String> voteNoReadList;
     // 댓글 리스트
-    private List<VoteCommentResponse.VoteComment> voteCommentList;
+    private List<BoardVoteCommentResponse.VoteData> voteCommentList;
 
     private VoteInfoAdapterFirst voteInfoAdapterFirst;
     private VoteNoReadAdapter voteNoReadAdapter;
     private VoteCommentAdapter voteCommentAdapter;
 
+    private RetrofitAPI apiService;
+    private static final String PREF_NAME = "Token";
+    private static final String JWT_ACCESS_TOKEN = "JWT_access_token";
+    private SharedPreferences sharedPreferences;
+    private Long teamId, voteId, userId, voteCommentId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vote_info);
+
+        // Token을 사용할 SharedPreference
+        sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+
+        // Intent로 값 전달 받기.
+        teamId = getIntent().getLongExtra("teamId", 0);
+        voteId = getIntent().getLongExtra("voteId", 0);
+        Log.d(TAG, "teamId 값 : " + teamId);
+        Log.d(TAG, "voteId 값 : " + voteId);
 
         voteChoiceList = new ArrayList<>();
         voteSelected = new ArrayList<>();
@@ -84,87 +122,23 @@ public class VoteInfoActivity extends AppCompatActivity {
         // 투표 내용
         content = (TextView) findViewById(R.id.tv_content);
 
+
+        /** 투표 목록 및 선택 리사이클러뷰 **/
         // 투표하기위한 리사이클러뷰
         voteRecycle = findViewById(R.id.recycle_vote);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setSmoothScrollbarEnabled(true);
         llm.setAutoMeasureEnabled(true);
 
-        // 투표 공지를 안 읽은 사람들을 위한 리사이클러뷰
+        // 투표 현황 리사이클러뷰 Layout 호출
+        voteRecycle.setLayoutManager(llm);
+        voteRecycle.setHasFixedSize(true);
+
+        /** 투표 안 읽은 사람 리사이클러뷰 **/
         noReadRecycle = findViewById(R.id.recycle_noread);
         GridLayoutManager llm2 = new GridLayoutManager(this, 4);
         llm2.setSmoothScrollbarEnabled(true);
         llm2.setAutoMeasureEnabled(true);
-
-        // 투표 참여 인원 수
-        voteCount = (TextView) findViewById(R.id.tv_count);
-        // 익명 ImageView
-        ivAnony = (ImageView) findViewById(R.id.iv_anony);
-        // 익명 TextView
-        tvAnony = (TextView) findViewById(R.id.tv_anony);
-        // 투표 완료 버튼
-        voteComplete = (Button) findViewById(R.id.btn_complete);
-        voteComplete.setOnClickListener(completeClickListener);
-        voteComplete.setClickable(false);
-
-        // 안읽은 사람 리스트 상태 변경
-        tv_noread = (TextView) findViewById(R.id.tv_noread);
-        noReadArrow = (ImageView) findViewById(R.id.iv_noread);
-
-        /** 테스트 데이터 **/
-        voteUserNameList.add("손현석");
-        voteUserNameList.add("곽승엽");
-
-        // Test 데이터 추가 2 (실제로 통신할 땐 VoteInfo의 Static 지워주어야 한다!)
-        VoteInfo.VoteChoice voteChoice1 = new VoteInfo.VoteChoice("4월 25일",3, new ArrayList<>(voteUserNameList));
-        VoteInfo.VoteChoice voteChoice2 = new VoteInfo.VoteChoice("4월 26일",4, new ArrayList<>(voteUserNameList));
-        VoteInfo.VoteChoice voteChoice3 = new VoteInfo.VoteChoice("4월 27일",2, new ArrayList<>(voteUserNameList));
-        VoteInfo.VoteChoice voteChoice4 = new VoteInfo.VoteChoice("4월 28일",1, new ArrayList<>(voteUserNameList));
-        voteChoiceList.add(voteChoice1);
-        voteChoiceList.add(voteChoice2);
-        voteChoiceList.add(voteChoice3);
-        voteChoiceList.add(voteChoice4);
-        /** 테스트 데이터 끝 **/
-
-        // 투표 리사이클러뷰 어댑터 설정
-        voteInfoAdapterFirst = new VoteInfoAdapterFirst(voteChoiceList, voteSelected, this);
-        /** 투표 선택 클릭 리스너 **/
-        voteInfoAdapterFirst.setOnItemClickListener(new VoteInfoAdapterFirst.OnItemClickListener() {
-            @Override
-            public void onItemClick(int pos) {
-                //Toast.makeText(getApplicationContext(), "pos : " + pos, Toast.LENGTH_SHORT).show();
-                voteSelected = voteInfoAdapterFirst.getSelectedItems();
-                Log.d("VoteInfoActivity", String.valueOf(voteSelected.size()));
-                if(voteSelected.size() >= 1) {
-                    voteComplete.setClickable(true);
-                    voteComplete.setTextColor(Color.parseColor("#FFFFFF"));
-                    voteComplete.setBackgroundColor(Color.parseColor("#FF725F"));
-                }
-                else {
-                    voteComplete.setClickable(false);
-                    voteComplete.setTextColor(Color.parseColor("#37383C"));
-                    voteComplete.setBackgroundColor(Color.parseColor("#1A1919"));
-                }
-            }
-        });
-
-        // 예정 : 4명이 아직 안읽었어요 부터 백엔드 연동 해야함.
-        /** 안읽은 사람 리스트에 대한 Adapter 테스트 코드 **/
-        voteNoReadList.add("손현석");
-        voteNoReadList.add("곽승엽");
-        voteNoReadList.add("이지현");
-        voteNoReadList.add("정승연");
-        voteNoReadAdapter = new VoteNoReadAdapter(voteNoReadList,this);
-
-        /** 안읽은 사람 Adapter 객체 생성 **/
-        // adapter2 = new RecyclerViewAdapter(dataList2);
-        // recyclerView2.setAdapter(adapter2);
-
-
-        // 투표 현황 리사이클러뷰 Layout 호출
-        voteRecycle.setLayoutManager(llm);
-        voteRecycle.setAdapter(voteInfoAdapterFirst);
-        voteRecycle.setHasFixedSize(true);
 
         /** CardView 작성**/
         noreadCardView = (CardView) findViewById(R.id.cardView_noread);
@@ -179,29 +153,33 @@ public class VoteInfoActivity extends AppCompatActivity {
 
         // 안읽은 사람 리사이클러뷰 Layout 호출
         noReadRecycle.setLayoutManager(llm2);
-        noReadRecycle.setAdapter(voteNoReadAdapter);
         noReadRecycle.setHasFixedSize(true);
 
+        /** 투표 안 읽은 사람 리사이클러뷰 설정 끝 **/
+
+        // 투표 참여 인원 수
+        voteCount = (TextView) findViewById(R.id.tv_count);
+        // 익명 ImageView
+        ivAnony = (ImageView) findViewById(R.id.iv_anony);
+        // 익명 TextView
+        tvAnony = (TextView) findViewById(R.id.tv_anony);
+
+        // 투표 완료 버튼
+        voteComplete = (Button) findViewById(R.id.btn_complete);
+        voteComplete.setOnClickListener(completeClickListener);
+        voteComplete.setClickable(false);
+
+        // 안읽은 사람 리스트 상태 변경
+        tv_noread = (TextView) findViewById(R.id.tv_noread);
+        noReadArrow = (ImageView) findViewById(R.id.iv_noread);
 
         // 투표 댓글 리사이클러뷰
         commentRecycle = findViewById(R.id.recycle_comment);
         LinearLayoutManager llm3 = new LinearLayoutManager(this);
         llm3.setSmoothScrollbarEnabled(true);
         llm3.setAutoMeasureEnabled(true);
-
-
         // 댓글 리사이클러뷰 layout 호출
         commentRecycle.setLayoutManager(llm3);
-        // Test 데이터 추가 2 (실제로 통신할 땐 VoteInfo의 Static 지워주어야 한다!)
-        VoteCommentResponse.VoteComment voteComment1 = new VoteCommentResponse.VoteComment(3, "그냥 죽여줘", 4, "test4", "string", "2023-05-04T01:04:28.224175");
-        VoteCommentResponse.VoteComment voteComment2 = new VoteCommentResponse.VoteComment(2, "뻥이야 살고 싶어", 3, "test3", "string", "2023-05-04T01:04:20.869323");
-        VoteCommentResponse.VoteComment voteComment3 = new VoteCommentResponse.VoteComment(1, "나를 죽여줘", 2, "test2", "string", "2023-05-04T01:04:11.809115");
-        voteCommentList.add(voteComment1);
-        voteCommentList.add(voteComment2);
-        voteCommentList.add(voteComment3);
-
-        voteCommentAdapter = new VoteCommentAdapter(voteCommentList, this);
-        commentRecycle.setAdapter(voteCommentAdapter);
         commentRecycle.setHasFixedSize(true);
 
         et_comment = (EditText) findViewById(R.id.et_comment);
@@ -210,63 +188,365 @@ public class VoteInfoActivity extends AppCompatActivity {
         send = (ImageButton) findViewById(R.id.imgbtn_send);
         send.setOnClickListener(sendClickListener);
         send.setEnabled(false);
+
+        /** 투표 결과 API 호출 **/
+        getVoteResult();
+        /** 댓글 API 호출 **/
+        getComment();
+
     }
 
-    /** 뒤로 가기 버튼 클릭 리스너 **/
+    /**
+     * 뒤로 가기 버튼 클릭 리스너
+     **/
     View.OnClickListener backClickListener = v -> {
-        finish();
+        Intent intent = new Intent(getApplicationContext(), NoticeVoteActivity.class);
+        intent.putExtra("teamId", teamId);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     };
 
-    /** 모달 버튼 클릭 리스너 **/
+
+    /**
+     * 모달 버튼 클릭 리스너
+     **/
     View.OnClickListener modalClickListener = v -> {
 
     };
 
-    /** 투표 완료 버튼 클릭 리스너 **/
+    /**
+     * 투표 완료 버튼 클릭 리스너
+     **/
     View.OnClickListener completeClickListener = v -> {
-        voteSelected = voteInfoAdapterFirst.getSelectedItems();
-        for ( VoteInfo.VoteChoice choice : voteSelected) {
-            Log.d("VoteInfo", choice.getContent()+"에 투표하셨습니다.");
-        }
+//        if(voteComplete.getText().toString().equals("투표 수정하기")) {
+//            if (voteSelected.size() >= 1) {
+//                voteComplete.setText("투표 완료");
+//                voteComplete.setClickable(true);
+//                voteComplete.setTextColor(Color.parseColor("#FFFFFF"));
+//                voteComplete.setBackgroundColor(Color.parseColor("#FF725F"));
+//            } else {
+//                voteComplete.setClickable(false);
+//                voteComplete.setTextColor(Color.parseColor("#37383C"));
+//                voteComplete.setBackgroundColor(Color.parseColor("#1A1919"));
+//            }
+//            selectComment();
+//        }
+//        else {
+//            selectComment();
+//        }
+        selectComment();
+
     };
 
-    /** CardView(안읽은 사람 리스트) 클릭 리스너 **/
+    /**
+     * CardView(안읽은 사람 리스트) 클릭 리스너
+     **/
     View.OnClickListener cardViewClickListener = v -> {
         int visibility = (noReadRecycle.getVisibility() == View.GONE) ? View.VISIBLE : View.GONE;
 
         TransitionManager.beginDelayedTransition(layout_cardView, new AutoTransition());
         noReadRecycle.setVisibility(visibility);
         // 보이는 상태라면
-        if(visibility == View.VISIBLE)
+        if (visibility == View.VISIBLE)
             noReadArrow.setImageResource(R.drawable.arrow_up);
         else
             noReadArrow.setImageResource(R.drawable.arrow_down);
     };
 
-    /** 댓글 남기기 버튼 클릭 리스너 **/
+    /**
+     * 댓글 남기기 버튼 클릭 리스너
+     **/
     View.OnClickListener sendClickListener = v -> {
-        String s = et_comment.getText().toString().trim();
-        if(!TextUtils.isEmpty(s))
-            Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+        String s = et_comment.getText().toString();
+        if (!TextUtils.isEmpty(s)) {
+            /** 스레드 순서 처리 **/
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                CompletableFuture<Void> future = CompletableFuture.supplyAsync(() -> {
+//                    makeComment();
+//                    return null;
+//                }).thenRunAsync(() -> {
+//                    runOnUiThread(() -> {
+//                        getComment();
+//                    });
+//                });
+//                future.join();
+//            }
+            // 결과를 기다림
+            /** 화면 새로고침 **/
+            makeComment();
+            getComment();
+            Intent intent = getIntent();
+            teamId = getIntent().getLongExtra("teamId", 0);
+            voteId = getIntent().getLongExtra("voteId", 0);
+            finish();
+            overridePendingTransition(0, 0); // 인텐트 애니메이션 없애기
+            startActivity(intent); // 현재 액티비티 재실행
+            overridePendingTransition(0, 0); // 인텐트 애니메이션 없애기
+        }
     };
 
-    /** 댓글 남기기 입력창 관리 **/
+    /**
+     * 댓글 남기기 입력창 관리
+     **/
     private void setTextWatcher(EditText editText) {
         editText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
             public void afterTextChanged(Editable s) {
                 if (!TextUtils.isEmpty(s.toString().trim())) {
                     send.setEnabled(true);
-                }
-                else
+                } else
                     send.setClickable(false);
             }
         });
+    }
+
+
+    /** API 통신 (투표 결과 상세 조회) **/
+    private void getVoteResult() {
+        String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
+        apiService = RetrofitClientJwt.getApiService(accessToken);
+
+        Call<BoardVoteInfoResponse> call = apiService.voteDetailInfo(accessToken, teamId, voteId);
+        call.enqueue(new Callback<BoardVoteInfoResponse>() {
+            @Override
+            public void onResponse(Call<BoardVoteInfoResponse> call, Response<BoardVoteInfoResponse> response) {
+                // 응답이 성공적일 때
+                if (response.isSuccessful()) {
+                    BoardVoteInfoResponse infoResponse = response.body();
+                    // 제대로 된 연동 성공!
+                    if (infoResponse.getMessage().equals("투표를 상세 조회하였습니다")) {
+                        // 제목 set
+                        title.setText(infoResponse.getData().getTitle());
+                        // 내용 set
+                        content.setText(infoResponse.getData().getMemo());
+                        // userId set
+                        userId = infoResponse.getData().getUserId();
+
+                        // 시간 set
+                        String tmpTime = infoResponse.getData().getCreatedDate();
+                        String[] tmp = tmpTime.split("T");
+                        String date = tmp[0].substring(5, 10);
+                        date = date.replace('-', '/');
+                        String getTime = tmp[1].substring(0, 5);
+                        String realTime = date + " " + getTime;
+
+                        time.setText(realTime);
+                        // 닉네임 set
+                        nickName.setText(infoResponse.getData().getNickName());
+                        /** profile 설정 */
+                        Glide.with(VoteInfoActivity.this)
+                                .load(infoResponse.getData().getUserImageUrl())
+                                .into(profile);
+
+                        /** 투표, 각 투표마다 읽은 사람 리스트 설정 **/
+                        voteChoiceList = infoResponse.getData().getVoteChoices();
+                        boolean anonymous = infoResponse.getData().isAnonymous();
+
+                        Log.d(TAG, "액티비티에서 익명인가? :" + String.valueOf(anonymous));
+
+                        voteInfoAdapterFirst = new VoteInfoAdapterFirst(voteChoiceList, voteSelected, VoteInfoActivity.this, anonymous);
+                        voteRecycle.setAdapter(voteInfoAdapterFirst);
+
+                        /** 투표 선택 클릭 리스너 **/
+                        voteInfoAdapterFirst.setOnItemClickListener(new VoteInfoAdapterFirst.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(int pos) {
+                                //Toast.makeText(getApplicationContext(), "pos : " + pos, Toast.LENGTH_SHORT).show();
+                                voteSelected = voteInfoAdapterFirst.getSelectedItems();
+                                Log.d("VoteInfoActivity", String.valueOf(voteSelected.size()));
+                                if (voteSelected.size() >= 1) {
+                                    voteComplete.setClickable(true);
+                                    voteComplete.setTextColor(Color.parseColor("#FFFFFF"));
+                                    voteComplete.setBackgroundColor(Color.parseColor("#FF725F"));
+                                } else {
+                                    voteComplete.setClickable(false);
+                                    voteComplete.setTextColor(Color.parseColor("#37383C"));
+                                    voteComplete.setBackgroundColor(Color.parseColor("#1A1919"));
+                                }
+                            }
+                        });
+
+                        // 투표 안 읽은 사람 리스트
+                        voteNoReadList = infoResponse.getData().getNotReadUsersNickName();
+                        voteNoReadAdapter = new VoteNoReadAdapter(voteNoReadList, VoteInfoActivity.this);
+                        noReadRecycle.setAdapter(voteNoReadAdapter);
+                        tv_noread.setText(voteNoReadList.size() + "명이 아직 안 읽었어요");
+
+                        /** 복수투표 가능 여부 **/
+                        // 복수 투표 가능할 때
+                        if (infoResponse.getData().isMultiple()) {
+                            if (voteSelected.size() >= 1) {
+                                voteComplete.setClickable(true);
+                                voteComplete.setTextColor(Color.parseColor("#FFFFFF"));
+                                voteComplete.setBackgroundColor(Color.parseColor("#FF725F"));
+                            } else {
+                                voteComplete.setClickable(false);
+                                voteComplete.setTextColor(Color.parseColor("#37383C"));
+                                voteComplete.setBackgroundColor(Color.parseColor("#1A1919"));
+                            }
+                        }
+                        // 복수 투표 불가능할 때
+                        /** 복수 투표가 불가능할 때 **/
+                        else {
+                            if (voteSelected.size() == 1) {
+                                voteComplete.setClickable(true);
+                                voteComplete.setTextColor(Color.parseColor("#FFFFFF"));
+                                voteComplete.setBackgroundColor(Color.parseColor("#FF725F"));
+                            } else {
+                                voteComplete.setClickable(false);
+                                voteComplete.setTextColor(Color.parseColor("#37383C"));
+                                voteComplete.setBackgroundColor(Color.parseColor("#1A1919"));
+                            }
+                        }
+
+                    } else if (infoResponse.getMessage().equals("만료된 토큰입니다.")) {
+                        ChangeJwt.updateJwtToken(VoteInfoActivity.this);
+                        getVoteResult();
+                    }
+                } else
+
+                    Log.d(TAG, "응답 성공X, msg : " + response.message());
+
+            }
+
+            @Override
+            public void onFailure(Call<BoardVoteInfoResponse> call, Throwable t) {
+                Log.d(TAG, "투표 결과 상세 조회 연동 실패...");
+            }
+        });
+    }
+
+
+    /** 투표 댓글 목록 조회 **/
+    private void getComment() {
+        String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
+        apiService = RetrofitClientJwt.getApiService(accessToken);
+        Call<BoardVoteCommentResponse> call = apiService.voteCommentInfo(accessToken, teamId, voteId);
+        call.enqueue(new Callback<BoardVoteCommentResponse>() {
+            @Override
+            public void onResponse(Call<BoardVoteCommentResponse> call, Response<BoardVoteCommentResponse> response) {
+
+                if(response.isSuccessful()) {
+                    BoardVoteCommentResponse commentResponse = response.body();
+                    if(commentResponse.getMessage().equals("투표 댓글 목록을 최신순으로 조회하였습니다"))
+                    {
+                        voteCommentList = commentResponse.getData();
+                        voteCommentAdapter = new VoteCommentAdapter(voteCommentList, VoteInfoActivity.this);
+                        commentRecycle.setAdapter(voteCommentAdapter);
+                        voteCommentAdapter.notifyDataSetChanged();
+                    }
+                    else if (commentResponse.getMessage().equals("만료된 토큰입니다.")) {
+                        ChangeJwt.updateJwtToken(VoteInfoActivity.this);
+                        getComment();
+                    }
+                    else
+                        Log.d(TAG, "투표 댓글 목록 최신순 조회 에러 메세지 : " + response.message().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BoardVoteCommentResponse> call, Throwable t) {
+                Log.d(TAG, "투표 댓글 목록 연동 실패...");
+            }
+        });
+    }
+
+
+    /** 투표 댓글 생성 **/
+    private void makeComment() {
+        String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
+        apiService = RetrofitClientJwt.getApiService(accessToken);
+        String content = et_comment.getText().toString();
+        BoardVoteMakeCommentRequest commentRequest = new BoardVoteMakeCommentRequest(content);
+        Call<BoardVoteMakeCommentResponse> call = apiService.voteMakeComment(accessToken, teamId, voteId, commentRequest);
+        call.enqueue(new Callback<BoardVoteMakeCommentResponse>() {
+            @Override
+            public void onResponse(Call<BoardVoteMakeCommentResponse> call, Response<BoardVoteMakeCommentResponse> response) {
+
+                if (response.isSuccessful()) {
+                    BoardVoteMakeCommentResponse makeCommentResponse = response.body();
+                    if (makeCommentResponse.getMessage().equals("투표의 댓글을 생성하였습니다")) {
+
+                        voteCommentId = makeCommentResponse.getData().getVoteCommentId();
+
+                        Log.d(TAG, "투표 댓글 연동 성공!");
+                        Toast.makeText(getApplicationContext(), "댓글 생성이 완료되었습니다.", Toast.LENGTH_SHORT).show();
+
+                    }
+                    else if (makeCommentResponse.getMessage().equals("만료된 토큰입니다.")) {
+                        ChangeJwt.updateJwtToken(VoteInfoActivity.this);
+                        makeComment();
+                    }
+                    else {
+                        Log.d(TAG, "투표 댓글 생성 에러 메세지 : " + response.message());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BoardVoteMakeCommentResponse> call, Throwable t) {
+                Log.d(TAG, "투표 댓글 생성 연동실패... : " + t.getMessage());
+            }
+        });
+    }
+
+
+    /**
+     * 투표하기 API
+     **/
+    private void selectComment() {
+        String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
+        apiService = RetrofitClientJwt.getApiService(accessToken);
+
+        voteSelected = voteInfoAdapterFirst.getSelectedItems();
+        List<String> voteList = new ArrayList<>();
+
+        for (BoardVoteInfoResponse.VoteChoice choice : voteSelected) {
+            voteList.add(choice.getContent());
+            Log.d("BoardVoteInfoResponse", choice.getContent() + "에 투표하셨습니다.");
+        }
+
+        BoardVoteDoRequest request = new BoardVoteDoRequest(voteList);
+        Call<BoardVoteInfoResponse> call = apiService.voteResult(accessToken, teamId, voteId, request);
+        call.enqueue(new Callback<BoardVoteInfoResponse>() {
+            @Override
+            public void onResponse(Call<BoardVoteInfoResponse> call, Response<BoardVoteInfoResponse> response) {
+                BoardVoteInfoResponse infoResponse = response.body();
+                if (response.isSuccessful()) {
+                    if (infoResponse.getMessage().equals("투표를 하였습니다")) {
+                        /** 투표, 각 투표마다 읽은 사람 리스트 설정 **/
+                        voteChoiceList = infoResponse.getData().getVoteChoices();
+                        boolean anonymous = infoResponse.getData().isAnonymous();
+                        Log.d(TAG, "액티비티에서 익명인가? :" + String.valueOf(anonymous));
+                        voteInfoAdapterFirst = new VoteInfoAdapterFirst(voteChoiceList, voteSelected, VoteInfoActivity.this, anonymous);
+                        voteRecycle.setAdapter(voteInfoAdapterFirst);
+                        voteInfoAdapterFirst.notifyDataSetChanged();
+
+                        voteComplete.setText("투표 수정하기");
+                        voteComplete.setTextColor(Color.parseColor("#37383C"));
+                        voteComplete.setBackgroundColor(Color.parseColor("#1A1919"));
+                    }
+
+                } else if (infoResponse.getMessage().equals("만료된 토큰입니다.")) {
+                    ChangeJwt.updateJwtToken(VoteInfoActivity.this);
+                    selectComment();
+                } else
+                    Log.d(TAG, "1번 : 오류 메세지 : " + response.message());
+            }
+
+            @Override
+            public void onFailure(Call<BoardVoteInfoResponse> call, Throwable t) {
+                Log.d(TAG, "2번 : 오류 메세지 : " + t.getMessage());
+            }
+        });
+
     }
 }

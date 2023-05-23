@@ -12,6 +12,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/tv_nothing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="아직 게시글이 없어요"
+            android:textSize="16dp"
+            android:textColor="@color/secondary_grey_black_7"
+            android:fontFamily="@font/pretendard_medium"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginTop="40dp"
+            android:visibility="gone"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -63,7 +76,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
                         android:layout_marginTop="32dp"
-                        android:text="확인하지 않은 공지가 3개 있어요"
                         android:textColor="@color/secondary_grey_black_3"
                         android:fontFamily="@font/pretendard_medium"
                         android:textSize="24dp"/>
@@ -109,7 +121,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginHorizontal="70dp"
-                            android:layout_marginBottom="40dp" />
+                            android:layout_marginBottom="40dp"
+                            android:tabStripEnabled="false" />
 
                         <!-- FrameLayout의 id값이 반드시 "tabcontent"로 지정되어야 함. -->
                         <FrameLayout

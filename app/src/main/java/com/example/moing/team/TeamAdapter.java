@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.moing.R;
 import com.example.moing.Response.TeamListResponse;
 import com.example.moing.board.BoardActivity;
@@ -114,7 +115,7 @@ public class TeamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         runOnUiThread(() -> Glide.with(mainContext)
                                 .asBitmap()
                                 .load(data)
-                                .centerCrop()
+                                .transform(new RoundedCorners(24))
                                 .into(teamViewHolder.image));
                     }
 
@@ -134,7 +135,7 @@ public class TeamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
 
-    public class DefaultViewHolder extends RecyclerView.ViewHolder {
+    public static class DefaultViewHolder extends RecyclerView.ViewHolder {
         Button btnAddTeam;
         ImageView ivTeam;
 

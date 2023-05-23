@@ -3,8 +3,8 @@ package com.example.moing.board;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,47 +18,59 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferNetworkLossHandler;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.moing.R;
+import com.example.moing.Request.TeamUpdateRequest;
+import com.example.moing.Response.TeamUpdateResponse;
+import com.example.moing.retrofit.ChangeJwt;
+import com.example.moing.retrofit.RetrofitAPI;
+import com.example.moing.retrofit.RetrofitClientJwt;
+import com.example.moing.s3.DownloadImageCallback;
+import com.example.moing.s3.ImageUtils;
+import com.example.moing.s3.S3Utils;
 
 import java.io.File;
 import java.util.Calendar;
+import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class BoardFixTeamActivity extends AppCompatActivity {
-    private static final String TAG = "BoardFixTeam";
+    private static final String TAG = "BoardFixTeamActivity";
+    private static final String PREF_NAME = "Token";
+    private static final String JWT_ACCESS_TOKEN = "JWT_access_token";
     private static final int READ_EXTERNAL_STORAGE_REQUEST = 0;
 
+    private long teamId;
+
     // 소모임 이름
-    private String beforeName;
+    private String beforeName, afterName="";
 
     // 종료 날짜
     private Button btnEndDate;
-    private String beforeEndDate="", afterEndDate="";
+    private String beforeEndDate, afterEndDate;
 
     // 소모임 이미지 업로드
-    private Button btnImageUpload;
     private Button btnImageUploadRe;
     private ImageView ivImageUpload;
+
+
+    private File imageFile;
+    private String uniqueFileNameWithExtension;
     private String beforeImage;
 
     // 소모임 정보 수정
@@ -69,11 +81,14 @@ public class BoardFixTeamActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board_fix_team);
 
+
         // 구현 예정 - 서버 통신으로 소모임 정보 받아오기
         // 기존 소모임 이름, 종료 날짜, 사진
-        beforeName = "name";
-        beforeEndDate = "2023/5/14";
-        beforeImage = "현재 소모임 사진";
+        teamId = getIntent().getLongExtra("teamId",0);
+        beforeName = getIntent().getStringExtra("name");
+        beforeEndDate = getIntent().getStringExtra("endDate");
+        beforeImage = getIntent().getStringExtra("profileImg");
+        Log.d(TAG,beforeName+" "+beforeEndDate+" "+beforeImage);
 
         // 소모임 이름
         EditText etName = findViewById(R.id.board_fix_et_name);
@@ -83,7 +98,7 @@ public class BoardFixTeamActivity extends AppCompatActivity {
         setFocus(etName, tvName, tvNameCnt);
         setTextWatcher(etName, tvNameCnt, 10);
         // 초기값 설정
-        etName.setHint("name");
+        etName.setHint(beforeName);
 
         // 소모임 종료 날짜
         TextView tvEndDate = findViewById(R.id.board_fix_tv_end_date);
@@ -91,15 +106,30 @@ public class BoardFixTeamActivity extends AppCompatActivity {
         // onClickListener 등록
         btnEndDate.setOnClickListener(onEndDateClickListener);
         // 초기값 설정
-        btnEndDate.setHint("2023/05/14");
+        btnEndDate.setHint(beforeEndDate);
 
         // 소모임 사진 업로드
-        btnImageUpload = findViewById(R.id.board_fix_btn_image_upload);
         btnImageUploadRe = findViewById(R.id.board_fix_btn_image_upload_re);
         ivImageUpload = findViewById(R.id.board_fix_iv_image_upload);
         // onClickListener 등록
-        btnImageUpload.setOnClickListener(onImageUploadClickListener);
+        ivImageUpload.setOnClickListener(onImageUploadClickListener);
         btnImageUploadRe.setOnClickListener(onImageUploadClickListener);
+
+        // 초기값 설정
+        S3Utils.downloadImageFromS3(beforeImage, new DownloadImageCallback() {
+            @Override
+            public void onImageDownloaded(byte[] data) {
+                runOnUiThread(() -> Glide.with(getApplicationContext())
+                        .asBitmap()
+                        .load(data)
+                        .transform(new RoundedCorners(24))
+                        .into(ivImageUpload));
+            }
+            @Override
+            public void onImageDownloadFailed() {
+
+            }
+        });
 
         // 소모임 정보 수정
         btnFixTeam = findViewById(R.id.board_fix_btn_fix_team);
@@ -112,7 +142,36 @@ public class BoardFixTeamActivity extends AppCompatActivity {
         btnClose.setOnClickListener(view -> finish());
     }
     /** Button click 시 변경된 소모임 이름 or 종료날짜 or 사진 서버에 전송 구현 예정) 및 종료 **/
-    View.OnClickListener onFixTeamClickListener = view -> finish();
+    View.OnClickListener onFixTeamClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            String name = beforeName;
+            String endDate = beforeEndDate;
+
+            if(afterName.length() >0 && !beforeName.equals(afterName)){
+                name = afterName;
+            }
+
+            if (afterEndDate != null &&!beforeEndDate.equals(afterEndDate)){
+                endDate = afterEndDate;
+            }
+            Log.d(TAG,endDate);
+
+            if(imageFile != null){
+                // 이미지 업로드
+                S3Utils.uploadImageToS3(getApplicationContext(),uniqueFileNameWithExtension,imageFile);
+                // 소모임 수정 정보 업데이트
+                putTeamUpdate(name,endDate,uniqueFileNameWithExtension);
+            }
+            else{
+                putTeamUpdate(name,endDate,beforeImage);
+            }
+
+
+
+            finish();
+        }
+    };
 
     /** Button click 시 소모임 종료 날짜 설정 **/
     View.OnClickListener onEndDateClickListener = view -> {
@@ -124,12 +183,15 @@ public class BoardFixTeamActivity extends AppCompatActivity {
         // DatePickerDialog를 통해 날짜 선택
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, (datePickerView, year, month, dayOfMonth) -> {
             // 선택한 날짜
-            afterEndDate = year + "/" + (month + 1) + "/" + dayOfMonth;
+            String monthFormatted = String.format(Locale.getDefault(), "%02d", (month + 1));
+            afterEndDate = year + "-" + monthFormatted + "-" + dayOfMonth;
 
             // 선택한 날짜와 기존 값이 다른 경우에만 버튼을 활성화
             if (!beforeEndDate.equals(afterEndDate)) {
+                btnEndDate.setHint(afterEndDate);
                 activeBtnFixTeam();
             } else {
+                btnEndDate.setHint(beforeEndDate);
                 inactiveBtnFixTeam();
             }
 
@@ -172,11 +234,18 @@ public class BoardFixTeamActivity extends AppCompatActivity {
                                 .into(ivImageUpload);
 
                         // visibility 설정
-                        btnImageUpload.setVisibility(View.GONE);
-                        ivImageUpload.setVisibility(View.VISIBLE);
                         btnImageUploadRe.setVisibility(View.VISIBLE);
 
-                        checkInputs();
+                        // 파일의 절대경로 Get
+                        String filePath = ImageUtils.getAbsolutePathFromUri(getApplicationContext(), uri);
+                        if (filePath != null) {
+                            // 선택한 사진을 파일로 변환
+                            imageFile = new File(filePath);
+                            // UUID를 사용하여 고유한 파일 이름 생성 ( 파일명.파일확장자.UUID)
+                            uniqueFileNameWithExtension = ImageUtils.generateUniqueFileName(filePath);
+                        }
+
+                        activeBtnFixTeam();
                     }
                 }
             }
@@ -211,19 +280,13 @@ public class BoardFixTeamActivity extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
                 String result = "(" + editable.length() + "/" + maxLength + ")";
                 countTextView.setText(result);
-                String afterName = editable.toString();
+                afterName = editable.toString();
                 if(afterName.length() >0 && !beforeName.equals(editable.toString())){
                     activeBtnFixTeam();
                 }
                 else inactiveBtnFixTeam();
             }
         });
-    }
-
-    /** 소모임 이름, 종료날짜, 이미지 중 하나라도 변경되었으면 버튼 활성화 **/
-    private void checkInputs(){
-
-
     }
 
     /** btnFixTeam 활성화 **/
@@ -240,62 +303,43 @@ public class BoardFixTeamActivity extends AppCompatActivity {
         btnFixTeam.setClickable(false);
     }
 
-    /** AWS S3에 파일 업로드를 수행하는 메소드  **/
-    public void uploadWithTransferUtility(String fileName, File file) {
+    /**
+     * 소모임 정보 수정
+     **/
+    private void putTeamUpdate(String name, String endDate, String image) {
+        Log.d(TAG,endDate);
+        // Token 을 가져오기 위한 SharedPreferences Token
+        SharedPreferences sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        String jwtAccessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
+        Log.d(TAG, jwtAccessToken);
 
-        // accessKey 와 secretKey 를 사용하는 기본 자격 증명 객체
-        AWSCredentials awsCredentials = new BasicAWSCredentials("AKIA5L3BRFIIWLIJ62JQ", "xywH1VJjcAxp0xcEyFuVrOnknLp3XtWsyT2KaFEx");    // IAM 생성하며 받은 것 입력
-
-        // AWS S3 서비스와 상호 작용하기 위한 클라이언트 객체
-        AmazonS3Client s3Client = new AmazonS3Client(awsCredentials, Region.getRegion(Regions.AP_NORTHEAST_2));
-
-        // Amazon S3 전송 관리를 쉽게 할 수 있도록 하는 고급 API - for Image File Upload
-        TransferUtility transferUtility = TransferUtility.builder().s3Client(s3Client).context(getApplicationContext()).build();
-        TransferNetworkLossHandler.getInstance(getApplicationContext());
-        TransferObserver uploadObserver = transferUtility.upload("moing-images", fileName, file);    // (bucket api, file, file)
-
-        uploadObserver.setTransferListener(new TransferListener() {
+        RetrofitAPI apiService = RetrofitClientJwt.getApiService(jwtAccessToken);
+        Call<TeamUpdateResponse> call = apiService.putTeamUpdate(jwtAccessToken, teamId, new TeamUpdateRequest(endDate, name, image, teamId));
+        call.enqueue(new Callback<TeamUpdateResponse>() {
             @Override
-            public void onStateChanged(int id, TransferState state) {
-                //if (state == TransferState.COMPLETED) { // 업로드 성공 }
+            public void onResponse(@NonNull Call<TeamUpdateResponse> call, @NonNull Response<TeamUpdateResponse> response) {
+                // 연결 성공
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        Log.d(TAG, response.body().toString());
+
+                    }
+                }  switch (response.message()) {
+                    case "만료된 토큰입니다.":
+                        ChangeJwt.updateJwtToken(getApplicationContext());
+                        putTeamUpdate(name, endDate, image);
+                        break;
+                    case "소모임장이 아니어서 할 수 없습니다.":
+                        Toast.makeText(getApplicationContext(), "소모임장이 아니어서 할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                        break;
+                }
             }
 
             @Override
-            public void onProgressChanged(int id, long current, long total) {
-                int done = (int) (((double) current / total) * 100.0);
-                Log.d(TAG, "UPLOAD - - ID: $id, percent done = $done");
-            }
-
-            @Override
-            public void onError(int id, Exception ex) {
-                Log.d(TAG, "UPLOAD ERROR - - ID: $id - - EX:" + ex.toString());
+            public void onFailure(@NonNull Call<TeamUpdateResponse> call, @NonNull Throwable t) {
+                // 응답 실패
+                Log.d(TAG, "실패");
             }
         });
-    }
-
-    /** Uri 에서 절대경로를 get하는 메소드**/
-    public static String getAbsolutePathFromUri(Context context, Uri uri) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            // Android Q 이상에서는 uri.getPath()가 /document/... 형태로 반환되므로
-            // getContentResolver().query()를 사용하여 실제 경로를 가져와야 합니다.
-            try (Cursor cursor = context.getContentResolver().query(uri, null, null, null)) {
-                if (cursor != null && cursor.moveToFirst()) {
-                    return cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA));
-                }
-            }
-        } else {
-            String[] projection = {MediaStore.Images.Media.DATA};
-            Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
-            if (cursor != null) {
-                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                if (cursor.moveToFirst()) {
-                    String path = cursor.getString(column_index);
-                    cursor.close();
-                    return path;
-                }
-                cursor.close();
-            }
-        }
-        return null;
     }
 }

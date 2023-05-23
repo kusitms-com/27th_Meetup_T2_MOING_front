@@ -144,13 +144,11 @@ public class RegisterInputAddressActivity extends AppCompatActivity {
                 String fcmToken = sharedPreferences.getString(FCM_TOKEN, null);
 
                 // RegisterAddressRequest 객체를 생성하고 주소 정보를 담음
-                RegisterAddressRequest request = new RegisterAddressRequest(access, address, nickname, fcmToken);
-                request.setAddress(address);
+                String jwtAccessTokenWithoutBearer = access.replace("Bearer ", "");
+                RegisterAddressRequest request = new RegisterAddressRequest(jwtAccessTokenWithoutBearer, address, nickname, fcmToken);
 
                 // API 요청을 보내기 전에 Request Header에 토큰 값을 추가
-                String token = "Bearer " + access; // 토큰 값을 "Bearer {토큰값}" 형태로 생성
-                Call<RegisterAddressResponse> call = retrofitAPI.AdditionalInfo(token, request);
-                // Call 객체에 Request Header에 토큰 값을 추가한 후 API 요청을 보냄
+                Call<RegisterAddressResponse> call = retrofitAPI.AdditionalInfo(access, request);
 
                 // API 요청을 보내고 응답을 처리하는 콜백 메서드를 정의함
                 call.enqueue(new Callback<RegisterAddressResponse>() {
