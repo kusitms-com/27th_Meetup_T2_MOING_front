@@ -1,15 +1,11 @@
 package com.example.moing.board;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.LayoutTransition;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
-import android.util.SparseBooleanArray;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,21 +14,22 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moing.R;
+import com.example.moing.Response.BoardVoteInfoResponse;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private List<VoteInfo.VoteChoice> voteChoiceList;
-    private List<VoteInfo.VoteChoice> voteSelected;
+    private static final String TAG = "VoteInfoAdapterFirst";
+    private List<BoardVoteInfoResponse.VoteChoice> voteChoiceList;
+    private List<BoardVoteInfoResponse.VoteChoice> voteSelected;
     private Context context;
     private OnItemClickListener clickListener = null;
+    boolean anonymous, multi;
 
     // 리사이클러뷰 안의 리사이클러뷰 관련
     // 두번째 어댑터와 연결
@@ -47,10 +44,12 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
         this.clickListener = listener;
     }
 
-    public VoteInfoAdapterFirst(List<VoteInfo.VoteChoice> voteChoiceList, List<VoteInfo.VoteChoice> voteSelected, Context context) {
+    public VoteInfoAdapterFirst(List<BoardVoteInfoResponse.VoteChoice> voteChoiceList, List<BoardVoteInfoResponse.VoteChoice> voteSelected,
+                                Context context, boolean anonymous) {
         this.voteChoiceList = voteChoiceList;
         this.voteSelected = voteSelected;
         this.context = context;
+        this.anonymous = anonymous;
     }
 
     @Override
@@ -58,7 +57,7 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
         return voteChoiceList.size();
     }
 
-    public List<VoteInfo.VoteChoice> getSelectedItems() {
+    public List<BoardVoteInfoResponse.VoteChoice> getSelectedItems() {
         return voteSelected;
     }
 
@@ -72,9 +71,13 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        VoteInfo.VoteChoice voteChoice = voteChoiceList.get(position);
+        BoardVoteInfoResponse.VoteChoice voteChoice = voteChoiceList.get(position);
         VoteInfoViewHolder vH = (VoteInfoViewHolder) holder;
         vH.tv_text.setText(voteChoice.getContent());
+
+        Log.d(TAG, "익명인가 ? : " + String.valueOf(anonymous));
+        // 익명일 때 가시성 여부
+        vH.btn_people.setVisibility(anonymous ? View.INVISIBLE : View.VISIBLE);
 
         // Checkbox 상태 변경
         vH.checkBox.setChecked(voteChoice.isChecked());
@@ -98,24 +101,23 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
         vH.recyclerView.addItemDecoration(voteNoReadGridSpacing);
         vH.recyclerView.setLayoutManager(llm2);
 
-        // 예정 : Retrofit 연동시 해당 코드가 맞음!!
-        // 예정 : List<String> userList = voteChoice.getVoteUserNickName();
+       /** 각 투표 리스트 별 사용자 항목을 구분해주기 위한 이중 리스트 생성 **/
+        List<List<String>> userList2 = new ArrayList<>();
+        for (BoardVoteInfoResponse.VoteChoice vc : voteChoiceList) {
+            List<String> tmp = vc.getVoteUserNickName();
+            userList2.add(tmp);
+        }
 
-        /** 아래 코드는 테스트 코드 **/
-        List<String> userList = new ArrayList<>();
-        userList.add("손현석");
-        userList.add("곽승엽");
-        /** 테스트 코드 부분 종료 **/
-
-        second_adapter = new VoteInfoAdapterSecond(voteChoiceList, userList);
+        second_adapter = new VoteInfoAdapterSecond(voteChoiceList, userList2);
         vH.recyclerView.setAdapter(second_adapter);
-
+        /** Second Adapter 전달 완료 **/
 
         // 예정 : 투표한 사람 버튼 VISIBLE, INVISIBLE 여부
 
 
-        /** 예정 : 사람 수 받아와서 텍스트에 설정하기!! **/
-        //vH.count.setText(voteChoice.getNum());
+        /** 사람 수 받아와서 텍스트에 설정하기!! **/
+        int num = voteChoice.getVoteUserNickName().size();
+        vH.count.setText(String.valueOf(num) + "표");
 
         /** 예정 : 버튼 클릭시 카드뷰가 보여지게 구현! **/
         vH.btn_people.setOnClickListener(new View.OnClickListener() {
@@ -126,9 +128,9 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
                 vH.recyclerView.setVisibility(visibility);
                 // 보이는 상태라면
                 if(visibility == View.VISIBLE)
-                    vH.btn_people.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_up, 0);
+                    vH.btn_people.setBackgroundResource(R.drawable.arrow_up);
                 else
-                    vH.btn_people.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
+                    vH.btn_people.setBackgroundResource(R.drawable.arrow_down);
             }
         });
     }

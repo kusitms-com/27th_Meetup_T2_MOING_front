@@ -63,7 +63,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
                         android:layout_marginTop="32dp"
-                        android:text="확인하지 않은 공지가 3개 있어요"
                         android:textColor="@color/secondary_grey_black_3"
                         android:fontFamily="@font/pretendard_medium"
                         android:textSize="24dp"/>

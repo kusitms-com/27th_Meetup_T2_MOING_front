@@ -227,10 +227,12 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapter.
     /** 익명 투표 **/
     View.OnClickListener anonyClickListener = v -> {
         if(anony.isChecked()) {
+            Log.d(TAG, "체크 여부가 사실인가 1? : " + String.valueOf(anony.isChecked()));
             anony.setBackgroundResource(R.drawable.board_checkbox_yes);
             anony.setButtonTintList(ColorStateList.valueOf(Color.parseColor("#F6F6F6")));
             tv_anony.setTextColor(Color.parseColor("#F6F6F6"));
         } else {
+            Log.d(TAG, "체크 여부가 사실인가 2? : " + String.valueOf(anony.isChecked()));
             anony.setBackgroundResource(R.drawable.board_checkbox_no);
             tv_anony.setTextColor(Color.parseColor("#959698"));
             anony.setButtonTintList(ColorStateList.valueOf(Color.parseColor("#000000")));
@@ -245,6 +247,7 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapter.
             tv_multi.setTextColor(Color.parseColor("#F6F6F6"));
         }
         else {
+
             multi.setBackgroundResource(R.drawable.board_checkbox_no);
             tv_multi.setTextColor(Color.parseColor("#959698"));
             multi.setButtonTintList(ColorStateList.valueOf(Color.parseColor("#000000")));
@@ -253,7 +256,7 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapter.
 
     /** 업로드하기 버튼 **/
     View.OnClickListener uploadClickListener = v -> {
-        makeVote();
+       makeVoteAPI();
     };
 
     // 각 EditText들의 null값 여부 확인
@@ -305,7 +308,7 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapter.
     }
 
     /** API 통신 **/
-    public void makeVote() {
+    public void makeVoteAPI() {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
         apiService = RetrofitClientJwt.getApiService(accessToken);
         List<String> requestList = new ArrayList<>();
@@ -327,12 +330,13 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapter.
                 String msg = voteResponse.getMessage();
                 if(msg.equals("투표를 생성하였습니다")) {
                     Intent intent = new Intent(getApplicationContext(), BoardActivity.class);
-                    //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("teamId", teamId);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                 }
                 else if (msg.equals("만료된 토큰입니다.")) {
                     ChangeJwt.updateJwtToken(BoardMakeVote.this);
-                    makeVote();
+                    makeVoteAPI();
                 }
             }
 

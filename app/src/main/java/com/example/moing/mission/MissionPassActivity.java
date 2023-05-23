@@ -79,6 +79,11 @@ public class MissionPassActivity extends AppCompatActivity {
     View.OnClickListener completeClickListener = v -> {
         /** API 호출 **/
         //skipMission();
+        /** TEST 용도 **/
+        Intent intent = new Intent();
+        intent.putExtra("value", "1");
+        setResult(RESULT_OK, intent);
+        finish();
     };
 
     /** 입력 시 값 변경 메서드 **/
@@ -109,7 +114,6 @@ public class MissionPassActivity extends AppCompatActivity {
                     complete.setBackgroundColor(ContextCompat.getColor(MissionPassActivity.this, R.color.secondary_grey_black_12));
                     complete.setTextColor(ContextCompat.getColorStateList(getApplicationContext(), R.color.secondary_grey_black_10));
                 }
-
             }
         });
     }

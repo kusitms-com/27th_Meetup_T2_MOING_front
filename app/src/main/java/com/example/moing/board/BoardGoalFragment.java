@@ -14,12 +14,14 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +35,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.moing.NoticeVoteActivity;
 import com.example.moing.R;
+import com.example.moing.Request.BoardVoteDoRequest;
+import com.example.moing.Response.BoardCurrentLocateResponse;
 import com.example.moing.Response.BoardFireResponse;
 import com.example.moing.Response.BoardMoimResponse;
 import com.example.moing.Response.BoardNoReadNoticeResponse;
@@ -55,7 +59,7 @@ public class BoardGoalFragment extends Fragment {
 
     ScrollView scroll;
     TextView teamName, curDate, userName, tv_toggle, tv_all, tv_all2;
-    TextView btn_notice, btn_vote;
+    TextView btn_notice, btn_vote, tv_hot, tv_progress_team, tv_progress_user;
     ImageView notice_sign, vote_sign;
     ImageButton dot, down;
     ImageView teamImg, btnRefresh, fire, imgTeam, imgUser;
@@ -79,7 +83,8 @@ public class BoardGoalFragment extends Fragment {
     List<BoardNoReadNoticeResponse.NoticeData> noticeDataList;
     List<BoardNoReadVoteResponse.VoteData> voteDataList;
     private int noReadNotice, noReadVote;
-
+    private Long personalRate, teamRate;
+    RelativeLayout relative_progress, progress_text;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_board_goal, container, false);
@@ -110,6 +115,14 @@ public class BoardGoalFragment extends Fragment {
         btnRefresh = view.findViewById(R.id.imgBtn_refresh);
         // 불 이미지
         fire = view.findViewById(R.id.iv_fire);
+        // 불 텍스트
+        tv_hot = view.findViewById(R.id.tv_hot);
+        // 프로그레스바 RelativeLayout
+        relative_progress = view.findViewById(R.id.relative_progress);
+        // 프로그레스바 User
+        tv_progress_user = view.findViewById(R.id.tv_progress_user);
+        // 프로그레스바 TEAM
+        tv_progress_team = view.findViewById(R.id.tv_progress_team);
         // 유저 닉네임 텍스트뷰
         userName = view.findViewById(R.id.tv_userHere);
         // 팀 불 프로그레스 이미지
@@ -158,9 +171,8 @@ public class BoardGoalFragment extends Fragment {
         noReadVote(); // voteDataList, noReadVote 값 변경됨!!
         /** 안 읽은 공지 API **/
         noReadNotice(); // noticeDataList, noReadNotice 값 변경됨!!
-
-        Log.d(TAG, "통신 후 noReadNotice 값 : " + noReadNotice);
-        Log.d(TAG, "통신 후 noReadVote 값 : " + noReadVote);
+        /** 팀, 나의 위치 API **/
+        curLocation();
 
         /** API 통신 완료 **/
 
@@ -268,8 +280,6 @@ public class BoardGoalFragment extends Fragment {
                     Log.d("BOARDGOALFRAGMENT", remainPeriod);
                     Log.d("BOARDGOALFRAGMENT", nowTime);
 
-
-
                     // 소모임 이름 설정
                     teamName.setText(name);
 
@@ -329,8 +339,11 @@ public class BoardGoalFragment extends Fragment {
                 Log.d(TAG, msg);
 
                 if (msg.equals("개인별 개인별 미션 인증 현황 조회 성공")) {
-                    Long data = fireResponse.getData();
-                    checkFire(data);
+                    BoardFireResponse.Data data = fireResponse.getData();
+                    checkFire(data.getPercent());
+                    Log.d(TAG, data.getFireCopy());
+                    tv_hot.setText(data.getFireCopy());
+
                 } else if (msg.equals("만료된 토큰입니다.")) {
                     ChangeJwt.updateJwtToken(requireContext());
                     apiFire();
@@ -444,7 +457,6 @@ public class BoardGoalFragment extends Fragment {
                         }
                     });
 
-
                     checkNoRead(noReadVote, "투표");
 
                     Log.d(TAG, "noreadNotice : " + noReadVote);
@@ -481,7 +493,6 @@ public class BoardGoalFragment extends Fragment {
         ColorStateList co = ColorStateList.valueOf(requireContext().getResources().getColor(R.color.secondary_grey_black_1));
         ColorStateList co2 = ColorStateList.valueOf(requireContext().getResources().getColor(R.color.secondary_grey_black_13));
 
-        Log.d(TAG, "수행완료1");
         // List의 개수가 0개일 때
         if (num ==0) {
             recyclerView.setVisibility(View.GONE);
@@ -490,40 +501,164 @@ public class BoardGoalFragment extends Fragment {
             tv_all.setVisibility(View.VISIBLE);
             tv_all2.setVisibility(View.VISIBLE);
 
-            Log.d(TAG, "수행완료2");
             if(str.equals("공지")) {
                 notice_sign.setVisibility(View.INVISIBLE);
                 btn_notice.setBackgroundTintList(co);
                 btn_vote.setBackgroundTintList(co2);
-                Log.d(TAG, "수행완료3");
             }
             else {
                 vote_sign.setVisibility(View.INVISIBLE);
                 btn_notice.setBackgroundTintList(co2);
                 btn_vote.setBackgroundTintList(co);
-                Log.d(TAG, "수행완료4");
             }
         }
 
         // List의 개수가 한 개 이상일 때
         else {
-            Log.d(TAG, "수행완료5");
             recyclerView.setVisibility(View.VISIBLE);
             tv_all.setVisibility(View.GONE);
             tv_all2.setVisibility(View.GONE);
 
             if(str.equals("공지")) {
-                Log.d(TAG, "수행완료6");
                 notice_sign.setVisibility(View.VISIBLE);
                 btn_notice.setBackgroundTintList(co);
                 btn_vote.setBackgroundTintList(co2);
             }
             else {
-                Log.d(TAG, "수행완료7");
                 vote_sign.setVisibility(View.VISIBLE);
                 btn_notice.setBackgroundTintList(co2);
                 btn_vote.setBackgroundTintList(co);
             }
         }
+    }
+
+    /** 현재 팀, 나의 진행도 구하는 API **/
+    private void curLocation() {
+        String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
+        apiService = RetrofitClientJwt.getApiService(accessToken);
+
+        Call<BoardCurrentLocateResponse> call = apiService.curLocate(accessToken, teamId);
+        call.enqueue(new Callback<BoardCurrentLocateResponse>() {
+            @Override
+            public void onResponse(Call<BoardCurrentLocateResponse> call, Response<BoardCurrentLocateResponse> response) {
+                BoardCurrentLocateResponse locateResponse = response.body();
+                if(response.isSuccessful()) {
+                    BoardCurrentLocateResponse.Data data = locateResponse.getData();
+                    personalRate = data.getPersonalRate();
+                    teamRate = data.getTeamRate();
+                    computeLocate(personalRate, teamRate);
+
+                }
+                else if (locateResponse.getMessage().equals("만료된 토큰입니다.")) {
+                    ChangeJwt.updateJwtToken(requireContext());
+                    curLocation();
+                }
+                else
+                    Log.d(TAG, "팀, 나의 퍼센트 연동 실패.." + response.body().getMessage());
+            }
+
+            @Override
+            public void onFailure(Call<BoardCurrentLocateResponse> call, Throwable t) {
+                Log.d(TAG, "팀, 나의 퍼센트 연동 실패.." + t.getMessage());
+            }
+        });
+
+    }
+
+    /** 현재 위치 비율 계산 메서드 **/
+    private void computeLocate(Long personalRate, Long teamRate) {
+        // 가로 길이 구하기
+        // 가로 길이 구하기
+        int parentWidth = relative_progress.getWidth();
+
+        Long myRate = personalRate;
+        Long allRate = teamRate;
+        if (myRate > 100) {
+            myRate = Long.valueOf(100);
+        }
+        if (allRate > 100)
+            allRate = Long.valueOf(100);
+
+        // 퍼센테이지 계산
+        float leftMarginTeamPercent = (float) allRate / 100;
+        float leftMarginMyPercent = (float) myRate / 100;
+
+        // ImageView의 왼쪽 여백 계산
+        int teamLeftMargin = (int) (parentWidth * leftMarginTeamPercent);
+        int myLeftMargin = (int) (parentWidth * leftMarginMyPercent);
+        // px를 dp로 변환
+        int width = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 28, getResources().getDisplayMetrics());
+        int marginTop = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics());
+
+        /** 내 미션 상황 이미지 **/
+        // 기존의 ImageView의 LayoutParams 가져오기
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) imgUser.getLayoutParams();
+        // ImageView의 레이아웃 파라미터 값 설정
+        params.width = width;
+        params.height = width;
+        params.topMargin = marginTop;
+        if (myRate == 0) {
+            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        } else if (myRate == 100) {
+            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            params.rightMargin = marginTop;
+        } else {
+            params.addRule(RelativeLayout.ALIGN_PARENT_START);
+            params.setMarginStart(myLeftMargin);
+        }
+
+        /** Team **/
+        RelativeLayout.LayoutParams params2 = (RelativeLayout.LayoutParams) imgTeam.getLayoutParams();
+        params2.width = width;
+        params2.height = width;
+        params2.topMargin = marginTop;
+        if (allRate == 0)
+            params2.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        else if (allRate == 100) {
+            params2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            params2.rightMargin = marginTop;
+        }
+        else {
+            params2.addRule(RelativeLayout.ALIGN_PARENT_START);
+            params2.setMarginStart(teamLeftMargin);
+        }
+        // personalRate에 따라 왼쪽 여백 설정
+
+        // TextView 위치 설정
+        /** TextTeam **/
+        RelativeLayout.LayoutParams params3 = (RelativeLayout.LayoutParams) tv_progress_team.getLayoutParams();
+        params3.width = RelativeLayout.LayoutParams.WRAP_CONTENT;
+        params3.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+        if (allRate == 0)
+            params3.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        else if (allRate == 100) {
+            params3.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            params3.rightMargin = marginTop;
+        }
+        else {
+            params3.addRule(RelativeLayout.ALIGN_PARENT_START);
+            params3.setMarginStart(teamLeftMargin - 60);
+        }
+
+        /** TextUser **/
+        RelativeLayout.LayoutParams params4 = (RelativeLayout.LayoutParams) tv_progress_user.getLayoutParams();
+        params4.width = RelativeLayout.LayoutParams.WRAP_CONTENT;
+        params4.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+        if (myRate == 0)
+            params4.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        else if (myRate == 100) {
+            params4.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            params4.rightMargin = marginTop;
+        }
+        else {
+            params4.addRule(RelativeLayout.ALIGN_PARENT_START);
+            params4.setMarginStart(myLeftMargin);
+        }
+
+        // ImageView에 레이아웃 파라미터 설정
+        imgUser.setLayoutParams(params);
+        imgTeam.setLayoutParams(params2);
+        tv_progress_team.setLayoutParams(params3);
+        tv_progress_user.setLayoutParams(params4);
     }
 }

@@ -1,10 +1,10 @@
-package com.example.moing.board;
+package com.example.moing.Response;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class VoteCommentResponse {
+public class BoardVoteCommentResponse {
     @SerializedName("statusCode")
     private int statusCode;
 
@@ -12,7 +12,13 @@ public class VoteCommentResponse {
     private String message;
 
     @SerializedName("data")
-    private List<VoteComment> data;
+    private List<VoteData> data;
+
+    public BoardVoteCommentResponse(int statusCode, String message, List<VoteData> data) {
+        this.statusCode = statusCode;
+        this.message = message;
+        this.data = data;
+    }
 
     public int getStatusCode() {
         return statusCode;
@@ -22,25 +28,19 @@ public class VoteCommentResponse {
         return message;
     }
 
-    public List<VoteComment> getData() {
+    public List<VoteData> getData() {
         return data;
     }
 
-    public VoteCommentResponse(int statusCode, String message, List<VoteComment> data) {
-        this.statusCode = statusCode;
-        this.message = message;
-        this.data = data;
-    }
-
-    public static class VoteComment {
+    public static class VoteData {
         @SerializedName("voteCommentId")
-        private int voteCommentId;
+        private Long voteCommentId;
 
         @SerializedName("content")
         private String content;
 
         @SerializedName("userId")
-        private int userId;
+        private Long userId;
 
         @SerializedName("nickName")
         private String nickName;
@@ -51,7 +51,16 @@ public class VoteCommentResponse {
         @SerializedName("createdDate")
         private String createdDate;
 
-        public int getVoteCommentId() {
+        public VoteData(Long voteCommentId, String content, Long userId, String nickName, String userImageUrl, String createdDate) {
+            this.voteCommentId = voteCommentId;
+            this.content = content;
+            this.userId = userId;
+            this.nickName = nickName;
+            this.userImageUrl = userImageUrl;
+            this.createdDate = createdDate;
+        }
+
+        public Long getVoteCommentId() {
             return voteCommentId;
         }
 
@@ -59,7 +68,7 @@ public class VoteCommentResponse {
             return content;
         }
 
-        public int getUserId() {
+        public Long getUserId() {
             return userId;
         }
 
@@ -73,15 +82,6 @@ public class VoteCommentResponse {
 
         public String getCreatedDate() {
             return createdDate;
-        }
-
-        public VoteComment(int voteCommentId, String content, int userId, String nickName, String userImageUrl, String createdDate) {
-            this.voteCommentId = voteCommentId;
-            this.content = content;
-            this.userId = userId;
-            this.nickName = nickName;
-            this.userImageUrl = userImageUrl;
-            this.createdDate = createdDate;
         }
     }
 }

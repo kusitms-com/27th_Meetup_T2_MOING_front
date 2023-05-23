@@ -27,6 +27,7 @@ import com.example.moing.Response.AllNoticeResponse;
 import com.example.moing.Response.AllVoteResponse;
 import com.example.moing.board.BoardActivity;
 import com.example.moing.board.BoardMakeVote;
+import com.example.moing.board.VoteInfoActivity;
 import com.example.moing.retrofit.ChangeJwt;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClientJwt;
@@ -123,12 +124,11 @@ public class NoticeVoteActivity extends AppCompatActivity {
         linearLayoutManager2.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView2.setLayoutManager(linearLayoutManager2);
 
-        /** 공지사항 **/
-        notice();
-
         /** 투표 **/
         vote();
 
+        /** 공지사항 **/
+        notice();
 
         TabHost tabHost1 = (TabHost) findViewById(R.id.tabHost1);
         tabHost1.setup();
@@ -152,7 +152,7 @@ public class NoticeVoteActivity extends AppCompatActivity {
                 tp.setTextColor(Color.parseColor("#FFFFFF"));
 
                 // 선택된 탭에 대한 처리
-                switch(tabHost1.getCurrentTab()) {
+                switch (tabHost1.getCurrentTab()) {
                     // 공지사항 탭 선택 시
                     case 0:
                         notice();
@@ -175,12 +175,11 @@ public class NoticeVoteActivity extends AppCompatActivity {
         ts2.setContent(R.id.content2);
         ts2.setIndicator("투표");
         tabHost1.addTab(ts2);
-
     }
 
     // 뒤로 가기 버튼 클릭 리스너
     View.OnClickListener backClickListener = v -> {
-      finish();
+        finish();
     };
 
     // 플로팅 액션 버튼 클릭시 애니메이션 효과
@@ -219,7 +218,9 @@ public class NoticeVoteActivity extends AppCompatActivity {
         fabMain_status = !fabMain_status;
     }
 
-    /** 공지사항 모든 목록 출력 API **/
+    /**
+     * 공지사항 모든 목록 출력 API
+     **/
     public void notice() {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
         apiService = RetrofitClientJwt.getApiService(accessToken);
@@ -230,16 +231,22 @@ public class NoticeVoteActivity extends AppCompatActivity {
             public void onResponse(Call<AllNoticeResponse> call, Response<AllNoticeResponse> response) {
                 AllNoticeResponse noticeResponse = response.body();
                 String msg = noticeResponse.getMessage();
-                if(msg.equals("공지를 전체 조회하였습니다")) {
+                if (msg.equals("공지를 전체 조회하였습니다")) {
                     noticeList = noticeResponse.getData().getNoticeBlocks();
 
                     NoticeViewAdapter adapter = new NoticeViewAdapter(noticeList, NoticeVoteActivity.this);
                     mRecyclerView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
 
-                    if(noticeList.size() == 0) {
+                    /** 리사이클러뷰 아이템 클릭 이벤트 처리 **/
+                    adapter.setOnItemClickListener(new NoticeViewAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(int pos) {
+                            String s = pos + "번 아이템 선택!!";
+                            Toast.makeText(NoticeVoteActivity.this, s, Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
-                    }
                     Long num = noticeResponse.getData().getNotReadNum();
                     checkNoRead(num, "공지");
 
@@ -251,8 +258,7 @@ public class NoticeVoteActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
                         }
                     });
-                }
-                else if (msg.equals("만료된 토큰입니다.")) {
+                } else if (msg.equals("만료된 토큰입니다.")) {
                     ChangeJwt.updateJwtToken(NoticeVoteActivity.this);
                     notice();
                 }
@@ -265,7 +271,9 @@ public class NoticeVoteActivity extends AppCompatActivity {
         });
     }
 
-    /** 투표 모두 조회 API **/
+    /**
+     * 투표 모두 조회 API
+     **/
     public void vote() {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
         apiService = RetrofitClientJwt.getApiService(accessToken);
@@ -276,16 +284,38 @@ public class NoticeVoteActivity extends AppCompatActivity {
             public void onResponse(Call<AllVoteResponse> call, Response<AllVoteResponse> response) {
                 AllVoteResponse voteResponse = response.body();
                 String msg = voteResponse.getMessage();
-                if(msg.equals("투표를 전체 조회하였습니다")) {
+                if (msg.equals("투표를 전체 조회하였습니다")) {
                     voteList = voteResponse.getData().getVoteBlocks();
                     VoteViewAdapter adapter = new VoteViewAdapter(voteList, NoticeVoteActivity.this);
                     mRecyclerView2.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
 
+                    List<Long> voteIdList = new ArrayList<>();
+                    for (AllVoteResponse.VoteBlock v : voteList) {
+                        voteIdList.add(v.getVoteId());
+                        Log.d(TAG, String.valueOf(v.getVoteId()));
+                    }
+                    Log.d(TAG, "총 투표 목록 개수 : " + String.valueOf(voteIdList.size()));
+
+                    /** **/
+                    adapter.voteClickListener(new NoticeViewAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(int pos) {
+                            /** 해당 투표로 이동 **/
+//                            String s = pos + "번 메뉴 선택!";
+//                            Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+
+                            Long voteId = voteIdList.get(pos);
+                            Intent intent = new Intent(NoticeVoteActivity.this, VoteInfoActivity.class);
+                            intent.putExtra("voteId", voteId);
+                            intent.putExtra("teamId", teamId);
+                            startActivity(intent);
+                        }
+                    });
+
                     Long num = voteResponse.getData().getNotReadNum();
-                    checkNoRead(num, "공지");
-                }
-                else if (msg.equals("만료된 토큰입니다.")) {
+                    checkNoRead(num, "투표");
+                } else if (msg.equals("만료된 토큰입니다.")) {
                     ChangeJwt.updateJwtToken(NoticeVoteActivity.this);
                     vote();
                 }
