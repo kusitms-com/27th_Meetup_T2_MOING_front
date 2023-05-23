@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.moing.NoticeVoteActivity;
 import com.example.moing.R;
 import com.example.moing.Request.BoardMakeVoteRequest;
 import com.example.moing.Request.BoardVoteDoRequest;
@@ -199,7 +200,10 @@ public class VoteInfoActivity extends AppCompatActivity {
      * 뒤로 가기 버튼 클릭 리스너
      **/
     View.OnClickListener backClickListener = v -> {
-        finish();
+        Intent intent = new Intent(getApplicationContext(), NoticeVoteActivity.class);
+        intent.putExtra("teamId", teamId);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     };
 
     /**

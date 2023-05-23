@@ -50,7 +50,7 @@ public class NoticeVoteActivity extends AppCompatActivity {
     private ImageView fabNoticeWrite;
     private ImageButton back;
     private Long teamId;
-    private TextView tv_first, tv_second;
+    private TextView tv_first, tv_second, tv_nothing;
 
     private RetrofitAPI apiService;
     private static final String PREF_NAME = "Token";
@@ -76,6 +76,7 @@ public class NoticeVoteActivity extends AppCompatActivity {
 
         tv_first = findViewById(R.id.tv_toggle_text);
         tv_second = findViewById(R.id.tv3);
+        tv_nothing = findViewById(R.id.tv_nothing);
         back = findViewById(R.id.btn_back);
         back.setOnClickListener(backClickListener);
         fabMain = findViewById(R.id.fabMain);
@@ -238,6 +239,12 @@ public class NoticeVoteActivity extends AppCompatActivity {
                     mRecyclerView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
 
+                    if (noticeList.size() == 0)
+                        tv_nothing.setVisibility(View.VISIBLE);
+                    else
+                        tv_nothing.setVisibility(View.GONE);
+
+
                     /** 리사이클러뷰 아이템 클릭 이벤트 처리 **/
                     adapter.setOnItemClickListener(new NoticeViewAdapter.OnItemClickListener() {
                         @Override
@@ -289,6 +296,11 @@ public class NoticeVoteActivity extends AppCompatActivity {
                     VoteViewAdapter adapter = new VoteViewAdapter(voteList, NoticeVoteActivity.this);
                     mRecyclerView2.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
+
+                    if(voteList.size() == 0)
+                        tv_nothing.setVisibility(View.VISIBLE);
+                    else
+                        tv_nothing.setVisibility(View.GONE);
 
                     List<Long> voteIdList = new ArrayList<>();
                     for (AllVoteResponse.VoteBlock v : voteList) {
