@@ -12,6 +12,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -196,10 +197,14 @@ public class NoticeWriteActivity extends AppCompatActivity {
                     // 요청이 성공적으로 처리됨
                     NoticeCreateResponse noticeCreateResponse = response.body();
                     // 생성된 미션 데이터에 접근하여 필요한 작업 수행
-                    NoticeCreateResponse.NoticeData noticeData = noticeCreateResponse.getData();
+                    NoticeCreateResponse.Data noticeData = noticeCreateResponse.getData();
+
+                    Long noticeId = noticeData.getNoticeId();
 
                     Intent intent = new Intent(NoticeWriteActivity.this, NoticeVoteActivity.class);
                     intent.putExtra("teamId", teamId);
+                    intent.putExtra("noticeId", noticeId);
+                    Log.d("공지생성", String.valueOf(noticeId));
                     startActivity(intent);
 
                 } else {
