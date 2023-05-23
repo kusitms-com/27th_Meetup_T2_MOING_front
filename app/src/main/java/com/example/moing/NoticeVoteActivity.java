@@ -245,6 +245,7 @@ public class NoticeVoteActivity extends AppCompatActivity {
                         tv_nothing.setVisibility(View.GONE);
 
 
+
                     /** 리사이클러뷰 아이템 클릭 이벤트 처리 **/
                     adapter.setOnItemClickListener(new NoticeViewAdapter.OnItemClickListener() {
                         @Override
@@ -302,6 +303,7 @@ public class NoticeVoteActivity extends AppCompatActivity {
                     else
                         tv_nothing.setVisibility(View.GONE);
 
+
                     List<Long> voteIdList = new ArrayList<>();
                     for (AllVoteResponse.VoteBlock v : voteList) {
                         voteIdList.add(v.getVoteId());
@@ -314,8 +316,10 @@ public class NoticeVoteActivity extends AppCompatActivity {
                         @Override
                         public void onItemClick(int pos) {
                             /** 해당 투표로 이동 **/
+
 //                            String s = pos + "번 메뉴 선택!";
 //                            Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+
 
                             Long voteId = voteIdList.get(pos);
                             Intent intent = new Intent(NoticeVoteActivity.this, VoteInfoActivity.class);
@@ -327,7 +331,9 @@ public class NoticeVoteActivity extends AppCompatActivity {
 
                     Long num = voteResponse.getData().getNotReadNum();
                     checkNoRead(num, "투표");
+
                 } else if (msg.equals("만료된 토큰입니다.")) {
+
                     ChangeJwt.updateJwtToken(NoticeVoteActivity.this);
                     vote();
                 }

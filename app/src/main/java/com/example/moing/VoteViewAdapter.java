@@ -52,6 +52,7 @@ public class VoteViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         AllVoteResponse.VoteBlock item = dataList.get(position);
         VoteViewHolder vh = (VoteViewHolder) holder;
 
+
         // 읽은 경우
         if(item.getRead()) {
             int color = ContextCompat.getColor(context, R.color.secondary_grey_black_14); // R.color.### 대신 실제 사용하는 색상 리소스를 입력하세요

@@ -333,6 +333,7 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapter.
                     Intent intent = new Intent(getApplicationContext(), VoteInfoActivity.class);
                     intent.putExtra("teamId", teamId);
                     intent.putExtra("voteId", voteId);
+
                     startActivity(intent);
                 }
                 else if (msg.equals("만료된 토큰입니다.")) {

@@ -88,7 +88,8 @@ public class LoginActivity extends AppCompatActivity {
     private void saveTokens(String accessToken, String refreshToken, String process, Long userId) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         String strUserId = String.valueOf(userId);
-        editor.putString(JWT_ACCESS_TOKEN, "Bearer " + accessToken);
+        /** error fix **/
+        editor.putString(JWT_ACCESS_TOKEN,"Bearer "+ accessToken);    // Bearer 넣기 전 - 회원가입 하고 나서 붙여서 헤더에 넣어 사용할 것임
         editor.putString(JWT_REFRESH_TOKEN, refreshToken);
         editor.putString(PROCESS, process);
         editor.putLong(USER_ID, userId);

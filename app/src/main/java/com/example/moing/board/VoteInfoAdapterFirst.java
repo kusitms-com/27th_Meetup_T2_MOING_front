@@ -77,7 +77,9 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
 
         Log.d(TAG, "익명인가 ? : " + String.valueOf(anonymous));
         // 익명일 때 가시성 여부
+
         vH.btn_people.setVisibility(anonymous ? View.INVISIBLE : View.VISIBLE);
+
 
         // Checkbox 상태 변경
         vH.checkBox.setChecked(voteChoice.isChecked());
@@ -117,6 +119,7 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
                     return 1;
             }
         });
+
 
        /** 각 투표 리스트 별 사용자 항목을 구분해주기 위한 이중 리스트 생성 **/
         List<List<String>> userList2 = new ArrayList<>();

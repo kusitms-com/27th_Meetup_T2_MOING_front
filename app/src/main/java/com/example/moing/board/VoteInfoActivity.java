@@ -206,6 +206,7 @@ public class VoteInfoActivity extends AppCompatActivity {
         startActivity(intent);
     };
 
+
     /**
      * 모달 버튼 클릭 리스너
      **/
@@ -234,6 +235,7 @@ public class VoteInfoActivity extends AppCompatActivity {
 //            selectComment();
 //        }
         selectComment();
+
     };
 
     /**
@@ -306,9 +308,8 @@ public class VoteInfoActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * API 통신 (투표 결과 상세 조회)
-     **/
+
+    /** API 통신 (투표 결과 상세 조회) **/
     private void getVoteResult() {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
         apiService = RetrofitClientJwt.getApiService(accessToken);
@@ -348,7 +349,9 @@ public class VoteInfoActivity extends AppCompatActivity {
                         /** 투표, 각 투표마다 읽은 사람 리스트 설정 **/
                         voteChoiceList = infoResponse.getData().getVoteChoices();
                         boolean anonymous = infoResponse.getData().isAnonymous();
+
                         Log.d(TAG, "액티비티에서 익명인가? :" + String.valueOf(anonymous));
+
                         voteInfoAdapterFirst = new VoteInfoAdapterFirst(voteChoiceList, voteSelected, VoteInfoActivity.this, anonymous);
                         voteRecycle.setAdapter(voteInfoAdapterFirst);
 
@@ -409,7 +412,9 @@ public class VoteInfoActivity extends AppCompatActivity {
                         getVoteResult();
                     }
                 } else
+
                     Log.d(TAG, "응답 성공X, msg : " + response.message());
+
             }
 
             @Override
@@ -419,9 +424,8 @@ public class VoteInfoActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * 투표 댓글 목록 조회
-     **/
+
+    /** 투표 댓글 목록 조회 **/
     private void getComment() {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
         apiService = RetrofitClientJwt.getApiService(accessToken);
@@ -429,17 +433,21 @@ public class VoteInfoActivity extends AppCompatActivity {
         call.enqueue(new Callback<BoardVoteCommentResponse>() {
             @Override
             public void onResponse(Call<BoardVoteCommentResponse> call, Response<BoardVoteCommentResponse> response) {
-                if (response.isSuccessful()) {
+
+                if(response.isSuccessful()) {
                     BoardVoteCommentResponse commentResponse = response.body();
-                    if (commentResponse.getMessage().equals("투표 댓글 목록을 최신순으로 조회하였습니다")) {
+                    if(commentResponse.getMessage().equals("투표 댓글 목록을 최신순으로 조회하였습니다"))
+                    {
                         voteCommentList = commentResponse.getData();
                         voteCommentAdapter = new VoteCommentAdapter(voteCommentList, VoteInfoActivity.this);
                         commentRecycle.setAdapter(voteCommentAdapter);
                         voteCommentAdapter.notifyDataSetChanged();
-                    } else if (commentResponse.getMessage().equals("만료된 토큰입니다.")) {
+                    }
+                    else if (commentResponse.getMessage().equals("만료된 토큰입니다.")) {
                         ChangeJwt.updateJwtToken(VoteInfoActivity.this);
                         getComment();
-                    } else
+                    }
+                    else
                         Log.d(TAG, "투표 댓글 목록 최신순 조회 에러 메세지 : " + response.message().toString());
                 }
             }
@@ -451,9 +459,8 @@ public class VoteInfoActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * 투표 댓글 생성
-     **/
+
+    /** 투표 댓글 생성 **/
     private void makeComment() {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
         apiService = RetrofitClientJwt.getApiService(accessToken);
@@ -463,17 +470,22 @@ public class VoteInfoActivity extends AppCompatActivity {
         call.enqueue(new Callback<BoardVoteMakeCommentResponse>() {
             @Override
             public void onResponse(Call<BoardVoteMakeCommentResponse> call, Response<BoardVoteMakeCommentResponse> response) {
+
                 if (response.isSuccessful()) {
                     BoardVoteMakeCommentResponse makeCommentResponse = response.body();
                     if (makeCommentResponse.getMessage().equals("투표의 댓글을 생성하였습니다")) {
+
                         voteCommentId = makeCommentResponse.getData().getVoteCommentId();
 
                         Log.d(TAG, "투표 댓글 연동 성공!");
                         Toast.makeText(getApplicationContext(), "댓글 생성이 완료되었습니다.", Toast.LENGTH_SHORT).show();
-                    } else if (makeCommentResponse.getMessage().equals("만료된 토큰입니다.")) {
+
+                    }
+                    else if (makeCommentResponse.getMessage().equals("만료된 토큰입니다.")) {
                         ChangeJwt.updateJwtToken(VoteInfoActivity.this);
                         makeComment();
-                    } else {
+                    }
+                    else {
                         Log.d(TAG, "투표 댓글 생성 에러 메세지 : " + response.message());
                     }
                 }
@@ -485,6 +497,7 @@ public class VoteInfoActivity extends AppCompatActivity {
             }
         });
     }
+
 
     /**
      * 투표하기 API

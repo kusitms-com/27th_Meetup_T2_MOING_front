@@ -35,6 +35,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.moing.NoticeVoteActivity;
 import com.example.moing.R;
+
 import com.example.moing.Request.BoardVoteDoRequest;
 import com.example.moing.Response.BoardCurrentLocateResponse;
 import com.example.moing.Response.BoardFireResponse;

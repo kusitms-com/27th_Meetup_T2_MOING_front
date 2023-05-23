@@ -30,10 +30,12 @@ public class MissionDoneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private OnMissionClicklistener onMissionDoneClicklistener;
     private final Context mainContext;
+    private final boolean isExist;
 
-    public MissionDoneAdapter( ArrayList<MissionStatusListResponse.UserMission> missionList, Context context) {
+    public MissionDoneAdapter(ArrayList<MissionStatusListResponse.UserMission> missionList, Context context, boolean isExist) {
         this.missionList = missionList;
         this.mainContext = context;
+        this.isExist = isExist;
     }
 
     public interface OnMissionClicklistener {
@@ -95,7 +97,7 @@ public class MissionDoneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 });
 
                 // 첫번째는 나 표시
-                if(position == 0)
+                if(position == 0 && isExist)
                     doneViewHolder.ivMe.setVisibility(View.VISIBLE);
 
                 // 미션 인증 사진 설정
@@ -134,7 +136,7 @@ public class MissionDoneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 });
 
                 // 첫번째는 나 표시
-                if(position == 0)
+                if(position == 0 && isExist)
                     pendingViewHolder.ivMe.setVisibility(View.VISIBLE);
 
                 // 미션 건너뛰기 이유 설정
