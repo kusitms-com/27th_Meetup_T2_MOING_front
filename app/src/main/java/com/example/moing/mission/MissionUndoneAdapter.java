@@ -25,11 +25,13 @@ public class MissionUndoneAdapter extends RecyclerView.Adapter<RecyclerView.View
     private ArrayList<Integer> fireList;
     private OnMissionUndoneClickListener onMissionUndoneClickListener;
     private Context mainContext;
+    private final boolean isExist;
 
-    public MissionUndoneAdapter(ArrayList<MissionStatusListResponse.UserMission> missionList, ArrayList<Integer> fireList, Context context) {
+    public MissionUndoneAdapter(ArrayList<MissionStatusListResponse.UserMission> missionList, ArrayList<Integer> fireList, Context context, boolean isExist) {
         this.missionList = missionList;
         this.fireList = fireList;
         this.mainContext = context;
+        this.isExist = isExist;
     }
 
     public void setFireList(ArrayList<Integer> fireList) {
@@ -82,9 +84,12 @@ public class MissionUndoneAdapter extends RecyclerView.Adapter<RecyclerView.View
                 if(onMissionUndoneClickListener != null){
                     onMissionUndoneClickListener.onItemClick(undoneViewHolder,position,mission);
                 }
-
             });
         }
+
+        // 첫번째는 나 표시
+        if(position == 0 && isExist)
+            undoneViewHolder.ivMe.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -94,12 +99,14 @@ public class MissionUndoneAdapter extends RecyclerView.Adapter<RecyclerView.View
         CircleImageView ivProfile;
         TextView tvNickname;
         ImageView ivFire;
+        ImageView ivMe;
 
         public UndoneViewHolder(@NonNull View itemView) {
             super(itemView);
             ivProfile = itemView.findViewById(R.id.mission_undone_iv_profile);
             tvNickname = itemView.findViewById(R.id.mission_undone_tv_nickname);
             ivFire = itemView.findViewById(R.id.mission_undone_iv_fire);
+            ivMe = itemView.findViewById(R.id.mission_undone_iv_me);
         }
     }
 }

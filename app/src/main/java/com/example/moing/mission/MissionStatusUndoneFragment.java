@@ -46,6 +46,7 @@ public class MissionStatusUndoneFragment extends Fragment {
     // 더미 - 삭제 예정
     private long teamId;
     private long missionId;
+    private boolean isExist;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -61,6 +62,9 @@ public class MissionStatusUndoneFragment extends Fragment {
 
         // MissionStatusActivity에서 전달받은 인증 완료 리스트
         fireList = (ArrayList<Integer>) (bundle != null ? bundle.getSerializable("fireList") : null);
+
+        // "나"를 표현하기 위한 나의 상태
+        isExist = bundle.getBoolean("isExist");
 
         // 리사이클러뷰
         RecyclerView recyclerView = rootView.findViewById(R.id.mission_status_undone_rv);
@@ -102,7 +106,7 @@ public class MissionStatusUndoneFragment extends Fragment {
         });
 
         // 리사이클러뷰에 사용할 어댑터 설정
-        adapter = new MissionUndoneAdapter(undoneList, fireList, getContext());
+        adapter = new MissionUndoneAdapter(undoneList, fireList, getContext(),isExist);
         recyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener(this::showUndoneDialog);
     }
