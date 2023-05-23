@@ -56,7 +56,7 @@ public class NoticeViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         vh.title.setText(item.getTitle());
         vh.content.setText(item.getContent());
         vh.dot.setBackgroundResource(R.drawable.notice_dot);
-        vh.count.setText(item.getCommentNum());
+        vh.count.setText(String.valueOf(item.getCommentNum()));
 
         boolean read = item.getRead();
         vh.dot.setVisibility(read ? View.INVISIBLE : View.VISIBLE); // 참이면 안보이게, 거짓이면 보이게

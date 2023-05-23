@@ -49,7 +49,7 @@ public class NoticeVoteActivity extends AppCompatActivity {
     private ImageView fabVoteCreate;
     private ImageView fabNoticeWrite;
     private ImageButton back;
-    private Long teamId;
+    private Long teamId, noticeId;
     private TextView tv_first, tv_second, tv_nothing;
 
     private RetrofitAPI apiService;
@@ -70,6 +70,7 @@ public class NoticeVoteActivity extends AppCompatActivity {
         // Intent 값 전달받는다.
         Intent intent = getIntent();
         teamId = intent.getLongExtra("teamId", 0);
+        noticeId = intent.getLongExtra("noticeId", 0);
 
         // Token을 사용할 SharedPreference
         sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
@@ -106,6 +107,8 @@ public class NoticeVoteActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), NoticeWriteActivity.class);
+                intent.putExtra("teamId", teamId);
+                intent.putExtra("noticeId", noticeId);
                 startActivity(intent);
             }
         });
@@ -234,17 +237,21 @@ public class NoticeVoteActivity extends AppCompatActivity {
                 String msg = noticeResponse.getMessage();
                 if (msg.equals("공지를 전체 조회하였습니다")) {
                     noticeList = noticeResponse.getData().getNoticeBlocks();
-
                     NoticeViewAdapter adapter = new NoticeViewAdapter(noticeList, NoticeVoteActivity.this);
                     mRecyclerView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
+
+//                     List<Long> noticeIdList = new ArrayList<>();
+//                     for (AllNoticeResponse.NoticeBlock v : noticeList) {
+//                         noticeIdList.add(v.getNoticeId());
+//                         Log.d(TAG, String.valueOf(v.getNoticeId()));
+//                     }
+//                     Log.d(TAG, "총 공지 목록 개수 : " + String.valueOf(noticeIdList.size()));
 
                     if (noticeList.size() == 0)
                         tv_nothing.setVisibility(View.VISIBLE);
                     else
                         tv_nothing.setVisibility(View.GONE);
-
-
 
                     /** 리사이클러뷰 아이템 클릭 이벤트 처리 **/
                     adapter.setOnItemClickListener(new NoticeViewAdapter.OnItemClickListener() {
@@ -264,6 +271,11 @@ public class NoticeVoteActivity extends AppCompatActivity {
                             /** 해당 공지사항으로 이동 **/
                             String s = pos + "번 메뉴 선택!";
                             Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+
+                            Intent intent = new Intent(NoticeVoteActivity.this, NoticeInfoActivity.class);
+                            intent.putExtra("noticeId", noticeId);
+                            intent.putExtra("teamId", teamId);
+                            startActivity(intent);
                         }
                     });
                 } else if (msg.equals("만료된 토큰입니다.")) {

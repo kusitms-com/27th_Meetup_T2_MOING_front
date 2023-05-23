@@ -10,15 +10,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.moing.R;
+import com.bumptech.glide.Glide;
+import com.example.moing.Response.NoticeCommentListResponse;
 
 import java.util.List;
 
 public class NoticeCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private List<NoticeCommentResponse.NoticeComment> commentList;
+    private List<NoticeCommentListResponse.NoticeComment> commentList;
     private Context context;
 
-    public NoticeCommentAdapter(List<NoticeCommentResponse.NoticeComment> commentList, Context context) {
+    public NoticeCommentAdapter(List<NoticeCommentListResponse.NoticeComment> commentList, Context context) {
         this.commentList = commentList;
         this.context = context;
     }
@@ -33,12 +34,14 @@ public class NoticeCommentAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        NoticeCommentResponse.NoticeComment noticeComment = commentList.get(position);
+        NoticeCommentListResponse.NoticeComment noticeComment = commentList.get(position);
         NoticeCommentViewHolder vh = (NoticeCommentViewHolder) holder;
 
         // 예정 : Profile 매칭
         vh.nickname.setText(noticeComment.getNickName());
         vh.content.setText(noticeComment.getContent());
+        Glide.with(context).load(noticeComment.getUserImageUrl()).into(vh.profile);
+
 
         if (position == commentList.size()-1) {
             vh.line.setVisibility(View.INVISIBLE);
