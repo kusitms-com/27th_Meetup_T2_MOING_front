@@ -56,7 +56,7 @@ public class MissionClickActivity extends AppCompatActivity {
     private Dialog dialog;
     private ImageButton back_dialog, dot;
     private Button back, mission, fix, across;
-    private TextView curState,d_day,title1,title2, reason, content, rule;
+    private TextView curState, d_day, title1, title2, reason, content, rule;
     private ImageView picture, smile;
     private static final int READ_EXTERNAL_STORAGE_REQUEST = 0;
     private RelativeLayout rl;
@@ -81,8 +81,9 @@ public class MissionClickActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
 
         /** Intent를 통해 teamId, missionId 받을 예정 **/
-//        Intent intent = getIntent();
-//        teamId = intent.getLongExtra("teamId", 0);
+        Intent intent = getIntent();
+        teamId = intent.getLongExtra("teamId", 0);
+        missionId = intent.getLongExtra("missionId", 0);
 
         // 뒤로 가기
         back = findViewById(R.id.btn_close);
@@ -147,6 +148,8 @@ public class MissionClickActivity extends AppCompatActivity {
                 getPassResult.launch(intent);
             }
         });
+
+        missionInfo();
     }
 
     // dot Indicator 클릭 시
@@ -156,30 +159,37 @@ public class MissionClickActivity extends AppCompatActivity {
     };
 
     // 뒤로 가기 버튼 클릭 시
-    View.OnClickListener backClickListener = v -> { finish();};
+    View.OnClickListener backClickListener = v -> {
+        finish();
+    };
     // 사진 클릭 시
-    View.OnClickListener pictureClickListener = v -> { dialog.show(); };
+    View.OnClickListener pictureClickListener = v -> {
+        dialog.show();
+    };
     // 다이얼로그에서 뒤로 나오기
-    View.OnClickListener dialogBackClickListener = v -> { dialog.dismiss(); };
+    View.OnClickListener dialogBackClickListener = v -> {
+        dialog.dismiss();
+    };
 
     // 수정하기 버튼 클릭 시
-    View.OnClickListener fixClickListener = v -> { gallery(); };
+    View.OnClickListener fixClickListener = v -> {
+        gallery();
+    };
 
     // 결과값 반환해오기
     private final ActivityResultLauncher<Intent> getPassResult = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 // 서브 액티비티로부터 돌아올 때 서브 액티비티에서 벌어지는 결과 값을 받아올 수 있는 통로..!
-                if(result.getResultCode() == RESULT_OK) {
+                if (result.getResultCode() == RESULT_OK) {
                     // 수정하지 않은 경우
-                    if(result.getData().getStringExtra("value").equals("0")) {
+                    if (result.getData().getStringExtra("value").equals("0")) {
                         ColorStateList co = ColorStateList.valueOf(getResources().getColor(R.color.secondary_grey_black_10));
                         rl.setBackgroundTintList(co);
 
                         curState.setTextColor(ContextCompat.getColor(MissionClickActivity.this, R.color.secondary_grey_black_8));
                         curState.setPaintFlags(curState.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
-                    }
-                    else {
+                    } else {
                         // 수정된 경우
                         ColorStateList co = ColorStateList.valueOf(getResources().getColor(R.color.sub_light_1));
                         rl.setBackgroundTintList(co);
@@ -200,19 +210,28 @@ public class MissionClickActivity extends AppCompatActivity {
             }
     );
 
-    /** 인증 현황 보러 가기 클릭 리스너 **/
+    /**
+     * 인증 현황 보러 가기 클릭 리스너
+     **/
     View.OnClickListener missionStateClickListener = v -> {
         Intent intent = new Intent(getApplicationContext(), MissionStatusActivity.class);
         /** TeamId, missionId 아직 못 받아서 Intent 받아오는 대로 연동 해놓을게 !! **/
-//        intent.putExtra("teamId", teamId);
-//        intent.putExtra("missionId", missionId);
+        intent.putExtra("teamId", teamId);
+        intent.putExtra("missionId", missionId);
         startActivity(intent);
     };
 
-    /** 버튼 클릭 시 권한 확인 후 갤러리 접근 **/
-    View.OnClickListener missionClickListener = v -> { gallery(); };
+    /**
+     * 버튼 클릭 시 권한 확인 후 갤러리 접근
+     **/
+    View.OnClickListener missionClickListener = v -> {
+        gallery();
 
-    /** 갤러리에서 이미지 선택을 위한 ActivityResultLauncher **/
+    };
+
+    /**
+     * 갤러리에서 이미지 선택을 위한 ActivityResultLauncher
+     **/
     ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
                 @Override
@@ -258,7 +277,9 @@ public class MissionClickActivity extends AppCompatActivity {
             }
     );
 
-    /** 갤러리 접근 메서드 **/
+    /**
+     * 갤러리 접근 메서드
+     **/
     public void gallery() {
         // API 레벨 23 이상 READ_EXTERNAL_STORAGE 권환 필요
         if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -270,21 +291,23 @@ public class MissionClickActivity extends AppCompatActivity {
             galleryLauncher.launch(intent);
 
             /** API 호출 필요 !! **/
-            //missionClear();
+            missionClear();
         }
     }
 
-    /** 미션 상세 조회 API **/
+    /**
+     * 미션 상세 조회 API
+     **/
     public void missionInfo() {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
         apiService = RetrofitClientJwt.getApiService(accessToken);
-        /** 아직 Intent로 값을 받아오지 못했기 때문에 연결 테스트 불가! **/
+
         Call<MissionInfoResponse> call = apiService.getMission(accessToken, teamId, missionId);
         call.enqueue(new Callback<MissionInfoResponse>() {
             @Override
             public void onResponse(Call<MissionInfoResponse> call, Response<MissionInfoResponse> response) {
                 MissionInfoResponse infoResponse = response.body();
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     if (infoResponse.getMessage().equals("개인별 미션 상세 조회 성공")) {
                         String response_title = infoResponse.getData().getTitle();
                         String response_content = infoResponse.getData().getContent();
@@ -300,12 +323,11 @@ public class MissionClickActivity extends AppCompatActivity {
                         rule.setText(response_rule);
 
                         /** 구현 예정 **/
-                        if(response_status.equals("COMPLETE")) {
+                        if (response_status.equals("COMPLETE")) {
 
                         }
 
-                    }
-                    else if (infoResponse.getMessage().equals("만료된 토큰입니다.")) {
+                    } else if (infoResponse.getMessage().equals("만료된 토큰입니다.")) {
                         ChangeJwt.updateJwtToken(MissionClickActivity.this);
                         missionInfo();
                     }
@@ -320,23 +342,22 @@ public class MissionClickActivity extends AppCompatActivity {
     }
 
 
-
-    /** 사진 인증하기 API **/
+    /**
+     * 사진 인증하기 API
+     **/
     public void missionClear() {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
         apiService = RetrofitClientJwt.getApiService(accessToken);
 
-        /** 아직 Intent로 값을 받아오지 못했기 때문에 연결 테스트 불가! **/
         Call<MissionClearResponse> call = apiService.missionClear(accessToken, teamId, missionId);
         call.enqueue(new Callback<MissionClearResponse>() {
             @Override
             public void onResponse(Call<MissionClearResponse> call, Response<MissionClearResponse> response) {
                 MissionClearResponse mcResponse = response.body();
-                if(mcResponse.getData().equals("COMPLETE")) {
+                if (mcResponse.getData().equals("COMPLETE")) {
                     // s3을 통한 사진 업로드
-                    S3Utils.uploadImageToS3(getApplicationContext(),uniqueFileNameWithExtension,imageFile);
-                }
-                else if (mcResponse.getMessage().equals("만료된 토큰입니다.")) {
+                    S3Utils.uploadImageToS3(getApplicationContext(), uniqueFileNameWithExtension, imageFile);
+                } else if (mcResponse.getMessage().equals("만료된 토큰입니다.")) {
                     ChangeJwt.updateJwtToken(MissionClickActivity.this);
                     missionClear();
                 }

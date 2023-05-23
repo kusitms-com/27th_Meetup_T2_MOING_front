@@ -202,6 +202,7 @@ public class VoteInfoActivity extends AppCompatActivity {
     View.OnClickListener backClickListener = v -> {
         Intent intent = new Intent(getApplicationContext(), NoticeVoteActivity.class);
         intent.putExtra("teamId", teamId);
+        intent.putExtra("voteId", voteId);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     };

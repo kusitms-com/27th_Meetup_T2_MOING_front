@@ -29,10 +29,12 @@ import com.example.moing.Response.AllNoticeResponse;
 import com.example.moing.Response.BoardMoimResponse;
 import com.example.moing.Response.BoardNoReadNoticeResponse;
 import com.example.moing.Response.MissionListResponse;
+import com.example.moing.mission.MissionClickActivity;
 import com.example.moing.retrofit.ChangeJwt;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClientJwt;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -86,13 +88,21 @@ public class BoardMissionFragment extends Fragment {
 
 
         /** 공지사항 **/
-        MissionList(teamId);
+        MissionList();
 
         return view;
     }
 
-    /** 미션 리스트 출력 API **/
-    public void MissionList(long teamId) {
+    @Override
+    public void onResume() {
+        super.onResume();
+        MissionList();
+    }
+
+    /**
+     * 미션 리스트 출력 API
+     **/
+    public void MissionList() {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
         apiService = RetrofitClientJwt.getApiService(accessToken);
 
@@ -108,6 +118,12 @@ public class BoardMissionFragment extends Fragment {
                     et_content.setVisibility(View.INVISIBLE);
 
                     missionList = missionListResponse.getData();
+                    List<Long> missionIdList = new ArrayList<>();
+                    for (MissionListResponse.MissionData mission : missionList) {
+                        missionIdList.add(mission.getMissionId());
+                    }
+
+
                     Log.d(TAG, "missionList 값: " + missionList);
 
                     MissionListAdapter adapter = new MissionListAdapter(missionList, getContext());
@@ -122,11 +138,18 @@ public class BoardMissionFragment extends Fragment {
                         @Override
                         public void onItemClick(int pos) {
                             /** 해당 공지사항으로 이동 **/
+
+                            missionId = missionIdList.get(pos);
+                            Intent intent = new Intent(getContext(), MissionClickActivity.class);
+                            intent.putExtra("teamId", teamId);
+                            intent.putExtra("missionId", missionId);
+                            startActivity(intent);
+
                         }
                     });
                 } else if (msg.equals("만료된 토큰입니다.")) {
                     ChangeJwt.updateJwtToken(requireContext());
-                    MissionList(teamId);  // 수정된 부분
+                    MissionList();  // 수정된 부분
                 }
             }
 
