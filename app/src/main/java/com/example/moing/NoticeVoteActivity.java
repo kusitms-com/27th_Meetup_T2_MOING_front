@@ -138,6 +138,11 @@ public class NoticeVoteActivity extends AppCompatActivity {
         TabHost tabHost1 = (TabHost) findViewById(R.id.tabHost1);
         tabHost1.setup();
 
+        for (int i = 0; i < tabHost1.getTabWidget().getChildCount(); i++) {
+            TextView tv = (TextView) tabHost1.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
+            tv.setTextColor(Color.parseColor("#535457"));
+        }
+
         // 선택된 탭은 흰색, 선택되지 않은 탭은 회색
         tabHost1.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override

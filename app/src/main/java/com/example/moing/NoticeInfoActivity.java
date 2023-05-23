@@ -169,7 +169,10 @@ public class NoticeInfoActivity extends AppCompatActivity {
 
     /** 뒤로 가기 버튼 클릭 리스너 **/
     View.OnClickListener backClickListener = v -> {
-        finish();
+        Intent intent = new Intent(getApplicationContext(), NoticeVoteActivity.class);
+        intent.putExtra("teamId", teamId);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     };
 
     /** 모달 버튼 클릭 리스너 **/

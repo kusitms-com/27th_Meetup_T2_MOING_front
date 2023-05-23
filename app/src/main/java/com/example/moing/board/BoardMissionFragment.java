@@ -138,11 +138,13 @@ public class BoardMissionFragment extends Fragment {
                         @Override
                         public void onItemClick(int pos) {
                             /** 해당 공지사항으로 이동 **/
+
                             missionId = missionIdList.get(pos);
                             Intent intent = new Intent(getContext(), MissionClickActivity.class);
                             intent.putExtra("teamId", teamId);
                             intent.putExtra("missionId", missionId);
                             startActivity(intent);
+
                         }
                     });
                 } else if (msg.equals("만료된 토큰입니다.")) {
