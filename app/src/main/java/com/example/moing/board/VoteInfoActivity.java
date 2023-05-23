@@ -29,8 +29,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.moing.NoticeVoteActivity;
 import com.example.moing.R;
 import com.example.moing.Request.BoardMakeVoteRequest;
+import com.example.moing.Request.BoardVoteDoRequest;
 import com.example.moing.Request.BoardVoteMakeCommentRequest;
 import com.example.moing.Response.BoardMakeVoteResponse;
 import com.example.moing.Response.BoardVoteCommentResponse;
@@ -197,7 +199,13 @@ public class VoteInfoActivity extends AppCompatActivity {
     /**
      * 뒤로 가기 버튼 클릭 리스너
      **/
-    View.OnClickListener backClickListener = v -> { finish(); };
+    View.OnClickListener backClickListener = v -> {
+        Intent intent = new Intent(getApplicationContext(), NoticeVoteActivity.class);
+        intent.putExtra("teamId", teamId);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    };
+
 
     /**
      * 모달 버튼 클릭 리스너
@@ -210,10 +218,24 @@ public class VoteInfoActivity extends AppCompatActivity {
      * 투표 완료 버튼 클릭 리스너
      **/
     View.OnClickListener completeClickListener = v -> {
-        voteSelected = voteInfoAdapterFirst.getSelectedItems();
-        for (BoardVoteInfoResponse.VoteChoice choice : voteSelected) {
-            Log.d("BoardVoteInfoResponse", choice.getContent() + "에 투표하셨습니다.");
-        }
+//        if(voteComplete.getText().toString().equals("투표 수정하기")) {
+//            if (voteSelected.size() >= 1) {
+//                voteComplete.setText("투표 완료");
+//                voteComplete.setClickable(true);
+//                voteComplete.setTextColor(Color.parseColor("#FFFFFF"));
+//                voteComplete.setBackgroundColor(Color.parseColor("#FF725F"));
+//            } else {
+//                voteComplete.setClickable(false);
+//                voteComplete.setTextColor(Color.parseColor("#37383C"));
+//                voteComplete.setBackgroundColor(Color.parseColor("#1A1919"));
+//            }
+//            selectComment();
+//        }
+//        else {
+//            selectComment();
+//        }
+        selectComment();
+
     };
 
     /**
@@ -286,6 +308,7 @@ public class VoteInfoActivity extends AppCompatActivity {
         });
     }
 
+
     /** API 통신 (투표 결과 상세 조회) **/
     private void getVoteResult() {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
@@ -326,7 +349,9 @@ public class VoteInfoActivity extends AppCompatActivity {
                         /** 투표, 각 투표마다 읽은 사람 리스트 설정 **/
                         voteChoiceList = infoResponse.getData().getVoteChoices();
                         boolean anonymous = infoResponse.getData().isAnonymous();
-                        Log.d(TAG, "액티비티에서 익명인가? :" + String.valueOf(anonymous) );
+
+                        Log.d(TAG, "액티비티에서 익명인가? :" + String.valueOf(anonymous));
+
                         voteInfoAdapterFirst = new VoteInfoAdapterFirst(voteChoiceList, voteSelected, VoteInfoActivity.this, anonymous);
                         voteRecycle.setAdapter(voteInfoAdapterFirst);
 
@@ -355,29 +380,41 @@ public class VoteInfoActivity extends AppCompatActivity {
                         noReadRecycle.setAdapter(voteNoReadAdapter);
                         tv_noread.setText(voteNoReadList.size() + "명이 아직 안 읽었어요");
 
-                        /** 어지러운 부분 3 **/
+                        /** 복수투표 가능 여부 **/
                         // 복수 투표 가능할 때
                         if (infoResponse.getData().isMultiple()) {
-
-                        } else {
-
+                            if (voteSelected.size() >= 1) {
+                                voteComplete.setClickable(true);
+                                voteComplete.setTextColor(Color.parseColor("#FFFFFF"));
+                                voteComplete.setBackgroundColor(Color.parseColor("#FF725F"));
+                            } else {
+                                voteComplete.setClickable(false);
+                                voteComplete.setTextColor(Color.parseColor("#37383C"));
+                                voteComplete.setBackgroundColor(Color.parseColor("#1A1919"));
+                            }
                         }
-
-                        /** 익명 투표 처리 **/
-                        //익명일 때
-                        if (infoResponse.getData().isAnonymous()) {
-
-                        } else {
-
+                        // 복수 투표 불가능할 때
+                        /** 복수 투표가 불가능할 때 **/
+                        else {
+                            if (voteSelected.size() == 1) {
+                                voteComplete.setClickable(true);
+                                voteComplete.setTextColor(Color.parseColor("#FFFFFF"));
+                                voteComplete.setBackgroundColor(Color.parseColor("#FF725F"));
+                            } else {
+                                voteComplete.setClickable(false);
+                                voteComplete.setTextColor(Color.parseColor("#37383C"));
+                                voteComplete.setBackgroundColor(Color.parseColor("#1A1919"));
+                            }
                         }
-
 
                     } else if (infoResponse.getMessage().equals("만료된 토큰입니다.")) {
                         ChangeJwt.updateJwtToken(VoteInfoActivity.this);
                         getVoteResult();
                     }
                 } else
-                    Log.d(TAG, "응답 성공X, msg : " + response.message().toString());
+
+                    Log.d(TAG, "응답 성공X, msg : " + response.message());
+
             }
 
             @Override
@@ -387,6 +424,7 @@ public class VoteInfoActivity extends AppCompatActivity {
         });
     }
 
+
     /** 투표 댓글 목록 조회 **/
     private void getComment() {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
@@ -395,6 +433,7 @@ public class VoteInfoActivity extends AppCompatActivity {
         call.enqueue(new Callback<BoardVoteCommentResponse>() {
             @Override
             public void onResponse(Call<BoardVoteCommentResponse> call, Response<BoardVoteCommentResponse> response) {
+
                 if(response.isSuccessful()) {
                     BoardVoteCommentResponse commentResponse = response.body();
                     if(commentResponse.getMessage().equals("투표 댓글 목록을 최신순으로 조회하였습니다"))
@@ -420,6 +459,7 @@ public class VoteInfoActivity extends AppCompatActivity {
         });
     }
 
+
     /** 투표 댓글 생성 **/
     private void makeComment() {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
@@ -430,13 +470,16 @@ public class VoteInfoActivity extends AppCompatActivity {
         call.enqueue(new Callback<BoardVoteMakeCommentResponse>() {
             @Override
             public void onResponse(Call<BoardVoteMakeCommentResponse> call, Response<BoardVoteMakeCommentResponse> response) {
-                if(response.isSuccessful()) {
+
+                if (response.isSuccessful()) {
                     BoardVoteMakeCommentResponse makeCommentResponse = response.body();
-                    if(makeCommentResponse.getMessage().equals("투표의 댓글을 생성하였습니다")) {
+                    if (makeCommentResponse.getMessage().equals("투표의 댓글을 생성하였습니다")) {
+
                         voteCommentId = makeCommentResponse.getData().getVoteCommentId();
 
                         Log.d(TAG, "투표 댓글 연동 성공!");
                         Toast.makeText(getApplicationContext(), "댓글 생성이 완료되었습니다.", Toast.LENGTH_SHORT).show();
+
                     }
                     else if (makeCommentResponse.getMessage().equals("만료된 토큰입니다.")) {
                         ChangeJwt.updateJwtToken(VoteInfoActivity.this);
@@ -455,9 +498,55 @@ public class VoteInfoActivity extends AppCompatActivity {
         });
     }
 
-    /** 투표하기 API **/
+
+    /**
+     * 투표하기 API
+     **/
     private void selectComment() {
+        String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
+        apiService = RetrofitClientJwt.getApiService(accessToken);
+
+        voteSelected = voteInfoAdapterFirst.getSelectedItems();
+        List<String> voteList = new ArrayList<>();
+
+        for (BoardVoteInfoResponse.VoteChoice choice : voteSelected) {
+            voteList.add(choice.getContent());
+            Log.d("BoardVoteInfoResponse", choice.getContent() + "에 투표하셨습니다.");
+        }
+
+        BoardVoteDoRequest request = new BoardVoteDoRequest(voteList);
+        Call<BoardVoteInfoResponse> call = apiService.voteResult(accessToken, teamId, voteId, request);
+        call.enqueue(new Callback<BoardVoteInfoResponse>() {
+            @Override
+            public void onResponse(Call<BoardVoteInfoResponse> call, Response<BoardVoteInfoResponse> response) {
+                BoardVoteInfoResponse infoResponse = response.body();
+                if (response.isSuccessful()) {
+                    if (infoResponse.getMessage().equals("투표를 하였습니다")) {
+                        /** 투표, 각 투표마다 읽은 사람 리스트 설정 **/
+                        voteChoiceList = infoResponse.getData().getVoteChoices();
+                        boolean anonymous = infoResponse.getData().isAnonymous();
+                        Log.d(TAG, "액티비티에서 익명인가? :" + String.valueOf(anonymous));
+                        voteInfoAdapterFirst = new VoteInfoAdapterFirst(voteChoiceList, voteSelected, VoteInfoActivity.this, anonymous);
+                        voteRecycle.setAdapter(voteInfoAdapterFirst);
+                        voteInfoAdapterFirst.notifyDataSetChanged();
+
+                        voteComplete.setText("투표 수정하기");
+                        voteComplete.setTextColor(Color.parseColor("#37383C"));
+                        voteComplete.setBackgroundColor(Color.parseColor("#1A1919"));
+                    }
+
+                } else if (infoResponse.getMessage().equals("만료된 토큰입니다.")) {
+                    ChangeJwt.updateJwtToken(VoteInfoActivity.this);
+                    selectComment();
+                } else
+                    Log.d(TAG, "1번 : 오류 메세지 : " + response.message());
+            }
+
+            @Override
+            public void onFailure(Call<BoardVoteInfoResponse> call, Throwable t) {
+                Log.d(TAG, "2번 : 오류 메세지 : " + t.getMessage());
+            }
+        });
 
     }
-
 }

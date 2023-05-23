@@ -35,6 +35,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.moing.NoticeVoteActivity;
 import com.example.moing.R;
+
+import com.example.moing.Request.BoardVoteDoRequest;
 import com.example.moing.Response.BoardCurrentLocateResponse;
 import com.example.moing.Response.BoardFireResponse;
 import com.example.moing.Response.BoardMoimResponse;
@@ -279,8 +281,6 @@ public class BoardGoalFragment extends Fragment {
                     Log.d("BOARDGOALFRAGMENT", remainPeriod);
                     Log.d("BOARDGOALFRAGMENT", nowTime);
 
-
-
                     // 소모임 이름 설정
                     teamName.setText(name);
 
@@ -457,7 +457,6 @@ public class BoardGoalFragment extends Fragment {
                             Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
                         }
                     });
-
 
                     checkNoRead(noReadVote, "투표");
 

@@ -1,6 +1,7 @@
 package com.example.moing.retrofit;
 
 import com.example.moing.Request.BoardMakeVoteRequest;
+import com.example.moing.Request.BoardVoteDoRequest;
 import com.example.moing.Request.BoardVoteMakeCommentRequest;
 import com.example.moing.Request.ChangeJwtRequest;
 import com.example.moing.Request.LoginRequest;
@@ -107,6 +108,12 @@ public interface RetrofitAPI {
     /** 투표 결과 상세(하나만) 조회 **/
     @GET("/api/v1/{teamId}/vote/{voteId}")
     Call<BoardVoteInfoResponse> voteDetailInfo(@Header("Authorization") String token, @Path("teamId") Long teamId, @Path("voteId") Long voteId);
+
+    /** 투표하기 **/
+    @PUT("/api/v1/{teamId}/vote/{voteId}")
+    Call<BoardVoteInfoResponse> voteResult(@Header("Authorization") String token,
+                                           @Path("teamId") Long teamId, @Path("voteId") Long voteId,
+                                           @Body BoardVoteDoRequest boardVoteDoRequest);
 
     /**
      * 투표 댓글 목록 조회

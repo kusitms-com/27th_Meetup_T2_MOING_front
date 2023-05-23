@@ -24,13 +24,13 @@ public class BoardMakeVoteResponse {
     }
 
     public static class Data {
-        private int voteId;
+        private Long voteId;
 
-        public int getVoteId() {
+        public Long getVoteId() {
             return voteId;
         }
 
-        public Data(int voteId) {
+        public Data(Long voteId) {
             this.voteId = voteId;
         }
     }

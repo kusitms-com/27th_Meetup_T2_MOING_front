@@ -77,7 +77,9 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
 
         Log.d(TAG, "익명인가 ? : " + String.valueOf(anonymous));
         // 익명일 때 가시성 여부
-        vH.btn_people.setVisibility(anonymous ? View.GONE : View.VISIBLE);
+
+        vH.btn_people.setVisibility(anonymous ? View.INVISIBLE : View.VISIBLE);
+
 
         // Checkbox 상태 변경
         vH.checkBox.setChecked(voteChoice.isChecked());
@@ -90,8 +92,11 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
             vH.checkBox.setButtonTintList(ColorStateList.valueOf(Color.parseColor("#959698")));
         }
 
+
+        int spanCount = 4; // 열 개수를 의미
+
         /** 두번째 리싸이클러뷰 넣는 부분 **/
-        GridLayoutManager llm2 = new GridLayoutManager(context, 4);
+        GridLayoutManager llm2 = new GridLayoutManager(context, spanCount);
         llm2.setSmoothScrollbarEnabled(true);
         llm2.setAutoMeasureEnabled(true);
 
@@ -100,6 +105,21 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
         VoteNoReadGridSpacing voteNoReadGridSpacing = new VoteNoReadGridSpacing(4, grid_spacing);
         vH.recyclerView.addItemDecoration(voteNoReadGridSpacing);
         vH.recyclerView.setLayoutManager(llm2);
+
+        // SpanSizeLookup 설정
+        llm2.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                // 아이템의 스팬(너비)을 동적으로 조정
+                if(position % (spanCount+1) == 0 ) {
+                    // 가로가 긴 아이템은 현재 열 개수만큼 스팬(너비)을 차지하도록 설정
+                    return spanCount;
+                }
+                else
+                    return 1;
+            }
+        });
+
 
        /** 각 투표 리스트 별 사용자 항목을 구분해주기 위한 이중 리스트 생성 **/
         List<List<String>> userList2 = new ArrayList<>();

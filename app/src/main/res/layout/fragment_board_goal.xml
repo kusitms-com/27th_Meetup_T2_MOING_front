@@ -106,8 +106,7 @@
                     android:layout_height="240dp"
                     android:scaleType="centerCrop"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="16dp"
-                    android:background="@drawable/ic_board_fire4_3x" />
+                    android:layout_marginTop="16dp" />
 
                 <TextView
                     android:id="@+id/tv_hot"

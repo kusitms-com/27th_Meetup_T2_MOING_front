@@ -329,9 +329,11 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapter.
                 BoardMakeVoteResponse voteResponse = response.body();
                 String msg = voteResponse.getMessage();
                 if(msg.equals("투표를 생성하였습니다")) {
-                    Intent intent = new Intent(getApplicationContext(), BoardActivity.class);
+                    Long voteId = voteResponse.getData().getVoteId();
+                    Intent intent = new Intent(getApplicationContext(), VoteInfoActivity.class);
                     intent.putExtra("teamId", teamId);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("voteId", voteId);
+
                     startActivity(intent);
                 }
                 else if (msg.equals("만료된 토큰입니다.")) {
