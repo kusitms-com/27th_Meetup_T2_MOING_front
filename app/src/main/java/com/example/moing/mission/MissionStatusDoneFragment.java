@@ -38,6 +38,7 @@ public class MissionStatusDoneFragment extends Fragment {
     private static final int PENDING_TYPE = 1;
     private Dialog doneDialog;
     private Dialog pendingDialog;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mission_status_done, container, false);
@@ -45,6 +46,9 @@ public class MissionStatusDoneFragment extends Fragment {
         // MissionStatusActivity에서 전달받은 인증 완료 리스트
         Bundle bundle = getArguments();
         ArrayList<MissionStatusListResponse.UserMission> doneList = (ArrayList<MissionStatusListResponse.UserMission>) (bundle != null ? bundle.getSerializable("doneList") : null);
+
+        // "나"를 표현하기 위한 나의 상태
+        boolean isExist = bundle.getBoolean("isExist");
 
         // 리사이클러뷰
         RecyclerView recyclerView = view.findViewById(R.id.mission_status_done_rv);
@@ -63,7 +67,7 @@ public class MissionStatusDoneFragment extends Fragment {
         });
 
         // 리사이클러뷰에 사용할 어댑터 설정
-        MissionDoneAdapter adapter = new MissionDoneAdapter(doneList,getContext());
+        MissionDoneAdapter adapter = new MissionDoneAdapter(doneList,getContext(),isExist);
         recyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener((status, mission) -> {
             // 아이템 클릭 시 팝업 창을 띄우는 로직

@@ -137,14 +137,26 @@ public class MissionStatusActivity extends AppCompatActivity implements Serializ
                             Bundle doneBundle = new Bundle();
                             doneBundle.putSerializable("doneList", new ArrayList<>(doneList));   // 완료한 인원 목록 저장
 
-                            // 인증 완료 Fragment
-                            fragmentDone = new MissionStatusDoneFragment();
-                            fragmentDone.setArguments(doneBundle);  // 완료 프래그먼트에 전달
-
                             // 미완료한 인원 목록, 불을 맞은 인원 목록
                             Bundle undoneBundle = new Bundle();
                             undoneBundle.putSerializable("undoneList", new ArrayList<>(undoneList)); // 미완료한 인원 목록 저장
                             undoneBundle.putSerializable("fireList", new ArrayList<>(fireList));    // 불을 맞은 인원 목록 저장
+
+                            // "나"를 표현하기 위한 나의 상태 체크
+                            if(myStatus.equals("COMPLETE") || myStatus.equals("PENDING")){
+                                // 나의 인증 현황이 완료 or 건너뛰기 - 인증 완료에 true 전달
+                                doneBundle.putBoolean("isExist", true);
+                                undoneBundle.putBoolean("isExist",false);
+                            }
+                            else{
+                                // 나의 인증 현황이 미완료 - 인증 미완료에 true 전달
+                                doneBundle.putBoolean("isExist", false);
+                                undoneBundle.putBoolean("isExist",true);
+                            }
+
+                            // 인증 완료 Fragment
+                            fragmentDone = new MissionStatusDoneFragment();
+                            fragmentDone.setArguments(doneBundle);  // 완료 프래그먼트에 전달
 
                             // 인증 미완료 Fragment
                             fragmentUnDone = new MissionStatusUndoneFragment();
