@@ -8,8 +8,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.animation.LayoutTransition;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -28,14 +30,19 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.moing.R;
+import com.example.moing.Request.BoardMakeVoteRequest;
+import com.example.moing.Request.BoardVoteMakeCommentRequest;
+import com.example.moing.Response.BoardMakeVoteResponse;
 import com.example.moing.Response.BoardVoteCommentResponse;
 import com.example.moing.Response.BoardVoteInfoResponse;
+import com.example.moing.Response.BoardVoteMakeCommentResponse;
 import com.example.moing.retrofit.ChangeJwt;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClientJwt;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -72,7 +79,7 @@ public class VoteInfoActivity extends AppCompatActivity {
     private static final String PREF_NAME = "Token";
     private static final String JWT_ACCESS_TOKEN = "JWT_access_token";
     private SharedPreferences sharedPreferences;
-    private Long teamId, voteId, userId;
+    private Long teamId, voteId, userId, voteCommentId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -228,9 +235,32 @@ public class VoteInfoActivity extends AppCompatActivity {
      * 댓글 남기기 버튼 클릭 리스너
      **/
     View.OnClickListener sendClickListener = v -> {
-        String s = et_comment.getText().toString().trim();
-        if (!TextUtils.isEmpty(s))
-            Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+        String s = et_comment.getText().toString();
+        if (!TextUtils.isEmpty(s)) {
+            /** 스레드 순서 처리 **/
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                CompletableFuture<Void> future = CompletableFuture.supplyAsync(() -> {
+//                    makeComment();
+//                    return null;
+//                }).thenRunAsync(() -> {
+//                    runOnUiThread(() -> {
+//                        getComment();
+//                    });
+//                });
+//                future.join();
+//            }
+            // 결과를 기다림
+            /** 화면 새로고침 **/
+            makeComment();
+            getComment();
+            Intent intent = getIntent();
+            teamId = getIntent().getLongExtra("teamId", 0);
+            voteId = getIntent().getLongExtra("voteId", 0);
+            finish();
+            overridePendingTransition(0, 0); // 인텐트 애니메이션 없애기
+            startActivity(intent); // 현재 액티비티 재실행
+            overridePendingTransition(0, 0); // 인텐트 애니메이션 없애기
+        }
     };
 
     /**
@@ -372,6 +402,7 @@ public class VoteInfoActivity extends AppCompatActivity {
                         voteCommentList = commentResponse.getData();
                         voteCommentAdapter = new VoteCommentAdapter(voteCommentList, VoteInfoActivity.this);
                         commentRecycle.setAdapter(voteCommentAdapter);
+                        voteCommentAdapter.notifyDataSetChanged();
                     }
                     else if (commentResponse.getMessage().equals("만료된 토큰입니다.")) {
                         ChangeJwt.updateJwtToken(VoteInfoActivity.this);
@@ -393,6 +424,35 @@ public class VoteInfoActivity extends AppCompatActivity {
     private void makeComment() {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
         apiService = RetrofitClientJwt.getApiService(accessToken);
+        String content = et_comment.getText().toString();
+        BoardVoteMakeCommentRequest commentRequest = new BoardVoteMakeCommentRequest(content);
+        Call<BoardVoteMakeCommentResponse> call = apiService.voteMakeComment(accessToken, teamId, voteId, commentRequest);
+        call.enqueue(new Callback<BoardVoteMakeCommentResponse>() {
+            @Override
+            public void onResponse(Call<BoardVoteMakeCommentResponse> call, Response<BoardVoteMakeCommentResponse> response) {
+                if(response.isSuccessful()) {
+                    BoardVoteMakeCommentResponse makeCommentResponse = response.body();
+                    if(makeCommentResponse.getMessage().equals("투표의 댓글을 생성하였습니다")) {
+                        voteCommentId = makeCommentResponse.getData().getVoteCommentId();
+
+                        Log.d(TAG, "투표 댓글 연동 성공!");
+                        Toast.makeText(getApplicationContext(), "댓글 생성이 완료되었습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                    else if (makeCommentResponse.getMessage().equals("만료된 토큰입니다.")) {
+                        ChangeJwt.updateJwtToken(VoteInfoActivity.this);
+                        makeComment();
+                    }
+                    else {
+                        Log.d(TAG, "투표 댓글 생성 에러 메세지 : " + response.message());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BoardVoteMakeCommentResponse> call, Throwable t) {
+                Log.d(TAG, "투표 댓글 생성 연동실패... : " + t.getMessage());
+            }
+        });
     }
 
     /** 투표하기 API **/

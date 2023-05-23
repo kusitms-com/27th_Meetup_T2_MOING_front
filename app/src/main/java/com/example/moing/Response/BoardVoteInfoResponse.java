@@ -56,10 +56,10 @@ public class BoardVoteInfoResponse {
         @SerializedName("voteChoices")
         private List<VoteChoice> voteChoices;
 
-        @SerializedName("multiple")
+        @SerializedName("isMultiple")
         private boolean multiple;
 
-        @SerializedName("anonymous")
+        @SerializedName("isAnonymous")
         private boolean anonymous;
 
         public String getTitle() {

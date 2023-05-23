@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +34,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.moing.NoticeVoteActivity;
 import com.example.moing.R;
+import com.example.moing.Response.BoardCurrentLocateResponse;
 import com.example.moing.Response.BoardFireResponse;
 import com.example.moing.Response.BoardMoimResponse;
 import com.example.moing.Response.BoardNoReadNoticeResponse;
@@ -79,7 +81,8 @@ public class BoardGoalFragment extends Fragment {
     List<BoardNoReadNoticeResponse.NoticeData> noticeDataList;
     List<BoardNoReadVoteResponse.VoteData> voteDataList;
     private int noReadNotice, noReadVote;
-
+    private Long personalRate, teamRate;
+    RelativeLayout relative_progress;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_board_goal, container, false);
@@ -112,6 +115,8 @@ public class BoardGoalFragment extends Fragment {
         fire = view.findViewById(R.id.iv_fire);
         // 불 텍스트
         tv_hot = view.findViewById(R.id.tv_hot);
+        // 프로그레스바 RelativeLayout
+        relative_progress = view.findViewById(R.id.relative_progress);
         // 유저 닉네임 텍스트뷰
         userName = view.findViewById(R.id.tv_userHere);
         // 팀 불 프로그레스 이미지
@@ -160,9 +165,8 @@ public class BoardGoalFragment extends Fragment {
         noReadVote(); // voteDataList, noReadVote 값 변경됨!!
         /** 안 읽은 공지 API **/
         noReadNotice(); // noticeDataList, noReadNotice 값 변경됨!!
-
-        Log.d(TAG, "통신 후 noReadNotice 값 : " + noReadNotice);
-        Log.d(TAG, "통신 후 noReadVote 값 : " + noReadVote);
+        /** 팀, 나의 위치 API **/
+        curLocation();
 
         /** API 통신 완료 **/
 
@@ -523,5 +527,79 @@ public class BoardGoalFragment extends Fragment {
                 btn_vote.setBackgroundTintList(co);
             }
         }
+    }
+
+    /** 현재 팀, 나의 진행도 구하는 API **/
+    private void curLocation() {
+        String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
+        apiService = RetrofitClientJwt.getApiService(accessToken);
+
+        Call<BoardCurrentLocateResponse> call = apiService.curLocate(accessToken, teamId);
+        call.enqueue(new Callback<BoardCurrentLocateResponse>() {
+            @Override
+            public void onResponse(Call<BoardCurrentLocateResponse> call, Response<BoardCurrentLocateResponse> response) {
+                BoardCurrentLocateResponse locateResponse = response.body();
+                if(response.isSuccessful()) {
+                    BoardCurrentLocateResponse.Data data = locateResponse.getData();
+                    personalRate = data.getPersonalRate();
+                    teamRate = data.getTeamRate();
+                    computeLocate(personalRate, teamRate);
+
+                }
+                else if (locateResponse.getMessage().equals("만료된 토큰입니다.")) {
+                    ChangeJwt.updateJwtToken(requireContext());
+                    curLocation();
+                }
+                else
+                    Log.d(TAG, "팀, 나의 퍼센트 연동 실패.." + response.body().getMessage());
+            }
+
+            @Override
+            public void onFailure(Call<BoardCurrentLocateResponse> call, Throwable t) {
+                Log.d(TAG, "팀, 나의 퍼센트 연동 실패.." + t.getMessage());
+            }
+        });
+
+    }
+
+    /** 현재 위치 비율 계산 메서드 **/
+    private void computeLocate(Long personalRate, Long teamRate) {
+        Log.d(TAG, "personalRate : " + String.valueOf(personalRate) + ", teamRate : " + String.valueOf(teamRate));
+        // 가로 길이 구하기
+        int parentWidth = relative_progress.getWidth();
+
+        Long myRate = personalRate;
+        Long allRate = teamRate;
+        if (myRate > 100) {
+            myRate = Long.valueOf(100);
+        }
+        if (allRate > 100)
+            allRate = Long.valueOf(100);
+
+        // 퍼센테이지 계산
+        float leftMarginTeamPercent = (float) allRate/100;
+        float leftMarginMyPercent = (float) myRate/100;
+
+        // ImageView의 왼쪽 여백 계산
+        int teamLeftMargin = (int) (parentWidth * leftMarginTeamPercent);
+        int myLeftMargin = (int) (parentWidth * leftMarginMyPercent);
+
+        // 기존의 ImageView의 LayoutParams 가져오기
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) imgTeam.getLayoutParams();
+        RelativeLayout.LayoutParams layoutParams2 = (RelativeLayout.LayoutParams) imgUser.getLayoutParams();
+
+        layoutParams.width = RelativeLayout.LayoutParams.WRAP_CONTENT;
+        layoutParams.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+        // layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT); // 부모의 왼쪽에 배치
+        layoutParams.setMargins(teamLeftMargin, 0, 0, 0); // 왼쪽 여백 설정
+
+        // 팀
+        layoutParams.setMargins(teamLeftMargin, 0, 0, 0);
+        // 나
+        layoutParams2.setMargins(myLeftMargin,0,0,0);
+        imgTeam.setLayoutParams(layoutParams);
+        imgUser.setLayoutParams(layoutParams2);
+        imgTeam.requestLayout();
+        imgUser.requestLayout();
     }
 }

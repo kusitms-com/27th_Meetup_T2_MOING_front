@@ -126,7 +126,6 @@
                 android:layout_below="@+id/relative_second"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
-
                 android:background="@drawable/layout_bottom_round_black12">
 
                 <TextView
