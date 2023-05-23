@@ -10,15 +10,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.moing.R;
+import com.example.moing.Response.BoardVoteCommentResponse;
 
 import java.util.List;
 
 public class VoteCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private List<VoteCommentResponse.VoteComment> commentList;
+    private List<BoardVoteCommentResponse.VoteData> commentList;
     private Context context;
 
-    public VoteCommentAdapter(List<VoteCommentResponse.VoteComment> commentList, Context context) {
+    public VoteCommentAdapter(List<BoardVoteCommentResponse.VoteData> commentList, Context context) {
         this.commentList = commentList;
         this.context = context;
     }
@@ -33,12 +35,12 @@ public class VoteCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        VoteCommentResponse.VoteComment voteComment = commentList.get(position);
+        BoardVoteCommentResponse.VoteData voteComment = commentList.get(position);
         VoteCommentViewHolder vh = (VoteCommentViewHolder) holder;
 
-        // 예정 : Profile 매칭
         vh.nickname.setText(voteComment.getNickName());
         vh.content.setText(voteComment.getContent());
+        Glide.with(context).load(voteComment.getUserImageUrl()).into(vh.profile);
 
         if (position == commentList.size()-1) {
             vh.line.setVisibility(View.INVISIBLE);

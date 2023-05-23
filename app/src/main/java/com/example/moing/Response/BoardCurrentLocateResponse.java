@@ -1,11 +1,11 @@
 package com.example.moing.Response;
 
-public class BoardFireResponse {
+public class BoardCurrentLocateResponse {
     private int statusCode;
     private String message;
     private Data data;
 
-    public BoardFireResponse(int statusCode, String message, Data data) {
+    public BoardCurrentLocateResponse(int statusCode, String message, Data data) {
         this.statusCode = statusCode;
         this.message = message;
         this.data = data;
@@ -24,20 +24,21 @@ public class BoardFireResponse {
     }
 
     public static class Data {
-        private Long percent;
-        private String fireCopy;
+        private Long personalRate;
+        private Long teamRate;
 
-        public Data(Long percent, String fireCopy) {
-            this.percent = percent;
-            this.fireCopy = fireCopy;
+        public Data(Long personalRate, Long teamRate) {
+            this.personalRate = personalRate;
+            this.teamRate = teamRate;
         }
 
-        public Long getPercent() {
-            return percent;
+        public Long getPersonalRate() {
+            return personalRate;
         }
 
-        public String getFireCopy() {
-            return fireCopy;
+        public Long getTeamRate() {
+            return teamRate;
         }
     }
+
 }

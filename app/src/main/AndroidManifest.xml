@@ -35,7 +35,6 @@
         <activity
             android:name=".mission.MissionClickActivity"
             android:exported="true">
-
         </activity>
         <activity
             android:name=".NoticeInfoActivity"
