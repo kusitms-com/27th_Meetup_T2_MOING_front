@@ -14,6 +14,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +58,7 @@ public class BoardGoalFragment extends Fragment {
 
     ScrollView scroll;
     TextView teamName, curDate, userName, tv_toggle, tv_all, tv_all2;
-    TextView btn_notice, btn_vote, tv_hot;
+    TextView btn_notice, btn_vote, tv_hot, tv_progress_team, tv_progress_user;
     ImageView notice_sign, vote_sign;
     ImageButton dot, down;
     ImageView teamImg, btnRefresh, fire, imgTeam, imgUser;
@@ -82,7 +83,7 @@ public class BoardGoalFragment extends Fragment {
     List<BoardNoReadVoteResponse.VoteData> voteDataList;
     private int noReadNotice, noReadVote;
     private Long personalRate, teamRate;
-    RelativeLayout relative_progress;
+    RelativeLayout relative_progress, progress_text;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_board_goal, container, false);
@@ -117,6 +118,10 @@ public class BoardGoalFragment extends Fragment {
         tv_hot = view.findViewById(R.id.tv_hot);
         // 프로그레스바 RelativeLayout
         relative_progress = view.findViewById(R.id.relative_progress);
+        // 프로그레스바 User
+        tv_progress_user = view.findViewById(R.id.tv_progress_user);
+        // 프로그레스바 TEAM
+        tv_progress_team = view.findViewById(R.id.tv_progress_team);
         // 유저 닉네임 텍스트뷰
         userName = view.findViewById(R.id.tv_userHere);
         // 팀 불 프로그레스 이미지
@@ -564,7 +569,7 @@ public class BoardGoalFragment extends Fragment {
 
     /** 현재 위치 비율 계산 메서드 **/
     private void computeLocate(Long personalRate, Long teamRate) {
-        Log.d(TAG, "personalRate : " + String.valueOf(personalRate) + ", teamRate : " + String.valueOf(teamRate));
+        // 가로 길이 구하기
         // 가로 길이 구하기
         int parentWidth = relative_progress.getWidth();
 
@@ -577,29 +582,85 @@ public class BoardGoalFragment extends Fragment {
             allRate = Long.valueOf(100);
 
         // 퍼센테이지 계산
-        float leftMarginTeamPercent = (float) allRate/100;
-        float leftMarginMyPercent = (float) myRate/100;
+        float leftMarginTeamPercent = (float) allRate / 100;
+        float leftMarginMyPercent = (float) myRate / 100;
 
         // ImageView의 왼쪽 여백 계산
         int teamLeftMargin = (int) (parentWidth * leftMarginTeamPercent);
         int myLeftMargin = (int) (parentWidth * leftMarginMyPercent);
+        // px를 dp로 변환
+        int width = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 28, getResources().getDisplayMetrics());
+        int marginTop = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics());
 
+        /** 내 미션 상황 이미지 **/
         // 기존의 ImageView의 LayoutParams 가져오기
-        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) imgTeam.getLayoutParams();
-        RelativeLayout.LayoutParams layoutParams2 = (RelativeLayout.LayoutParams) imgUser.getLayoutParams();
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) imgUser.getLayoutParams();
+        // ImageView의 레이아웃 파라미터 값 설정
+        params.width = width;
+        params.height = width;
+        params.topMargin = marginTop;
+        if (myRate == 0) {
+            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        } else if (myRate == 100) {
+            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            params.rightMargin = marginTop;
+        } else {
+            params.addRule(RelativeLayout.ALIGN_PARENT_START);
+            params.setMarginStart(myLeftMargin);
+        }
 
-        layoutParams.width = RelativeLayout.LayoutParams.WRAP_CONTENT;
-        layoutParams.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
-        // layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT); // 부모의 왼쪽에 배치
-        layoutParams.setMargins(teamLeftMargin, 0, 0, 0); // 왼쪽 여백 설정
+        /** Team **/
+        RelativeLayout.LayoutParams params2 = (RelativeLayout.LayoutParams) imgTeam.getLayoutParams();
+        params2.width = width;
+        params2.height = width;
+        params2.topMargin = marginTop;
+        if (allRate == 0)
+            params2.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        else if (allRate == 100) {
+            params2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            params2.rightMargin = marginTop;
+        }
+        else {
+            params2.addRule(RelativeLayout.ALIGN_PARENT_START);
+            params2.setMarginStart(teamLeftMargin);
+        }
+        // personalRate에 따라 왼쪽 여백 설정
 
-        // 팀
-        layoutParams.setMargins(teamLeftMargin, 0, 0, 0);
-        // 나
-        layoutParams2.setMargins(myLeftMargin,0,0,0);
-        imgTeam.setLayoutParams(layoutParams);
-        imgUser.setLayoutParams(layoutParams2);
-        imgTeam.requestLayout();
-        imgUser.requestLayout();
+        // TextView 위치 설정
+        /** TextTeam **/
+        RelativeLayout.LayoutParams params3 = (RelativeLayout.LayoutParams) tv_progress_team.getLayoutParams();
+        params3.width = RelativeLayout.LayoutParams.WRAP_CONTENT;
+        params3.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+        if (allRate == 0)
+            params3.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        else if (allRate == 100) {
+            params3.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            params3.rightMargin = marginTop;
+        }
+        else {
+            params3.addRule(RelativeLayout.ALIGN_PARENT_START);
+            params3.setMarginStart(teamLeftMargin - 60);
+        }
+
+        /** TextUser **/
+        RelativeLayout.LayoutParams params4 = (RelativeLayout.LayoutParams) tv_progress_user.getLayoutParams();
+        params4.width = RelativeLayout.LayoutParams.WRAP_CONTENT;
+        params4.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+        if (myRate == 0)
+            params4.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        else if (myRate == 100) {
+            params4.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            params4.rightMargin = marginTop;
+        }
+        else {
+            params4.addRule(RelativeLayout.ALIGN_PARENT_START);
+            params4.setMarginStart(myLeftMargin);
+        }
+
+        // ImageView에 레이아웃 파라미터 설정
+        imgUser.setLayoutParams(params);
+        imgTeam.setLayoutParams(params2);
+        tv_progress_team.setLayoutParams(params3);
+        tv_progress_user.setLayoutParams(params4);
     }
 }
