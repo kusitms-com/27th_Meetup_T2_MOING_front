@@ -1,6 +1,8 @@
 package com.example.moing;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,14 +52,54 @@ public class MissionListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         MissionListHolder vh = (MissionListHolder) holder;
 
         vh.tv_title.setText(item.getTitle()); // 제목
-        vh.tv_date.setText(item.getDueTo()); // 날짜
+        vh.tv_date.setText("남은시간 D - " + item.getDueTo()); // 날짜
 
         vh.btn_check.setBackgroundResource(R.drawable.mission_not); // 미션 체크
         if (item.getStatus().equals("COMPLETE")) {
-            vh.btn_check.setBackgroundResource(R.drawable.mission_success);
+            vh.btn_check.setBackgroundResource(R.drawable.mission_success);  // 이미지를 mission_success로 변경
+            vh.tv_title.setPaintFlags(vh.tv_title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            vh.tv_title.setTextColor(Color.parseColor("#959698"));
+            vh.tv_date.setPaintFlags(vh.tv_date.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            vh.tv_date.setTextColor(Color.parseColor("#959698"));
         } else {
-            vh.btn_check.setBackgroundResource(R.drawable.mission_not);
+            vh.btn_check.setBackgroundResource(R.drawable.mission_not);  // 이미지를 mission_not으로 변경
+            vh.tv_title.setPaintFlags(vh.tv_title.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+            vh.tv_title.setTextColor(Color.parseColor("#FFFFFF"));
+            vh.tv_date.setPaintFlags(vh.tv_date.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+            vh.tv_date.setTextColor(Color.parseColor("#FFFFFF"));
         }
+
+        // 아이템 클릭 이벤트 처리
+//        vh.btn_check.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                int pos = vh.getAdapterPosition();
+//                if (pos != RecyclerView.NO_POSITION) {
+//                    MissionListResponse.MissionData clickedItem = listData.get(pos);
+//                    if (clickedItem.getStatus().equals("COMPLETE")) {
+//                        clickedItem.setStatus("INCOMPLETE");  // 상태를 INCOMPLETE로 변경
+//                        vh.btn_check.setBackgroundResource(R.drawable.mission_not);  // 이미지를 mission_not으로 변경
+//                        vh.tv_title.setPaintFlags(vh.tv_title.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+//                        vh.tv_title.setTextColor(Color.parseColor("#FFFFFF"));
+//                        vh.tv_date.setPaintFlags(vh.tv_date.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+//                        vh.tv_date.setTextColor(Color.parseColor("#FFFFFF"));
+//
+//                    } else {
+//                        clickedItem.setStatus("COMPLETE");  // 상태를 COMPLETE로 변경
+//                        vh.btn_check.setBackgroundResource(R.drawable.mission_success);  // 이미지를 mission_success로 변경
+//                        vh.tv_title.setPaintFlags(vh.tv_title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+//                        vh.tv_title.setTextColor(Color.parseColor("#959698"));
+//                        vh.tv_date.setPaintFlags(vh.tv_date.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+//                        vh.tv_date.setTextColor(Color.parseColor("#959698"));
+//                    }
+//                    // 리스너 객체 메서드 호출
+//                    if (onItemClickListener != null) {
+//                        onItemClickListener.onItemClick(pos);
+//                    }
+//                }
+//            }
+//        });
+
     }
 
     @Override
@@ -74,8 +116,8 @@ public class MissionListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         public MissionListHolder(@NonNull View itemView) {
             super(itemView);
 
-            background = itemView.findViewById(R.id.recycle_background);
-            btn_check = itemView.findViewById(R.id.notice_iv_crown);
+//            background = itemView.findViewById(R.id.recycle_background);
+            btn_check = itemView.findViewById(R.id.btn_check);
             tv_title = itemView.findViewById(R.id.tv_title);
             tv_date = itemView.findViewById(R.id.tv_date);
 

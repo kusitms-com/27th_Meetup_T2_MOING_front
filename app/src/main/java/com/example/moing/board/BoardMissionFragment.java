@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.moing.MissionCreateActivity;
@@ -25,6 +26,8 @@ import com.example.moing.NoticeViewAdapter;
 import com.example.moing.NoticeVoteActivity;
 import com.example.moing.R;
 import com.example.moing.Response.AllNoticeResponse;
+import com.example.moing.Response.BoardMoimResponse;
+import com.example.moing.Response.BoardNoReadNoticeResponse;
 import com.example.moing.Response.MissionListResponse;
 import com.example.moing.retrofit.ChangeJwt;
 import com.example.moing.retrofit.RetrofitAPI;
@@ -48,6 +51,8 @@ public class BoardMissionFragment extends Fragment {
     private List<MissionListResponse.MissionData> missionList;  // 추가된 부분
 
     Long teamId;
+
+    TextView et_content;
     ImageView createBtn;
 
     @Override
@@ -62,6 +67,7 @@ public class BoardMissionFragment extends Fragment {
         teamId = getActivity().getIntent().getLongExtra("teamId", 0);
         Log.d(TAG, "teamId 값 : " + String.valueOf(teamId));
 
+        et_content = view.findViewById(R.id.et_content);
 
         mRecyclerView = view.findViewById(R.id.recycler);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
@@ -86,7 +92,7 @@ public class BoardMissionFragment extends Fragment {
     }
 
     /** 미션 리스트 출력 API **/
-    public void MissionList(long teamId) {  // 수정된 부분
+    public void MissionList(long teamId) {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
         apiService = RetrofitClientJwt.getApiService(accessToken);
 
@@ -96,10 +102,15 @@ public class BoardMissionFragment extends Fragment {
             public void onResponse(Call<MissionListResponse> call, Response<MissionListResponse> response) {
                 MissionListResponse missionListResponse = response.body();
                 String msg = missionListResponse.getMessage();
-                if (msg.equals("미션을 조회하였습니다")) {
-                    missionList = missionListResponse.getData();
+                if (msg.equals("개인별 미션 리스트 조회 성공")) {
+                    // 리스트 저장
 
-                    MissionListAdapter adapter = new MissionListAdapter(missionList, requireContext());  // 수정된 부분
+                    et_content.setVisibility(View.INVISIBLE);
+
+                    missionList = missionListResponse.getData();
+                    Log.d(TAG, "missionList 값: " + missionList);
+
+                    MissionListAdapter adapter = new MissionListAdapter(missionList, getContext());
                     mRecyclerView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
 

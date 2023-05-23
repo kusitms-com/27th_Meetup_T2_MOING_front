@@ -5,6 +5,8 @@ import com.example.moing.Request.ChangeJwtRequest;
 import com.example.moing.Request.LoginRequest;
 import com.example.moing.Request.MakeTeamRequest;
 import com.example.moing.Request.MissionCreateRequest;
+import com.example.moing.Request.NoticeCommentRequest;
+import com.example.moing.Request.NoticeCreateRequest;
 import com.example.moing.Request.RegisterAddressRequest;
 import com.example.moing.Response.AllVoteResponse;
 import com.example.moing.Response.BoardFireResponse;
@@ -19,6 +21,10 @@ import com.example.moing.Response.MakeTeamResponse;
 import com.example.moing.Response.AllNoticeResponse;
 import com.example.moing.Response.MissionCreateResponse;
 import com.example.moing.Response.MissionListResponse;
+import com.example.moing.Response.NoticeCommentListResponse;
+import com.example.moing.Response.NoticeCommentResponse;
+import com.example.moing.Response.NoticeCreateResponse;
+import com.example.moing.Response.NoticeInfoResponse;
 import com.example.moing.Response.RegisterAddressResponse;
 import com.example.moing.Response.RegisterNameResponse;
 import com.example.moing.Response.TeamListResponse;
@@ -95,5 +101,21 @@ public interface RetrofitAPI {
     /** 미션 생성 **/
     @POST("api/v1/{teamId}/missions")
     Call<MissionCreateResponse> makeMission(@Header("Authorization") String token, @Path("teamId") Long teamId, @Body MissionCreateRequest missionCreateRequest);
+
+    /** 공지 댓글 생성 **/
+    @POST("/api/v1/{teamId}/notice/{noticeId}/comment")
+    Call<NoticeCommentResponse> makeNoticeComment(@Header("Authorization") String token, @Path("teamId") Long teamId, @Path("noticeId") Long noticeId, @Body NoticeCommentRequest noticeCommentRequest);
+
+    /** 공지 댓글 목록 조회 **/
+    @GET("/api/v1/{teamId}/notice/{noticeId}/comment")
+    Call<NoticeCommentListResponse> makeNoticeCommentList(@Header("Authorization") String token, @Path("teamId") Long teamId, @Path("noticeId") Long noticeId);
+
+    /** 공지 생성 **/
+    @POST("/api/v1/{teamId}/notice")
+    Call<NoticeCreateResponse> makeNotice(@Header("Authorization") String token, @Path("teamId") Long teamId, @Body NoticeCreateRequest noticeCreateRequest);
+
+    /** 공지 상세 조회 **/
+    @GET("/api/v1/{teamId}/notice/{noticeId}")
+    Call<NoticeInfoResponse> NoticeInfo(@Header("Authorization") String token, @Path("teamId") Long teamId, @Path("noticeId") Long noticeId);
 
 }

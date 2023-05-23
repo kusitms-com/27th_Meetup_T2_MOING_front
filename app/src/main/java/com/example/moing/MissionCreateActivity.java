@@ -27,6 +27,8 @@ import android.widget.TimePicker;
 import com.example.moing.Request.MissionCreateRequest;
 import com.example.moing.Response.AllNoticeResponse;
 import com.example.moing.Response.MissionCreateResponse;
+import com.example.moing.board.BoardActivity;
+import com.example.moing.board.BoardMissionFragment;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClientJwt;
 
@@ -340,7 +342,11 @@ public class MissionCreateActivity extends AppCompatActivity {
                         MissionCreateResponse missionCreateResponse = response.body();
                         // 생성된 미션 데이터에 접근하여 필요한 작업 수행
                         MissionCreateResponse.MissionData missionData = missionCreateResponse.getData();
-                        // ...
+
+                        Intent intent = new Intent(MissionCreateActivity.this, BoardActivity.class);
+                        intent.putExtra("teamId", teamId);
+                        startActivity(intent);
+
                     } else {
                         // 요청이 실패함
                         // 실패 처리를 위한 코드 작성

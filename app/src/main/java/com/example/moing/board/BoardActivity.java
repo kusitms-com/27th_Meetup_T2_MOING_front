@@ -37,7 +37,7 @@ public class BoardActivity extends AppCompatActivity {
         ImageButton btn_home = (ImageButton) findViewById(R.id.imgBtn_home);
         btn_home.setOnClickListener(homeClickListener);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, boardMissionFragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, boardGoalFragment).commit();
         TabLayout tabs = findViewById(R.id.tab_layout);
         tabs.addTab(tabs.newTab().setText("목표보드"));
         tabs.addTab(tabs.newTab().setText("미션진행"));

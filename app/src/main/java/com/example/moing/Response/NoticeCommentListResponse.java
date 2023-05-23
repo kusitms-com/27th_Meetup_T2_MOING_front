@@ -1,10 +1,10 @@
-package com.example.moing;
+package com.example.moing.Response;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class NoticeCommentResponse {
+public class NoticeCommentListResponse {
     @SerializedName("statusCode")
     private int statusCode;
 
@@ -26,7 +26,7 @@ public class NoticeCommentResponse {
         return data;
     }
 
-    public NoticeCommentResponse(int statusCode, String message, List<NoticeComment> data) {
+    public NoticeCommentListResponse(int statusCode, String message, List<NoticeComment> data) {
         this.statusCode = statusCode;
         this.message = message;
         this.data = data;

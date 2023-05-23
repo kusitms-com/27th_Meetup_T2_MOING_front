@@ -40,7 +40,7 @@
         android:layout_toLeftOf="@+id/btn_voteCheck"
         android:layout_toEndOf="@+id/btn_check"
         android:fontFamily="@font/pretendard_medium"
-        android:text="남은시간 D- 3"
+        android:text="남은시간 D - 3"
         android:textColor="#FFFFFF"
         android:textSize="12dp" />
 

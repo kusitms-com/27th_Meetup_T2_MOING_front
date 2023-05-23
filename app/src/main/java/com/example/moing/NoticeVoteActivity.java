@@ -104,6 +104,7 @@ public class NoticeVoteActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), NoticeWriteActivity.class);
+                intent.putExtra("teamId", teamId);
                 startActivity(intent);
             }
         });
@@ -232,16 +233,17 @@ public class NoticeVoteActivity extends AppCompatActivity {
                 String msg = noticeResponse.getMessage();
                 if(msg.equals("공지를 전체 조회하였습니다")) {
                     noticeList = noticeResponse.getData().getNoticeBlocks();
-
                     NoticeViewAdapter adapter = new NoticeViewAdapter(noticeList, NoticeVoteActivity.this);
                     mRecyclerView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
 
-                    if(noticeList.size() == 0) {
-
+                    List<Long> noticeIdList = new ArrayList<>();
+                    for (AllNoticeResponse.NoticeBlock v : noticeList) {
+                        noticeIdList.add(v.getNoticeId());
+                        Log.d(TAG, String.valueOf(v.getNoticeId()));
                     }
-                    Long num = noticeResponse.getData().getNotReadNum();
-                    checkNoRead(num, "공지");
+                    Log.d(TAG, "총 공지 목록 개수 : " + String.valueOf(noticeIdList.size()));
+
 
                     adapter.setOnItemClickListener(new NoticeViewAdapter.OnItemClickListener() {
                         @Override
@@ -249,6 +251,12 @@ public class NoticeVoteActivity extends AppCompatActivity {
                             /** 해당 공지사항으로 이동 **/
                             String s = pos + "번 메뉴 선택!";
                             Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+
+                            Long noticeId = noticeIdList.get(pos);
+                            Intent intent = new Intent(NoticeVoteActivity.this, NoticeInfoActivity.class);
+                            intent.putExtra("voteId", noticeId);
+                            intent.putExtra("teamId", teamId);
+                            startActivity(intent);
                         }
                     });
                 }

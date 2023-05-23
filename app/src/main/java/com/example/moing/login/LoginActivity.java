@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.moing.MainActivity;
+import com.example.moing.NoticeInfoActivity;
 import com.example.moing.R;
 import com.example.moing.Request.ChangeJwtRequest;
 import com.example.moing.Request.LoginRequest;
@@ -127,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                 if (process.equals("로그인이 완료되었습니다")) {
                                     // 홈 화면(MainActivity)로 이동
-                                    Intent intent = new Intent(LoginActivity.this, BoardActivity.class);
+                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                     startActivity(intent);
                                 }
                                 else {
