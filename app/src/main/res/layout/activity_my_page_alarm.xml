@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="16dp"
+    tools:context=".mypage.MyPageAlarmActivity"
+    android:background="@color/black">
+
+    <LinearLayout
+        android:id="@+id/mypage_alarm_ll_none1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/mypage_alarm_btn_back"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:background="@color/secondary_grey_black_14"
+            android:src="@drawable/arrow_left" />
+
+        <TextView
+            android:id="@+id/mypage_alarm_tv_none1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="32dp"
+            android:fontFamily="@font/pretendard_semi_bold"
+            android:text="알림설정"
+            android:textColor="@color/secondary_grey_black_3"
+            android:textSize="18dp" />
+    </LinearLayout>
+
+    <TableLayout
+        android:id="@+id/mypage_alarm_tl_none1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mypage_alarm_ll_none1">
+
+        <!-- 첫 번째 행 -->
+        <TableRow
+            android:layout_marginBottom="52dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center|left"
+                android:fontFamily="@font/pretendard_semi_bold"
+                android:text="전체알림"
+                android:textColor="@color/secondary_grey_black_3"
+                android:textSize="20dp"  />
+
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/layout_round_radius12_black12">
+
+                <RadioButton
+                    android:id="@+id/mypage_alarm_rb_all_on"
+                    android:layout_width="52dp"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:background="@drawable/selector_radio_button"
+                    android:button="@null"
+                    android:fontFamily="@font/pretendard_semi_bold"
+                    android:text="ON"
+                    android:textColor="@drawable/selector_radio_text"
+                    android:textSize="18dp" />
+
+                <RadioButton
+                    android:id="@+id/mypage_alarm_rb_all_off"
+                    android:layout_width="52dp"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:background="@drawable/selector_radio_button"
+                    android:button="@null"
+                    android:fontFamily="@font/pretendard_semi_bold"
+                    android:text="OFF"
+                    android:textColor="@drawable/selector_radio_text"
+                    android:textSize="18dp"/>
+            </RadioGroup>
+
+        </TableRow>
+
+        <!-- 두 번째 행 -->
+        <TableRow
+            android:layout_marginBottom="52dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center|left"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/pretendard_semi_bold"
+                    android:text="신규업로드알림"
+                    android:textColor="@color/secondary_grey_black_3"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:fontFamily="@font/pretendard_medium"
+                    android:text="빠른 공지와 투표 확인을 위해\n알림 ON을 유지해주세요!"
+                    android:textColor="@color/secondary_grey_black_8"
+                    android:textSize="14dp" />
+            </LinearLayout>
+
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/layout_round_radius12_black12">
+
+                <RadioButton
+                    android:id="@+id/mypage_alarm_rb_new_on"
+                    android:layout_width="52dp"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:background="@drawable/selector_radio_button"
+                    android:button="@null"
+                    android:fontFamily="@font/pretendard_semi_bold"
+                    android:text="ON"
+                    android:textColor="@drawable/selector_radio_text"
+                    android:textSize="18dp" />
+
+                <RadioButton
+                    android:id="@+id/mypage_alarm_rb_new_off"
+                    android:layout_width="52dp"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:background="@drawable/selector_radio_button"
+                    android:button="@null"
+                    android:fontFamily="@font/pretendard_semi_bold"
+                    android:text="OFF"
+                    android:textColor="@drawable/selector_radio_text"
+                    android:textSize="18dp"/>
+            </RadioGroup>
+
+        </TableRow>
+
+        <!-- 세 번째 행 -->
+        <TableRow
+            android:layout_marginBottom="52dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center|left"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/pretendard_semi_bold"
+                    android:text="미션리마인드알림"
+                    android:textColor="@color/secondary_grey_black_3"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:fontFamily="@font/pretendard_medium"
+                    android:text="매일 오전 8시, 미션에 대한\n리마인드 알림을 드릴게요!"
+                    android:textColor="@color/secondary_grey_black_8"
+                    android:textSize="14dp" />
+            </LinearLayout>
+
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/layout_round_radius12_black12">
+
+                <RadioButton
+                    android:id="@+id/mypage_alarm_rb_remind_on"
+                    android:layout_width="52dp"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:background="@drawable/selector_radio_button"
+                    android:button="@null"
+                    android:fontFamily="@font/pretendard_semi_bold"
+                    android:text="ON"
+                    android:textColor="@drawable/selector_radio_text"
+                    android:textSize="18dp" />
+
+                <RadioButton
+                    android:id="@+id/mypage_alarm_rb_remind_off"
+                    android:layout_width="52dp"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:background="@drawable/selector_radio_button"
+                    android:button="@null"
+                    android:fontFamily="@font/pretendard_semi_bold"
+                    android:text="OFF"
+                    android:textColor="@drawable/selector_radio_text"
+                    android:textSize="18dp"/>
+            </RadioGroup>
+
+        </TableRow>
+
+        <TableRow
+            android:layout_marginBottom="52dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center|left"
+                android:fontFamily="@font/pretendard_semi_bold"
+                android:text="불던지기알림"
+                android:textColor="@color/secondary_grey_black_3"
+                android:textSize="20dp"  />
+
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/layout_round_radius12_black12">
+
+                <RadioButton
+                    android:id="@+id/mypage_alarm_rb_fire_on"
+                    android:layout_width="52dp"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:background="@drawable/selector_radio_button"
+                    android:button="@null"
+                    android:fontFamily="@font/pretendard_semi_bold"
+                    android:text="ON"
+                    android:textColor="@drawable/selector_radio_text"
+                    android:textSize="18dp" />
+
+                <RadioButton
+                    android:id="@+id/mypage_alarm_rb_fire_off"
+                    android:layout_width="52dp"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:background="@drawable/selector_radio_button"
+                    android:button="@null"
+                    android:fontFamily="@font/pretendard_semi_bold"
+                    android:text="OFF"
+                    android:textColor="@drawable/selector_radio_text"
+                    android:textSize="18dp"/>
+            </RadioGroup>
+
+        </TableRow>
+
+    </TableLayout>
+
+    <android.widget.Button
+        android:id="@+id/mypage_alarm_btn_done"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/layout_round_radius8_black10"
+        android:fontFamily="@font/pretendard_semi_bold"
+        android:text="완료"
+        android:textColor="@color/secondary_grey_black_5"
+        android:textSize="18dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
