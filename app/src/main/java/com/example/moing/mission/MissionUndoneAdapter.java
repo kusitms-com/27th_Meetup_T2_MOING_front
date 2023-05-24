@@ -74,7 +74,10 @@ public class MissionUndoneAdapter extends RecyclerView.Adapter<RecyclerView.View
         // 불 맞은 사람 - 표시
         if(fireList.contains(mission.getUserMissionId())){
             // 맞은 사람 표시
-            undoneViewHolder.ivProfile.setColorFilter(Color.parseColor("#2C0E0E9C"));
+            int color = Color.parseColor("#2C0E0E");  // 원래 색상
+            int alpha = (int) (255 * 0.61);  // 48%의 알파 값
+            int tintedColor = Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color));
+            undoneViewHolder.ivProfile.setColorFilter(tintedColor);
             undoneViewHolder.ivFire.setVisibility(View.VISIBLE);
             undoneViewHolder.itemView.setClickable(false);
         }
