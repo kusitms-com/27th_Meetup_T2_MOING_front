@@ -1,15 +1,21 @@
 package com.example.moing;
 
+import static androidx.constraintlayout.widget.ConstraintLayoutStates.TAG;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -18,22 +24,48 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.example.moing.Request.MissionCreateRequest;
+import com.example.moing.Response.AllNoticeResponse;
+import com.example.moing.Response.MissionCreateResponse;
+import com.example.moing.board.BoardActivity;
+import com.example.moing.board.BoardMissionFragment;
+import com.example.moing.mission.MissionClickActivity;
+import com.example.moing.retrofit.RetrofitAPI;
+import com.example.moing.retrofit.RetrofitClientJwt;
+
 import java.util.Calendar;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MissionReviseActivity extends AppCompatActivity {
 
-    Button btn_close, create;
+    private RetrofitAPI apiService;
+    private static final String PREF_NAME = "Token";
+    private static final String JWT_ACCESS_TOKEN = "JWT_access_token";
+    private SharedPreferences sharedPreferences;
+    private Long teamId;
 
-    EditText et_title, et_calendar, et_time, et_content, et_rule;
+    Button btn_close, et_calendar, et_time, calendarIcon, create;
+
+    EditText et_title, et_content, et_rule;
 
     TextView titleTv, tv_titleCount, contentTv, tv_contentCount, ruleTv, tv_ruleCount;
 
-    ImageView xIcon, calendarIcon;
+    ImageView xIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mission_create);
+        setContentView(R.layout.activity_mission_revise);
+
+        // Intent 값 전달받는다.
+        Intent intent = getIntent();
+        teamId = intent.getLongExtra("teamId", 0);
+
+        // Token을 사용할 SharedPreference
+        sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
 
         // 미션 만들기 취소 버튼 & 클릭 리스너
         btn_close = (Button) findViewById(R.id.btn_close);
@@ -52,11 +84,11 @@ public class MissionReviseActivity extends AppCompatActivity {
         tv_titleCount = (TextView) findViewById(R.id.tv_titleCount);
 
         // 미션 마감일 - 날짜 선택 et
-        et_calendar = (EditText) findViewById(R.id.et_calendar);
+        et_calendar = (Button) findViewById(R.id.et_calendar);
         // 미션 마감일 - 달력 아이콘
-        calendarIcon = (ImageView) findViewById(R.id.calendarIcon);
+        calendarIcon = (Button) findViewById(R.id.calendarIcon);
         // 미션 마감일 - 시간 선택 et
-        et_time = (EditText) findViewById(R.id.et_time);
+        et_time = (Button) findViewById(R.id.et_time);
 
         // 미션 내용 tv
         contentTv = (TextView) findViewById(R.id.contentTv);
@@ -107,7 +139,12 @@ public class MissionReviseActivity extends AppCompatActivity {
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                                 // 사용자가 선택한 날짜 처리
                                 // year, monthOfYear, dayOfMonth 변수에 선택한 날짜 정보가 전달됨
-                                String selectedDate = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
+
+                                // 월과 일이 한 자리 수인 경우 앞에 0을 붙여줍니다.
+                                String monthString = (monthOfYear + 1) < 10 ? "0" + (monthOfYear + 1) : String.valueOf(monthOfYear + 1);
+                                String dayString = dayOfMonth < 10 ? "0" + dayOfMonth : String.valueOf(dayOfMonth);
+
+                                String selectedDate = year + "-" + monthString + "-" + dayString;
                                 et_calendar.setText(selectedDate);
                             }
                         }, year, month, day);
@@ -282,16 +319,46 @@ public class MissionReviseActivity extends AppCompatActivity {
 
     /** 업로드하기 버튼 **/
     View.OnClickListener uploadClickListener = v -> {
-//        Intent intent = new Intent(getApplicationContext(), BoardActivity.class);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        startActivity(intent);
+        // 미션 정보를 입력한 후 업로드하기 버튼을 클릭할 때 수행되는 코드
 
-//        String s = "";
-//        for (MakeVote vote : makeVoteAdapter.getVoteList())
-//            s += vote.getVoteContent();
-//
-//        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+        String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
+        apiService = RetrofitClientJwt.getApiService(accessToken);
 
-        /** POST 요청 수행해야 한다. **/
+        // 미션 정보를 가져옴
+        String title = et_title.getText().toString();
+        String dueTo = et_calendar.getText().toString() + " " + et_time.getText().toString();
+        String content = et_content.getText().toString();
+        String rule = et_rule.getText().toString();
+
+        // 미션 생성 요청 객체 생성
+        MissionCreateRequest missionCreateRequest = new MissionCreateRequest(title, dueTo, content, rule);
+
+        Call<MissionCreateResponse> call = apiService.makeMission(accessToken, teamId, missionCreateRequest);
+
+        call.enqueue(new Callback<MissionCreateResponse>() {
+            @Override
+            public void onResponse(Call<MissionCreateResponse> call, Response<MissionCreateResponse> response) {
+                if (response.isSuccessful()) {
+                    // 요청이 성공적으로 처리됨
+                    MissionCreateResponse missionCreateResponse = response.body();
+                    // 생성된 미션 데이터에 접근하여 필요한 작업 수행
+                    MissionCreateResponse.MissionData missionData = missionCreateResponse.getData();
+
+                    Intent intent = new Intent(MissionReviseActivity.this, MissionClickActivity.class);
+                    intent.putExtra("teamId", teamId);
+                    startActivity(intent);
+
+                } else {
+                    // 요청이 실패함
+                    // 실패 처리를 위한 코드 작성
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MissionCreateResponse> call, Throwable t) {
+                // 요청이 실패함
+                // 실패 처리를 위한 코드 작성
+            }
+        });
     };
 }

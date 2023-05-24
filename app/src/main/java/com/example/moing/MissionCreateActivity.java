@@ -46,13 +46,13 @@ public class MissionCreateActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private Long teamId;
 
-    Button btn_close, create;
+    Button btn_close, et_calendar, et_time, calendarIcon, create;
 
-    EditText et_title, et_calendar, et_time, et_content, et_rule;
+    EditText et_title, et_content, et_rule;
 
     TextView titleTv, tv_titleCount, contentTv, tv_contentCount, ruleTv, tv_ruleCount;
 
-    ImageView xIcon, calendarIcon;
+    ImageView xIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,11 +83,11 @@ public class MissionCreateActivity extends AppCompatActivity {
         tv_titleCount = (TextView) findViewById(R.id.tv_titleCount);
 
         // 미션 마감일 - 날짜 선택 et
-        et_calendar = (EditText) findViewById(R.id.et_calendar);
+        et_calendar = (Button) findViewById(R.id.et_calendar);
         // 미션 마감일 - 달력 아이콘
-        calendarIcon = (ImageView) findViewById(R.id.calendarIcon);
+        calendarIcon = (Button) findViewById(R.id.calendarIcon);
         // 미션 마감일 - 시간 선택 et
-        et_time = (EditText) findViewById(R.id.et_time);
+        et_time = (Button) findViewById(R.id.et_time);
 
         // 미션 내용 tv
         contentTv = (TextView) findViewById(R.id.contentTv);
