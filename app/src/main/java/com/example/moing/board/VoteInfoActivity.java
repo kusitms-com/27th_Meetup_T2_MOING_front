@@ -364,8 +364,7 @@ public class VoteInfoActivity extends AppCompatActivity {
                         tvAnony.setVisibility(anonymous ? View.VISIBLE : View.INVISIBLE);
 
                         VoteInfoAdapterFirst voteInfoAdapterFirst = new VoteInfoAdapterFirst(voteChoiceList, voteSelected, VoteInfoActivity.this);
-                        voteInfoAdapterFirst.setAnonymous(anonymous);
-                        voteInfoAdapterFirst.setMultiple(multiple);
+                        voteInfoAdapterFirst.setMultiAnony(multiple, anonymous);
                         voteRecycle.setAdapter(voteInfoAdapterFirst);
 
                         /** 투표 선택 클릭 리스너 **/
@@ -532,19 +531,31 @@ public class VoteInfoActivity extends AppCompatActivity {
                     if (infoResponse.getMessage().equals("투표를 하였습니다")) {
                         /** 투표, 각 투표마다 읽은 사람 리스트 설정 **/
                         voteChoiceList = infoResponse.getData().getVoteChoices();
+                        voteNoReadList = infoResponse.getData().getNotReadUsersNickName();
                         boolean anonymous = infoResponse.getData().isAnonymous();
-                        boolean mutiple = infoResponse.getData().isMultiple();
+                        boolean multiple = infoResponse.getData().isMultiple();
 
-                        Log.d(TAG, "액티비티에서 익명인가? :" + String.valueOf(anonymous));
                         voteInfoAdapterFirst = new VoteInfoAdapterFirst(voteChoiceList, voteSelected, VoteInfoActivity.this);
-                        voteInfoAdapterFirst.setAnonymous(anonymous);
-                        voteInfoAdapterFirst.setMultiple(mutiple);
+                        voteInfoAdapterFirst.setMultiAnony(multiple, anonymous);
                         voteRecycle.setAdapter(voteInfoAdapterFirst);
                         voteInfoAdapterFirst.notifyDataSetChanged();
 
                         voteComplete.setText("투표 수정하기");
                         voteComplete.setTextColor(Color.parseColor("#37383C"));
                         voteComplete.setBackgroundColor(Color.parseColor("#1A1919"));
+                        tv_noread.setText(voteNoReadList.size() + "명이 아직 안 읽었어요");
+
+                        /** 몇 명 참여했는지 계산 **/
+                        List<String> userList = new ArrayList<>();
+                        for(BoardVoteInfoResponse.VoteChoice choice : voteChoiceList) {
+                            for(String nickName : choice.getVoteUserNickName()) {
+                                userList.add(nickName);
+                            }
+                        }
+
+                        Set<String> set = new HashSet<>(userList);
+                        voteUserNameList = new ArrayList<>(set);
+                        voteCount.setText(String.valueOf(voteUserNameList.size()) + "명 참여");
                     }
 
                 } else if (infoResponse.getMessage().equals("만료된 토큰입니다.")) {

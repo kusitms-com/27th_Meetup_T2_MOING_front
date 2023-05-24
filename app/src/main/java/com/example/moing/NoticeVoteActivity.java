@@ -62,6 +62,7 @@ public class NoticeVoteActivity extends AppCompatActivity {
 
     private TabHost tabHost1;
     private TextView tv, tp;
+    private int NoticeOrVote;
 
     // RecyclerView
     RecyclerView mRecyclerView, mRecyclerView2;
@@ -76,6 +77,9 @@ public class NoticeVoteActivity extends AppCompatActivity {
         teamId = intent.getLongExtra("teamId", 0);
         noticeId = intent.getLongExtra("noticeId", 0);
         voteId = intent.getLongExtra("voteId", 0);
+        NoticeOrVote = intent.getIntExtra("NoticeOrVote", 0);
+
+        Log.d(TAG, "NoticeOrVote : " + String.valueOf(NoticeOrVote));
 
         // Token을 사용할 SharedPreference
         sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
@@ -133,11 +137,12 @@ public class NoticeVoteActivity extends AppCompatActivity {
         linearLayoutManager2.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView2.setLayoutManager(linearLayoutManager2);
 
-        /** 투표 **/
-        vote();
-
-        /** 공지사항 **/
-        notice();
+        if(NoticeOrVote == 1) {
+            /** 공지사항 **/
+            notice();
+        } else {
+            vote();
+        }
 
         tabHost1 = (TabHost) findViewById(R.id.tabHost1);
         tabHost1.setup();
@@ -198,11 +203,10 @@ public class NoticeVoteActivity extends AppCompatActivity {
         tp = (TextView) tabHost1.getTabWidget().getChildAt(tabHost1.getCurrentTab()).findViewById(android.R.id.title);
         tp.setTextColor(Color.parseColor("#FFFFFF"));
 
-        if(tv_first.getText().toString().contains("공지"))
+        if(NoticeOrVote == 1)
             tabHost1.setCurrentTab(0);
         else
             tabHost1.setCurrentTab(1);
-
     }
 
     // 뒤로 가기 버튼 클릭 리스너
@@ -273,6 +277,11 @@ public class NoticeVoteActivity extends AppCompatActivity {
                     else
                         tv_nothing.setVisibility(View.GONE);
 
+                    List<Long> noticeIdList = new ArrayList<>();
+                    for (AllNoticeResponse.NoticeBlock v : noticeList) {
+                        noticeIdList.add(v.getNoticeId());
+                    }
+
                     Long num = noticeResponse.getData().getNotReadNum();
                     checkNoRead(num, "공지");
 
@@ -281,6 +290,7 @@ public class NoticeVoteActivity extends AppCompatActivity {
                         @Override
                         public void onItemClick(int pos) {
                             /** 해당 공지사항으로 이동 **/
+                            noticeId = noticeIdList.get(pos);
                             Intent intent = new Intent(NoticeVoteActivity.this, NoticeInfoActivity.class);
                             intent.putExtra("noticeId", noticeId);
                             intent.putExtra("teamId", teamId);

@@ -170,6 +170,7 @@ public class NoticeInfoActivity extends AppCompatActivity {
         else {
             Intent intent = new Intent(getApplicationContext(), NoticeVoteActivity.class);
             intent.putExtra("teamId", teamId);
+
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }
@@ -249,6 +250,8 @@ public class NoticeInfoActivity extends AppCompatActivity {
     private void getNoticeResult() {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
         apiService = RetrofitClientJwt.getApiService(accessToken);
+
+        Log.d(TAG, "noticeId : " + String.valueOf(noticeId));
 
         Call<NoticeInfoResponse> call = apiService.NoticeInfo(accessToken, teamId, noticeId);
         call.enqueue(new Callback<NoticeInfoResponse>() {

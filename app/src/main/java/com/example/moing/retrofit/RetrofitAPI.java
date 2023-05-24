@@ -163,7 +163,8 @@ public interface RetrofitAPI {
 
     /** 미션 인증 **/
     @POST("api/v1/{teamId}/missions/{missionId}/submit")
-    Call<MissionClearResponse> missionClear(@Header("Authorization") String token, @Path("teamId") Long teamId, @Path("missionId") Long missionId);
+    Call<MissionClearResponse> missionClear(@Header("Authorization") String token,
+                                            @Path("teamId") Long teamId, @Path("missionId") Long missionId, @Body String url);
 
     /** 미션 한 개 상세 조회 **/
     @GET("api/v1/{teamId}/missions/{missionId}")

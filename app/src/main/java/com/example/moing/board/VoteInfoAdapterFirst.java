@@ -14,11 +14,13 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moing.R;
 import com.example.moing.Response.BoardVoteInfoResponse;
+import com.example.moing.team.MakeTeamActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,12 +62,9 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
         return voteSelected;
     }
 
-    public void setAnonymous(boolean value) {
-        anonymous = value;
-    }
-
-    public void setMultiple(boolean value) {
-        multi = value;
+    public void setMultiAnony(boolean val1, boolean val2) {
+        multi = val1;
+        anonymous = val2;
     }
 
     @NonNull
@@ -83,7 +82,8 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
         vH.tv_text.setText(voteChoice.getContent());
 
         // 익명일 때 가시성 여부
-        vH.btn_people.setVisibility(anonymous ? View.INVISIBLE : View.VISIBLE );
+        vH.btn_people.setVisibility(anonymous ? View.INVISIBLE : View.VISIBLE);
+
 
         // Checkbox 상태 변경
         vH.checkBox.setChecked(voteChoice.isChecked());
@@ -115,20 +115,20 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
             @Override
             public int getSpanSize(int position) {
                 // 아이템의 스팬(너비)을 동적으로 조정
-                if(position % (spanCount+1) == 0 ) {
+                if (position % (spanCount + 1) == 0) {
                     // 가로가 긴 아이템은 현재 열 개수만큼 스팬(너비)을 차지하도록 설정
                     return spanCount;
-                }
-                else
-                    return 1;
+                } else return 1;
             }
         });
 
 
-       /** 각 투표 리스트 별 사용자 항목을 구분해주기 위한 이중 리스트 생성 **/
+        /** 각 투표 리스트 별 사용자 항목을 구분해주기 위한 이중 리스트 생성 **/
         List<List<String>> userList2 = new ArrayList<>();
+        // 2개 선택했다면 2번 반복
         for (BoardVoteInfoResponse.VoteChoice vc : voteChoiceList) {
             List<String> tmp = vc.getVoteUserNickName();
+            Log.d(TAG, tmp.toString());
             userList2.add(tmp);
         }
 
@@ -144,11 +144,11 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
         vH.btn_people.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               int visibility = (vH.recyclerView.getVisibility() == View.GONE) ? View.VISIBLE : View.GONE;
+                int visibility = (vH.recyclerView.getVisibility() == View.GONE) ? View.VISIBLE : View.GONE;
                 TransitionManager.beginDelayedTransition((ViewGroup) vH.itemView, new AutoTransition());
                 vH.recyclerView.setVisibility(visibility);
                 // 보이는 상태라면
-                if(visibility == View.VISIBLE)
+                if (visibility == View.VISIBLE)
                     vH.btn_people.setBackgroundResource(R.drawable.arrow_up);
                 else
                     vH.btn_people.setBackgroundResource(R.drawable.arrow_down);
@@ -156,16 +156,20 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
         });
     }
 
-    /** ViewHolder 작성 **/
+    /**
+     * ViewHolder 작성
+     **/
     class VoteInfoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         CheckBox checkBox;
         TextView tv_text, count;
         Button btn_people;
         RecyclerView recyclerView;
+        View mView;
 
         public VoteInfoViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            mView = itemView;
             checkBox = itemView.findViewById(R.id.btn_check);
             tv_text = itemView.findViewById(R.id.tv_item_date);
             count = itemView.findViewById(R.id.tv_voteCount);
@@ -176,28 +180,41 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
             checkBox.setOnClickListener(this);
         }
 
-        /** 리싸이클러뷰 아이템 및 Checkbox 클릭을 동일하게 설정 **/
+        /**
+         * 리싸이클러뷰 아이템 및 Checkbox 클릭을 동일하게 설정
+         **/
         @Override
         public void onClick(View v) {
             int pos = getAdapterPosition();
             if (pos != RecyclerView.NO_POSITION && clickListener != null) {
+                // 다중 선택이 아닌 경우
+                if (!multi) {
+                    // 이미 선택된 항목이 있다면 해제
+                    for (BoardVoteInfoResponse.VoteChoice choice : voteSelected) {
+                        if (choice.isChecked()) {
+                            choice.setChecked(false);
+                            // 선택된 CheckBox 해제
+                            notifyDataSetChanged(); // 아이템 변경을 알림
+                            break;
+                        }
+                    }
+                    voteSelected.clear();
+                }
+
+                // CheckBox 상태 변경
                 //CheckBox 상태 변경
                 boolean isChecked = !voteChoiceList.get(pos).isChecked();
                 voteChoiceList.get(pos).setChecked(isChecked);
-                checkBox.setChecked(isChecked);
+                notifyDataSetChanged();
 
                 if (isChecked) {
                     if (!voteSelected.contains(voteChoiceList.get(pos))) {
                         voteSelected.add(voteChoiceList.get(pos));
                     }
-                    checkBox.setBackgroundResource(R.drawable.board_checkbox_yes);
-                    checkBox.setButtonTintList(ColorStateList.valueOf(Color.parseColor("#F6F6F6")));
                 } else {
                     voteSelected.remove(voteChoiceList.get(pos));
-                    checkBox.setBackgroundResource(R.drawable.board_checkbox_no);
-                    // 선택되지 않은 상태의 배경색 제거
-                    checkBox.setButtonTintList(ColorStateList.valueOf(Color.parseColor("#959698")));
                 }
+
                 clickListener.onItemClick(pos);
             }
 
