@@ -4,6 +4,207 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingHorizontal="16dp"
+    android:background="@color/secondary_grey_black_14"
     tools:context=".mypage.MyPageModifyActivity">
+
+    <LinearLayout
+        android:id="@+id/mypage_modify_ll_none1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/mypage_modify_btn_close"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:background="@color/secondary_grey_black_14"
+            android:src="@drawable/x_icon" />
+
+        <TextView
+            android:id="@+id/mypage_modify_tv_none1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="32dp"
+            android:fontFamily="@font/pretendard_semi_bold"
+            android:text="프로필 설정"
+            android:textColor="@color/secondary_grey_black_3"
+            android:textSize="18dp" />
+    </LinearLayout>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/mypage_modify_iv_profile"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="56dp"
+        android:src="@drawable/ic_mypage_profile"
+        app:layout_constraintTop_toBottomOf="@+id/mypage_modify_ll_none1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/mypage_modify_iv_gallery"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_mypage_gallery"
+        app:layout_constraintBottom_toBottomOf="@+id/mypage_modify_iv_profile"
+        app:layout_constraintRight_toRightOf="@+id/mypage_modify_iv_profile"/>
+
+    <TextView
+        android:id="@+id/mypage_modify_tv_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:layout_marginBottom="4dp"
+        android:fontFamily="@font/pretendard_medium"
+        android:text="닉네임"
+        android:textColor="@color/secondary_grey_black_7"
+        android:textSize="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mypage_modify_iv_profile"
+        app:layout_constraintHorizontal_bias="0"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/mypage_modify_cl_none1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mypage_modify_tv_nickname">
+
+        <EditText
+            android:id="@+id/mypage_modify_et_nickname"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:paddingLeft="16dp"
+            android:background="@drawable/border_all"
+            android:hint="닉네임"
+            android:inputType="textNoSuggestions"
+            android:maxLength="10"
+            android:maxLines="1"
+            android:textColor="@color/secondary_grey_black_2"
+            android:textColorHint="@color/secondary_grey_black_7"
+            android:textSize="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <ImageView
+            android:id="@+id/mypage_modify_iv_delete_nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:visibility="invisible"
+            app:srcCompat="@drawable/x_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/mypage_modify_et_nickname"
+            app:layout_constraintEnd_toEndOf="@+id/mypage_modify_et_nickname"
+            app:layout_constraintHorizontal_bias="0.942"
+            app:layout_constraintStart_toStartOf="@+id/mypage_modify_et_nickname"
+            app:layout_constraintTop_toTopOf="@+id/mypage_modify_et_nickname"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/mypage_modify_tv_nickname_tf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/pretendard_semi_bold"
+        android:text="사용 가능한 별명이에요"
+        android:textColor="#88F0BE"
+        android:textSize="14dp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mypage_modify_cl_none1"
+        app:layout_constraintHorizontal_bias="0"/>
+
+    <TextView
+        android:id="@+id/mypage_modify_tv_nickname_cnt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/pretendard_medium"
+        android:text="(0/10)"
+        android:textColor="@color/secondary_grey_black_7"
+        android:textSize="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mypage_modify_cl_none1"
+        app:layout_constraintHorizontal_bias="1"/>
+
+
+    <TextView
+        android:id="@+id/mypage_modify_tv_introduction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
+        android:fontFamily="@font/pretendard_medium"
+        android:text="한줄다짐"
+        android:textColor="@color/secondary_grey_black_7"
+        android:textSize="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mypage_modify_tv_nickname_cnt"
+        app:layout_constraintHorizontal_bias="0"/>
+
+    <EditText
+        android:id="@+id/mypage_modify_et_introduction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/edittext_round_corner_rectangle"
+        android:fontFamily="@font/pretendard_medium"
+        android:gravity="start"
+        android:hint="마이페이지에서 확인할 수 있어요"
+        android:minHeight="180dp"
+        android:textColor="@color/secondary_grey_black_2"
+        android:textColorHint="@color/secondary_grey_black_7"
+        android:textSize="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mypage_modify_tv_introduction"
+        app:layout_constraintHorizontal_bias="0"/>
+
+    <TextView
+        android:id="@+id/mypage_modify_tv_introduction_cnt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_gravity="right"
+        android:fontFamily="@font/pretendard_medium"
+        android:gravity="right"
+        android:text="(0/10)"
+        android:textColor="@color/secondary_grey_black_7"
+        android:textSize="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mypage_modify_et_introduction"
+        app:layout_constraintHorizontal_bias="1"/>
+
+    <android.widget.Button
+        android:id="@+id/mypage_modify_btn_done"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/button_round_black12"
+        android:clickable="false"
+        android:fontFamily="@font/pretendard_semi_bold"
+        android:text="수정 완료"
+        android:textColor="@color/secondary_grey_black_10"
+        android:textSize="18dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mypage_modify_tv_introduction_cnt"
+        app:layout_constraintVertical_bias="1"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

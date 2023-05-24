@@ -10,6 +10,7 @@ import com.example.moing.Request.MakeTeamRequest;
 import com.example.moing.Request.MissionCreateRequest;
 import com.example.moing.Request.NoticeCommentRequest;
 import com.example.moing.Request.NoticeCreateRequest;
+import com.example.moing.Request.ProfileUpdateRequest;
 import com.example.moing.Request.RegisterAddressRequest;
 import com.example.moing.Request.TeamUpdateRequest;
 import com.example.moing.Response.AlarmResponse;
@@ -42,6 +43,7 @@ import com.example.moing.Response.MissionClearResponse;
 import com.example.moing.Response.MissionInfoResponse;
 import com.example.moing.Response.MissionSkipResponse;
 import com.example.moing.Response.MissionStatusListResponse;
+import com.example.moing.Response.ProfileUpdateResponse;
 import com.example.moing.Response.RegisterAddressResponse;
 import com.example.moing.Response.RegisterNameResponse;
 import com.example.moing.Response.TeamListResponse;
@@ -220,4 +222,8 @@ public interface RetrofitAPI {
     /** 불 던지기 알림 상태 설정 **/
     @PUT("/api/v1/users/alarm-setting/fire")
     Call<AlarmResponse> putAlarmFire(@Header("Authorization") String token,@Body AlarmRequest request);
+
+    /** 프로필 수정 **/
+    @PUT("/api/v1/users/mypage")
+    Call<ProfileUpdateResponse> putProfileUpdate(@Header("Authorization") String token, @Body ProfileUpdateRequest request);
 }

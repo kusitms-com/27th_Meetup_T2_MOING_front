@@ -17,12 +17,15 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.moing.R;
 import com.example.moing.Response.MyPageResponse;
 import com.example.moing.login.LoginActivity;
 import com.example.moing.retrofit.ChangeJwt;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClientJwt;
+import com.example.moing.s3.DownloadImageCallback;
+import com.example.moing.s3.S3Utils;
 
 import java.util.List;
 
@@ -40,10 +43,13 @@ public class MyPageActivity extends AppCompatActivity {
     private TextView tvIntroduction;
     private Button btnAlarms;
     private Button btnLogOut;
-    private Button btnDropOut;
     private TextView tvTeamCnt;
     private RecyclerView rvTeamList;
     private MyPageTeamAdatper teamAdatper;
+    private String nickname;
+    private String introduction;
+    private String profile;
+
 
 
     @Override
@@ -64,8 +70,6 @@ public class MyPageActivity extends AppCompatActivity {
         btnAlarms = findViewById(R.id.mypage_btn_setting_alarms);
         // 로그 아웃
         btnLogOut = findViewById(R.id.mypage_btn_logout);
-        // 회원 탈퇴
-        btnDropOut = findViewById(R.id.mypage_btn_drop_out);
         // 참여한 소모임 개수
         tvTeamCnt = findViewById(R.id.mypage_tv_team_count);
         // 참여한 소모임 목록
@@ -78,17 +82,24 @@ public class MyPageActivity extends AppCompatActivity {
         btnAlarms.setOnClickListener(onAlarmsClickListener);
         // 로그아웃 버튼 클릭 리스너
         btnLogOut.setOnClickListener(onLogOutClickListener);
-        // 회원탈퇴 버튼 클릭 리스너
-        btnDropOut.setOnClickListener(onDropOutClickListener);
 
 
         // 마이페이지에 필요한 정보들을 GET하여 화면상에 표시
         getMyPageInfo();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getMyPageInfo();
+    }
+
     // 프로필 수정 버튼 클릭 - 프로필 정보 설정 액티비티로 이동
     View.OnClickListener onModifyClickListener = v -> {
         Intent intent = new Intent(getApplicationContext(), MyPageModifyActivity.class);
+        intent.putExtra("nickname",nickname);
+        intent.putExtra("introduction",introduction);
+        intent.putExtra("profile",profile);
         startActivity(intent);
     };
 
@@ -131,15 +142,32 @@ public class MyPageActivity extends AppCompatActivity {
                     if (response.body() != null) {
 
                         // 프로필 이미지 설정
-                        Glide.with(getApplicationContext())
-                                .load(response.body().getData().getProfileImg())
-                                        .into(ivProfile);
+                        profile = response.body().getData().getProfileImg();
+                        S3Utils.downloadImageFromS3(profile, new DownloadImageCallback() {
+                            @Override
+                            public void onImageDownloaded(byte[] data) {
+                                runOnUiThread(() -> Glide.with(getApplicationContext())
+                                        .asBitmap()
+                                        .load(data)
+                                        .transform(new RoundedCorners(24))
+                                        .into(ivProfile));
+                            }
+                            @Override
+                            public void onImageDownloadFailed() {
+                                runOnUiThread(() -> Glide.with(getApplicationContext())
+                                        .load(profile)
+                                        .into(ivProfile));
+                            }
+                        });
+
 
                         // 닉네임 설정
-                        tvNickName.setText(response.body().getData().getNickName());
+                        nickname = response.body().getData().getNickName();
+                        tvNickName.setText(nickname);
 
                         // 한줄다짐 설정
-                        tvIntroduction.setText(response.body().getData().getIntroduction());
+                        introduction = response.body().getData().getIntroduction();
+                        tvIntroduction.setText(introduction);
 
                         // 참여한 소모임 목록
                         List<MyPageResponse.Team> teamList = response.body().getData().getTeamList();

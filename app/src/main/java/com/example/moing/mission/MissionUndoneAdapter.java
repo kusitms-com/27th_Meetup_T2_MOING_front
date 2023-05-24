@@ -1,5 +1,7 @@
 package com.example.moing.mission;
 
+import static com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -12,8 +14,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.moing.R;
 import com.example.moing.Response.MissionStatusListResponse;
+import com.example.moing.s3.DownloadImageCallback;
+import com.example.moing.s3.S3Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,9 +72,22 @@ public class MissionUndoneAdapter extends RecyclerView.Adapter<RecyclerView.View
         undoneViewHolder.tvNickname.setText(mission.getNickname());
 
         // 프로필 이미지 설정
-        Glide.with(mainContext)
-                .load(mission.getProfileImg())
-                .into(undoneViewHolder.ivProfile);
+        S3Utils.downloadImageFromS3(mission.getProfileImg(), new DownloadImageCallback() {
+            @Override
+            public void onImageDownloaded(byte[] data) {
+                runOnUiThread(() -> Glide.with(mainContext)
+                        .asBitmap()
+                        .load(data)
+                        .transform(new RoundedCorners(24))
+                        .into(undoneViewHolder.ivProfile));
+            }
+            @Override
+            public void onImageDownloadFailed() {
+                runOnUiThread(() -> Glide.with(mainContext)
+                        .load(mission.getProfileImg())
+                        .into(undoneViewHolder.ivProfile));
+            }
+        });
 
         // 불 맞은 사람 - 표시
         if(fireList.contains(mission.getUserMissionId())){
