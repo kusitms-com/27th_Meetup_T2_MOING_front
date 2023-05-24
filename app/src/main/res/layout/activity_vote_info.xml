@@ -82,10 +82,10 @@
                 android:layout_marginTop="28dp"
                 android:orientation="horizontal">
 
-                <ImageView
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/iv_profile"
                     android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_height="match_parent"
                     android:background="@drawable/ic_vote_round" />
 
                 <TextView

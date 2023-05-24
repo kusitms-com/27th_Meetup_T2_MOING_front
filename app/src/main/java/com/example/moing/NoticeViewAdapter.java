@@ -23,6 +23,8 @@ import com.example.moing.s3.S3Utils;
 
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class NoticeViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<AllNoticeResponse.NoticeBlock> listData;
     private Context context;
@@ -107,7 +109,8 @@ public class NoticeViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     public class NoticeViewHolder extends RecyclerView.ViewHolder {
-        ImageView image, dot, crown, iv_msg;
+        CircleImageView image;
+        ImageView dot, crown, iv_msg;
         ConstraintLayout background;
         TextView name, title, content, count, line;
 

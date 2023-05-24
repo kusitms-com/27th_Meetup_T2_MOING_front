@@ -23,6 +23,8 @@ import com.example.moing.s3.S3Utils;
 
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class VoteViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<AllVoteResponse.VoteBlock> dataList;
     private Context context;
@@ -118,7 +120,8 @@ public class VoteViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public class VoteViewHolder extends RecyclerView.ViewHolder {
-        private ImageView image, dot, crown, iv_msg;
+        private CircleImageView image;
+        private ImageView dot, crown, iv_msg;
         private ConstraintLayout background;
         private TextView name, title, content, cnt;
         private TextView line;

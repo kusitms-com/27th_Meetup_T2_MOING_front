@@ -13,7 +13,7 @@
     android:id="@+id/recycle_background"
     android:layout_marginBottom="12dp">
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/notice_iv_user_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

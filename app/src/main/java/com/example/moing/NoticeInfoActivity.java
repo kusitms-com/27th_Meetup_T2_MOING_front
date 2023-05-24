@@ -45,6 +45,7 @@ import com.example.moing.s3.S3Utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -53,7 +54,8 @@ public class NoticeInfoActivity extends AppCompatActivity {
     Button back;
     ImageButton modal, send;
     TextView title, nickName, time, content, tv_noread;
-    ImageView profile, noReadArrow;
+    CircleImageView profile;
+    ImageView noReadArrow;
     RecyclerView noReadRecycle, commentRecycle;
     CardView noreadCardView;
     LinearLayout layout_cardView;
@@ -102,7 +104,7 @@ public class NoticeInfoActivity extends AppCompatActivity {
         // 제목
         title = (TextView) findViewById(R.id.tv_title);
         // 프로필사진
-        profile = (ImageView) findViewById(R.id.iv_profile);
+        profile = findViewById(R.id.iv_profile);
         // 닉네임
         nickName = (TextView) findViewById(R.id.tv_name);
         // 날짜, 시간

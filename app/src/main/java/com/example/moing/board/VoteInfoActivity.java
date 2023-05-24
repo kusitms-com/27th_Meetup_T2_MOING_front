@@ -52,6 +52,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -62,7 +63,8 @@ public class VoteInfoActivity extends AppCompatActivity {
     Button back, voteComplete;
     ImageButton modal, send;
     TextView title, nickName, time, content, voteCount, tvAnony, tv_noread;
-    ImageView profile, ivAnony, noReadArrow;
+    CircleImageView profile;
+    ImageView ivAnony, noReadArrow;
     RecyclerView voteRecycle, noReadRecycle, commentRecycle;
     CardView noreadCardView;
     LinearLayout layout_cardView;
@@ -123,7 +125,7 @@ public class VoteInfoActivity extends AppCompatActivity {
         // 제목
         title = (TextView) findViewById(R.id.tv_title);
         // 프로필사진
-        profile = (ImageView) findViewById(R.id.iv_profile);
+        profile = findViewById(R.id.iv_profile);
         // 닉네임
         nickName = (TextView) findViewById(R.id.tv_name);
         // 날짜, 시간
