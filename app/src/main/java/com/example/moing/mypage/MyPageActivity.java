@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.moing.R;
 import com.example.moing.Response.MyPageResponse;
+import com.example.moing.login.LoginActivity;
 import com.example.moing.retrofit.ChangeJwt;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClientJwt;
@@ -93,7 +94,11 @@ public class MyPageActivity extends AppCompatActivity {
 
     // 로그아웃 버튼 클릭 - 로그아웃 절차 실행
     View.OnClickListener onLogOutClickListener = v -> {
-        // TODO: 로그아웃 절차 구현
+        // 이전의 TASK들을 모두 종료하고 LoginActivity 실행
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     };
 
     // 알림 설정 버튼 클릭 - 알림 설정 액티비티로 이동
