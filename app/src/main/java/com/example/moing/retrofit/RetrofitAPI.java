@@ -1,5 +1,6 @@
 package com.example.moing.retrofit;
 
+import com.example.moing.Request.AlarmRequest;
 import com.example.moing.Request.BoardMakeVoteRequest;
 import com.example.moing.Request.BoardVoteDoRequest;
 import com.example.moing.Request.BoardVoteMakeCommentRequest;
@@ -11,6 +12,8 @@ import com.example.moing.Request.NoticeCommentRequest;
 import com.example.moing.Request.NoticeCreateRequest;
 import com.example.moing.Request.RegisterAddressRequest;
 import com.example.moing.Request.TeamUpdateRequest;
+import com.example.moing.Response.AlarmResponse;
+import com.example.moing.Response.AlarmSettingResponse;
 import com.example.moing.Response.AllVoteResponse;
 import com.example.moing.Response.BoardCurrentLocateResponse;
 import com.example.moing.Response.BoardFireResponse;
@@ -202,4 +205,19 @@ public interface RetrofitAPI {
     @GET("/api/v1/users/mypage")
     Call<MyPageResponse> getMyPage(@Header("Authorization") String token);
 
+    /** 알림 설정 상태 조회 **/
+    @GET("/api/v1/users/alarm-setting")
+    Call<AlarmSettingResponse> getAlarmSetting(@Header("Authorization") String token);
+
+    /** 신규 업로드 알림 상태 설정 **/
+    @PUT("/api/v1/users/alarm-setting/new-upload")
+    Call<AlarmResponse> putAlarmNew(@Header("Authorization") String token, @Body AlarmRequest request);
+
+    /** 미션 리마인드 알림 상태 설정 **/
+    @PUT("/api/v1/users/alarm-setting/remind")
+    Call<AlarmResponse> putAlarmRemind(@Header("Authorization") String token, @Body AlarmRequest request);
+
+    /** 불 던지기 알림 상태 설정 **/
+    @PUT("/api/v1/users/alarm-setting/fire")
+    Call<AlarmResponse> putAlarmFire(@Header("Authorization") String token,@Body AlarmRequest request);
 }

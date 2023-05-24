@@ -87,7 +87,7 @@ public class MyPageActivity extends AppCompatActivity {
 
     // 프로필 수정 버튼 클릭 - 프로필 정보 설정 액티비티로 이동
     View.OnClickListener onModifyClickListener = v -> {
-        Intent intent = new Intent(getApplicationContext(), MyPageAlarmActivity.class);
+        Intent intent = new Intent(getApplicationContext(), MyPageModifyActivity.class);
         startActivity(intent);
     };
 
