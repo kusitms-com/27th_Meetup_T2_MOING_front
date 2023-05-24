@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MissionReviseActivity"
+    tools:context=".MissionCreateActivity"
     android:background="@color/secondary_grey_black_14">
 
     <LinearLayout
@@ -154,7 +154,7 @@
                         android:layout_width="270dp"
                         android:layout_height="wrap_content">
 
-                        <EditText
+                        <android.widget.Button
                             android:id="@+id/et_calendar"
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
@@ -175,22 +175,16 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                        <android.widget.Button
+                            android:id="@+id/calendarIcon"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
                             app:layout_constraintBottom_toBottomOf="@+id/et_calendar"
                             app:layout_constraintEnd_toEndOf="@+id/et_calendar"
                             app:layout_constraintHorizontal_bias="0.942"
                             app:layout_constraintStart_toStartOf="@+id/et_calendar"
-                            app:layout_constraintTop_toTopOf="@+id/et_calendar">
-
-                            <ImageView
-                                android:id="@+id/calendarIcon"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:adjustViewBounds="true"
-                                app:srcCompat="@drawable/calendar_icon" />
-                        </LinearLayout>
+                            app:layout_constraintTop_toTopOf="@+id/et_calendar"
+                            android:background="@drawable/calendar_icon"/>
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -198,7 +192,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                        <EditText
+                        <android.widget.Button
                             android:id="@+id/et_time"
                             android:layout_width="match_parent"
                             android:layout_height="50dp"

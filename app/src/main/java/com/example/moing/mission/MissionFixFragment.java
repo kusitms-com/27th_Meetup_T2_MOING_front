@@ -1,6 +1,7 @@
 package com.example.moing.mission;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageButton;
 
+import com.example.moing.MissionReviseActivity;
 import com.example.moing.R;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
@@ -56,10 +58,10 @@ public class MissionFixFragment extends BottomSheetDialogFragment {
     View.OnClickListener fixClickListener = v -> {
 
         /** Intent 이용하여 미션 수정 화면으로 이동 **/
-        // Intent intent = new Intent(getContext(), 수정액티비티.class);
-        // intent.putExtra("teamId",teamId);
-        // intent.putExtra("missionId",missionId);
-        // startActivity(intent);
+         Intent intent = new Intent(getContext(), MissionReviseActivity.class);
+         intent.putExtra("teamId",teamId);
+         intent.putExtra("missionId",missionId);
+         startActivity(intent);
     };
 
     // 초대 코드 복사 불가 팝업
