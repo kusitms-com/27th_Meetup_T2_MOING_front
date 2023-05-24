@@ -48,6 +48,10 @@ public class MissionPassActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
 
         /** Intent로 teamId, missionId 값 받아와야 한다. **/
+        // Intent 값 전달받는다.
+        Intent intent = getIntent();
+        teamId = intent.getLongExtra("teamId", 0);
+        missionId = intent.getLongExtra("missionId", 0);
 
         close = findViewById(R.id.btn_close);
         complete = findViewById(R.id.btn_complete);
@@ -78,12 +82,7 @@ public class MissionPassActivity extends AppCompatActivity {
     // 업로드하기 버튼 눌렀을 때
     View.OnClickListener completeClickListener = v -> {
         /** API 호출 **/
-        //skipMission();
-        /** TEST 용도 **/
-        Intent intent = new Intent();
-        intent.putExtra("value", "1");
-        setResult(RESULT_OK, intent);
-        finish();
+        skipMission();
     };
 
     /** 입력 시 값 변경 메서드 **/
@@ -152,11 +151,12 @@ public class MissionPassActivity extends AppCompatActivity {
 
                         Log.d(TAG,"정상적으로 건너뛰기 처리 완료!");
                     }
-                    else if (skipResponse.getMessage().equals("만료된 토큰입니다.")) {
-                        Log.d(TAG,"만료된 토큰 처리!");
-                        ChangeJwt.updateJwtToken(MissionPassActivity.this);
-                        skipMission();
-                    }
+
+                }
+                else if (response.message().equals("만료된 토큰입니다.")) {
+                    Log.d(TAG,"만료된 토큰 처리!");
+                    ChangeJwt.updateJwtToken(MissionPassActivity.this);
+                    skipMission();
                 }
             }
 

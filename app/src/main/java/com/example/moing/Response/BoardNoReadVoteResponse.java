@@ -34,7 +34,7 @@ public class BoardNoReadVoteResponse {
     public static class VoteData {
         private String content;
         private String title;
-        private int voteId;
+        private Long voteId;
 
         public String getContent() {
             return content;
@@ -52,12 +52,9 @@ public class BoardNoReadVoteResponse {
             this.title = title;
         }
 
-        public int getVoteId() {
+        public Long getVoteId() {
             return voteId;
         }
 
-        public void setVoteId(int voteId) {
-            this.voteId = voteId;
-        }
     }
 }

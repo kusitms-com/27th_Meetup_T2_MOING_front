@@ -140,11 +140,14 @@ public class MissionClickActivity extends AppCompatActivity {
         fix.setOnClickListener(fixClickListener);
         // 인증 현황 보러 가기 클릭 리스너
         linearLayout.setOnClickListener(missionStateClickListener);
+
         // 미션 건너뛰기
         across.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MissionClickActivity.this, MissionPassActivity.class);
+                intent.putExtra("teamId", teamId);
+                intent.putExtra("missionId", missionId);
                 getPassResult.launch(intent);
             }
         });
@@ -226,7 +229,7 @@ public class MissionClickActivity extends AppCompatActivity {
      **/
     View.OnClickListener missionClickListener = v -> {
         gallery();
-
+        missionClear();
     };
 
     /**
@@ -289,9 +292,6 @@ public class MissionClickActivity extends AppCompatActivity {
             // 권한 O - 갤러리 접근
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             galleryLauncher.launch(intent);
-
-            /** API 호출 필요 !! **/
-            missionClear();
         }
     }
 
@@ -353,11 +353,28 @@ public class MissionClickActivity extends AppCompatActivity {
         call.enqueue(new Callback<MissionClearResponse>() {
             @Override
             public void onResponse(Call<MissionClearResponse> call, Response<MissionClearResponse> response) {
-                MissionClearResponse mcResponse = response.body();
-                if (mcResponse.getData().equals("COMPLETE")) {
-                    // s3을 통한 사진 업로드
-                    S3Utils.uploadImageToS3(getApplicationContext(), uniqueFileNameWithExtension, imageFile);
-                } else if (mcResponse.getMessage().equals("만료된 토큰입니다.")) {
+                if(response.isSuccessful()) {
+                    MissionClearResponse mcResponse = response.body();
+                    Log.d(TAG, "통신 200 성공!!");
+                    Log.d(TAG, mcResponse.getMessage());
+                    // 연동 성공!
+                    if(mcResponse.getMessage().equals("개인별 미션 제출 성공")) {
+                        String status = mcResponse.getData();
+                        // 수행완료된 경우
+                        if(status.equals("COMPLETE")) {
+                            // S3 사진 업로드
+                            S3Utils.uploadImageToS3(getApplicationContext(), uniqueFileNameWithExtension, imageFile);
+                        }
+                        else if (status.equals("PENDING")) {
+
+                        }
+                        else if (status.equals("INCOMPLETE")) {
+
+                        }
+                    }
+                }
+                 else if (response.message().equals("만료된 토큰입니다.")) {
+                    Log.d(TAG, "만료된 토큰!!!");
                     ChangeJwt.updateJwtToken(MissionClickActivity.this);
                     missionClear();
                 }

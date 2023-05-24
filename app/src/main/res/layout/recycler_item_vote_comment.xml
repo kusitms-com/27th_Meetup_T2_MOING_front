@@ -49,7 +49,7 @@
             android:layout_marginHorizontal="16dp"
             android:layout_below="@id/tv_content"
             android:layout_marginTop="8dp"
-            android:background="@color/secondary_grey_black_7"/>
+            android:background="@color/secondary_grey_black_9"/>
 
     </RelativeLayout>
 

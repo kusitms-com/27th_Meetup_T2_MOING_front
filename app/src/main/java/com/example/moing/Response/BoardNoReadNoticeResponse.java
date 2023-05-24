@@ -28,19 +28,24 @@ public class BoardNoReadNoticeResponse {
     public static class NoticeData {
         private String title;
         private String content;
+        private Long noticeId;
 
-        public NoticeData(String title, String content) {
+        public NoticeData(String title, String content, Long noticeId) {
             this.title = title;
             this.content = content;
+            this.noticeId = noticeId;
+        }
 
+        public String getTitle() {
+            return title;
         }
 
         public String getContent() {
             return content;
         }
 
-        public String getTitle() {
-            return title;
+        public Long getNoticeId() {
+            return noticeId;
         }
     }
 }

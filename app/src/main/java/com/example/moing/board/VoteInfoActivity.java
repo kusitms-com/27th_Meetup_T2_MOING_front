@@ -43,7 +43,9 @@ import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClientJwt;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 import retrofit2.Call;
@@ -82,6 +84,7 @@ public class VoteInfoActivity extends AppCompatActivity {
     private static final String JWT_ACCESS_TOKEN = "JWT_access_token";
     private SharedPreferences sharedPreferences;
     private Long teamId, voteId, userId, voteCommentId;
+    private int activityTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +97,8 @@ public class VoteInfoActivity extends AppCompatActivity {
         // Intent로 값 전달 받기.
         teamId = getIntent().getLongExtra("teamId", 0);
         voteId = getIntent().getLongExtra("voteId", 0);
+        // 액티비티 태스크 판별을 위한 변수 설정
+        activityTask = getIntent().getIntExtra("acitivityTask", -1);
         Log.d(TAG, "teamId 값 : " + teamId);
         Log.d(TAG, "voteId 값 : " + voteId);
 
@@ -200,11 +205,19 @@ public class VoteInfoActivity extends AppCompatActivity {
      * 뒤로 가기 버튼 클릭 리스너
      **/
     View.OnClickListener backClickListener = v -> {
-        Intent intent = new Intent(getApplicationContext(), NoticeVoteActivity.class);
-        intent.putExtra("teamId", teamId);
-        intent.putExtra("voteId", voteId);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        // 목표보드에서 투표 상세로 바로 이동했을 때
+        if(activityTask == 1) {
+            Intent intent = new Intent(getApplicationContext(), NoticeVoteActivity.class);
+            intent.putExtra("teamId", teamId);
+            startActivity(intent);
+        }
+        // 투표 생성 후 투표 상세로 이동했거나, 투표 목록에서 투표 상세로 이동했을 때
+        else {
+            Intent intent = new Intent(getApplicationContext(), NoticeVoteActivity.class);
+            intent.putExtra("teamId", teamId);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
     };
 
 
@@ -219,24 +232,7 @@ public class VoteInfoActivity extends AppCompatActivity {
      * 투표 완료 버튼 클릭 리스너
      **/
     View.OnClickListener completeClickListener = v -> {
-//        if(voteComplete.getText().toString().equals("투표 수정하기")) {
-//            if (voteSelected.size() >= 1) {
-//                voteComplete.setText("투표 완료");
-//                voteComplete.setClickable(true);
-//                voteComplete.setTextColor(Color.parseColor("#FFFFFF"));
-//                voteComplete.setBackgroundColor(Color.parseColor("#FF725F"));
-//            } else {
-//                voteComplete.setClickable(false);
-//                voteComplete.setTextColor(Color.parseColor("#37383C"));
-//                voteComplete.setBackgroundColor(Color.parseColor("#1A1919"));
-//            }
-//            selectComment();
-//        }
-//        else {
-//            selectComment();
-//        }
         selectComment();
-
     };
 
     /**
@@ -350,17 +346,32 @@ public class VoteInfoActivity extends AppCompatActivity {
                         /** 투표, 각 투표마다 읽은 사람 리스트 설정 **/
                         voteChoiceList = infoResponse.getData().getVoteChoices();
                         boolean anonymous = infoResponse.getData().isAnonymous();
+                        boolean multiple = infoResponse.getData().isMultiple();
 
-                        Log.d(TAG, "액티비티에서 익명인가? :" + String.valueOf(anonymous));
+                        /** 몇 명 참여했는지 계산 **/
+                        List<String> userList = new ArrayList<>();
+                        for(BoardVoteInfoResponse.VoteChoice choice : voteChoiceList) {
+                            for(String nickName : choice.getVoteUserNickName()) {
+                                userList.add(nickName);
+                            }
+                        }
 
-                        voteInfoAdapterFirst = new VoteInfoAdapterFirst(voteChoiceList, voteSelected, VoteInfoActivity.this, anonymous);
+                        Set<String> set = new HashSet<>(userList);
+                        voteUserNameList = new ArrayList<>(set);
+                        voteCount.setText(String.valueOf(voteUserNameList.size()) + "명 참여");
+
+                        /** 익명 여부에 따른 텍스트 처리 **/
+                        tvAnony.setVisibility(anonymous ? View.VISIBLE : View.INVISIBLE);
+
+                        VoteInfoAdapterFirst voteInfoAdapterFirst = new VoteInfoAdapterFirst(voteChoiceList, voteSelected, VoteInfoActivity.this);
+                        voteInfoAdapterFirst.setAnonymous(anonymous);
+                        voteInfoAdapterFirst.setMultiple(multiple);
                         voteRecycle.setAdapter(voteInfoAdapterFirst);
 
                         /** 투표 선택 클릭 리스너 **/
                         voteInfoAdapterFirst.setOnItemClickListener(new VoteInfoAdapterFirst.OnItemClickListener() {
                             @Override
                             public void onItemClick(int pos) {
-                                //Toast.makeText(getApplicationContext(), "pos : " + pos, Toast.LENGTH_SHORT).show();
                                 voteSelected = voteInfoAdapterFirst.getSelectedItems();
                                 Log.d("VoteInfoActivity", String.valueOf(voteSelected.size()));
                                 if (voteSelected.size() >= 1) {
@@ -381,32 +392,32 @@ public class VoteInfoActivity extends AppCompatActivity {
                         noReadRecycle.setAdapter(voteNoReadAdapter);
                         tv_noread.setText(voteNoReadList.size() + "명이 아직 안 읽었어요");
 
-                        /** 복수투표 가능 여부 **/
-                        // 복수 투표 가능할 때
-                        if (infoResponse.getData().isMultiple()) {
-                            if (voteSelected.size() >= 1) {
-                                voteComplete.setClickable(true);
-                                voteComplete.setTextColor(Color.parseColor("#FFFFFF"));
-                                voteComplete.setBackgroundColor(Color.parseColor("#FF725F"));
-                            } else {
-                                voteComplete.setClickable(false);
-                                voteComplete.setTextColor(Color.parseColor("#37383C"));
-                                voteComplete.setBackgroundColor(Color.parseColor("#1A1919"));
-                            }
-                        }
-                        // 복수 투표 불가능할 때
-                        /** 복수 투표가 불가능할 때 **/
-                        else {
-                            if (voteSelected.size() == 1) {
-                                voteComplete.setClickable(true);
-                                voteComplete.setTextColor(Color.parseColor("#FFFFFF"));
-                                voteComplete.setBackgroundColor(Color.parseColor("#FF725F"));
-                            } else {
-                                voteComplete.setClickable(false);
-                                voteComplete.setTextColor(Color.parseColor("#37383C"));
-                                voteComplete.setBackgroundColor(Color.parseColor("#1A1919"));
-                            }
-                        }
+//                        /** 복수투표 가능 여부 **/
+//                        // 복수 투표 가능할 때
+//                        if (infoResponse.getData().isMultiple()) {
+//                            if (voteSelected.size() >= 1) {
+//                                voteComplete.setClickable(true);
+//                                voteComplete.setTextColor(Color.parseColor("#FFFFFF"));
+//                                voteComplete.setBackgroundColor(Color.parseColor("#FF725F"));
+//                            } else {
+//                                voteComplete.setClickable(false);
+//                                voteComplete.setTextColor(Color.parseColor("#37383C"));
+//                                voteComplete.setBackgroundColor(Color.parseColor("#1A1919"));
+//                            }
+//                        }
+//                        // 복수 투표 불가능할 때
+//                        /** 복수 투표가 불가능할 때 **/
+//                        else {
+//                            if (voteSelected.size() == 1) {
+//                                voteComplete.setClickable(true);
+//                                voteComplete.setTextColor(Color.parseColor("#FFFFFF"));
+//                                voteComplete.setBackgroundColor(Color.parseColor("#FF725F"));
+//                            } else {
+//                                voteComplete.setClickable(false);
+//                                voteComplete.setTextColor(Color.parseColor("#37383C"));
+//                                voteComplete.setBackgroundColor(Color.parseColor("#1A1919"));
+//                            }
+//                        }
 
                     } else if (infoResponse.getMessage().equals("만료된 토큰입니다.")) {
                         ChangeJwt.updateJwtToken(VoteInfoActivity.this);
@@ -500,16 +511,12 @@ public class VoteInfoActivity extends AppCompatActivity {
     }
 
 
-    /**
-     * 투표하기 API
-     **/
+    /** 투표하기 API **/
     private void selectComment() {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
         apiService = RetrofitClientJwt.getApiService(accessToken);
 
-        voteSelected = voteInfoAdapterFirst.getSelectedItems();
         List<String> voteList = new ArrayList<>();
-
         for (BoardVoteInfoResponse.VoteChoice choice : voteSelected) {
             voteList.add(choice.getContent());
             Log.d("BoardVoteInfoResponse", choice.getContent() + "에 투표하셨습니다.");
@@ -526,8 +533,12 @@ public class VoteInfoActivity extends AppCompatActivity {
                         /** 투표, 각 투표마다 읽은 사람 리스트 설정 **/
                         voteChoiceList = infoResponse.getData().getVoteChoices();
                         boolean anonymous = infoResponse.getData().isAnonymous();
+                        boolean mutiple = infoResponse.getData().isMultiple();
+
                         Log.d(TAG, "액티비티에서 익명인가? :" + String.valueOf(anonymous));
-                        voteInfoAdapterFirst = new VoteInfoAdapterFirst(voteChoiceList, voteSelected, VoteInfoActivity.this, anonymous);
+                        voteInfoAdapterFirst = new VoteInfoAdapterFirst(voteChoiceList, voteSelected, VoteInfoActivity.this);
+                        voteInfoAdapterFirst.setAnonymous(anonymous);
+                        voteInfoAdapterFirst.setMultiple(mutiple);
                         voteRecycle.setAdapter(voteInfoAdapterFirst);
                         voteInfoAdapterFirst.notifyDataSetChanged();
 

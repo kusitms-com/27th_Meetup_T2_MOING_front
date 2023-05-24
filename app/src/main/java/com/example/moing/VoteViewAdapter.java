@@ -1,6 +1,7 @@
 package com.example.moing;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,6 +75,24 @@ public class VoteViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         boolean read = item.getRead();
         vh.dot.setVisibility(read ? View.INVISIBLE : View.VISIBLE); // 참이면 안보이게, 거짓이면 보이게
+
+        // 읽었다면
+        if(read) {
+            int colorRes = R.color.secondary_grey_black_14;
+            // 리소스 식별자를 사용하여 ColorStateList 생성
+            ColorStateList colorStateList = ColorStateList.valueOf(ContextCompat.getColor(context, colorRes));
+            // ConstraintLayout 배경색 설정
+            vh.background.setBackgroundTintList(colorStateList);
+            vh.line.setVisibility(View.VISIBLE);
+        }
+        else {
+            int colorRes = R.color.secondary_grey_black_12;
+            // 리소스 식별자를 사용하여 ColorStateList 생성
+            ColorStateList colorStateList = ColorStateList.valueOf(ContextCompat.getColor(context, colorRes));
+            // ConstraintLayout 배경색 설정
+            vh.background.setBackgroundTintList(colorStateList);
+            vh.line.setVisibility(View.GONE);
+        }
     }
 
     @Override

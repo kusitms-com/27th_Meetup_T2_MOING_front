@@ -29,7 +29,7 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
     private List<BoardVoteInfoResponse.VoteChoice> voteSelected;
     private Context context;
     private OnItemClickListener clickListener = null;
-    boolean anonymous, multi;
+    private boolean anonymous, multi;
 
     // 리사이클러뷰 안의 리사이클러뷰 관련
     // 두번째 어댑터와 연결
@@ -45,11 +45,10 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
     }
 
     public VoteInfoAdapterFirst(List<BoardVoteInfoResponse.VoteChoice> voteChoiceList, List<BoardVoteInfoResponse.VoteChoice> voteSelected,
-                                Context context, boolean anonymous) {
+                                Context context) {
         this.voteChoiceList = voteChoiceList;
         this.voteSelected = voteSelected;
         this.context = context;
-        this.anonymous = anonymous;
     }
 
     @Override
@@ -59,6 +58,14 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
 
     public List<BoardVoteInfoResponse.VoteChoice> getSelectedItems() {
         return voteSelected;
+    }
+
+    public void setAnonymous(boolean value) {
+        anonymous = value;
+    }
+
+    public void setMultiple(boolean value) {
+        multi = value;
     }
 
     @NonNull
@@ -75,11 +82,8 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
         VoteInfoViewHolder vH = (VoteInfoViewHolder) holder;
         vH.tv_text.setText(voteChoice.getContent());
 
-        Log.d(TAG, "익명인가 ? : " + String.valueOf(anonymous));
         // 익명일 때 가시성 여부
-
-        vH.btn_people.setVisibility(anonymous ? View.INVISIBLE : View.VISIBLE);
-
+        vH.btn_people.setVisibility(anonymous ? View.INVISIBLE : View.VISIBLE );
 
         // Checkbox 상태 변경
         vH.checkBox.setChecked(voteChoice.isChecked());
@@ -132,14 +136,11 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
         vH.recyclerView.setAdapter(second_adapter);
         /** Second Adapter 전달 완료 **/
 
-        // 예정 : 투표한 사람 버튼 VISIBLE, INVISIBLE 여부
-
-
         /** 사람 수 받아와서 텍스트에 설정하기!! **/
         int num = voteChoice.getVoteUserNickName().size();
         vH.count.setText(String.valueOf(num) + "표");
 
-        /** 예정 : 버튼 클릭시 카드뷰가 보여지게 구현! **/
+        /** 버튼 클릭시 카드뷰(투표한 사람들)가 보임 **/
         vH.btn_people.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -180,7 +181,6 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
         public void onClick(View v) {
             int pos = getAdapterPosition();
             if (pos != RecyclerView.NO_POSITION && clickListener != null) {
-
                 //CheckBox 상태 변경
                 boolean isChecked = !voteChoiceList.get(pos).isChecked();
                 voteChoiceList.get(pos).setChecked(isChecked);
@@ -200,6 +200,7 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
                 }
                 clickListener.onItemClick(pos);
             }
+
         }
     }
 }

@@ -18,6 +18,9 @@ public class BoardGoalAdapter<T> extends RecyclerView.Adapter<BoardGoalAdapter.B
     private BoardGoalFragment context;
     private List<T> dataList;
 
+    // 아이템을 3개만 보여준다.
+    private int displayCount = 3;
+
 
     TextView boardTitle, boardContent;
     View boardLine;
@@ -81,25 +84,28 @@ public class BoardGoalAdapter<T> extends RecyclerView.Adapter<BoardGoalAdapter.B
         T item = dataList.get(position);
 
         if (item instanceof BoardNoReadNoticeResponse.NoticeData) {
-            BoardNoReadNoticeResponse.NoticeData data = (BoardNoReadNoticeResponse.NoticeData) item;
-            boardTitle.setText(data.getTitle());
-            boardContent.setText(data.getContent());
-            if (position == 2) {
-                boardLine.setVisibility(View.GONE);
+            if (position <= 2)
+            {
+                BoardNoReadNoticeResponse.NoticeData data = (BoardNoReadNoticeResponse.NoticeData) item;
+                boardTitle.setText(data.getTitle());
+                boardContent.setText(data.getContent());
+                if (position == 2)
+                    boardLine.setVisibility(View.GONE);
             }
         }
         else if (item instanceof BoardNoReadVoteResponse.VoteData) {
-            BoardNoReadVoteResponse.VoteData data = (BoardNoReadVoteResponse.VoteData) item;
-            boardTitle.setText(data.getTitle());
-            boardContent.setText(data.getContent());
-            if (position == 2) {
-                boardLine.setVisibility(View.GONE);
+            if (position <= 2) {
+                BoardNoReadVoteResponse.VoteData data = (BoardNoReadVoteResponse.VoteData) item;
+                boardTitle.setText(data.getTitle());
+                boardContent.setText(data.getContent());
+                if (position == 2)
+                    boardLine.setVisibility(View.GONE);
             }
         }
     }
 
     @Override
     public int getItemCount() {
-        return dataList.size();
+        return Math.min(dataList.size(), displayCount);
     }
 }

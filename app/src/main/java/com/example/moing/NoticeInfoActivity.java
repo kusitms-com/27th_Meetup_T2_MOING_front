@@ -66,6 +66,7 @@ public class NoticeInfoActivity extends AppCompatActivity {
     private static final String JWT_ACCESS_TOKEN = "JWT_access_token";
     private SharedPreferences sharedPreferences;
     private Long teamId, noticeId, userId, noticeCommentId;
+    private int activityTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +79,9 @@ public class NoticeInfoActivity extends AppCompatActivity {
         // Intent로 값 전달 받기.
         teamId = getIntent().getLongExtra("teamId", 0);
         noticeId = getIntent().getLongExtra("noticeId", 0);
-        Log.d(TAG, "teamId 값 : " + teamId);
-        Log.d(TAG, "noticeId 값 : " + noticeId);
+
+        // 액티비티 태스크 판별을 위한 변수 설정
+        activityTask = getIntent().getIntExtra("acitivityTask", -1);
 
         noticeNoReadList = new ArrayList<>();
         noticeCommentList = new ArrayList<>();
@@ -137,17 +139,6 @@ public class NoticeInfoActivity extends AppCompatActivity {
         commentRecycle.setLayoutManager(llm3);
         commentRecycle.setHasFixedSize(true);
 
-
-//        // 댓글 리사이클러뷰 layout 호출
-//        commentRecycle.setLayoutManager(llm3);
-//        // Test 데이터 추가 2 (실제로 통신할 땐 VoteInfo의 Static 지워주어야 한다!)
-//        NoticeCommentListResponse.NoticeComment noticeComment1 = new NoticeCommentListResponse.NoticeComment(3, "그냥 죽여줘", 4, "test4", "string", "2023-05-04T01:04:28.224175");
-//        NoticeCommentListResponse.NoticeComment noticeComment2 = new NoticeCommentListResponse.NoticeComment(2, "뻥이야 살고 싶어", 3, "test3", "string", "2023-05-04T01:04:20.869323");
-//        NoticeCommentListResponse.NoticeComment noticeComment3 = new NoticeCommentListResponse.NoticeComment(1, "나를 죽여줘", 2, "test2", "string", "2023-05-04T01:04:11.809115");
-//        noticeCommentList.add(noticeComment1);
-//        noticeCommentList.add(noticeComment2);
-//        noticeCommentList.add(noticeComment3);
-
         noticeCommentAdapter = new NoticeCommentAdapter(noticeCommentList, this);
         commentRecycle.setAdapter(noticeCommentAdapter);
         commentRecycle.setHasFixedSize(true);
@@ -169,10 +160,19 @@ public class NoticeInfoActivity extends AppCompatActivity {
 
     /** 뒤로 가기 버튼 클릭 리스너 **/
     View.OnClickListener backClickListener = v -> {
-        Intent intent = new Intent(getApplicationContext(), NoticeVoteActivity.class);
-        intent.putExtra("teamId", teamId);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        // 목표보드에서 투표 상세로 바로 이동했을 때
+        if(activityTask == 1) {
+            Intent intent = new Intent(getApplicationContext(), NoticeVoteActivity.class);
+            intent.putExtra("teamId", teamId);
+            startActivity(intent);
+        }
+        // 투표 생성 후 투표 상세로 이동했거나, 투표 목록에서 투표 상세로 이동했을 때
+        else {
+            Intent intent = new Intent(getApplicationContext(), NoticeVoteActivity.class);
+            intent.putExtra("teamId", teamId);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
     };
 
     /** 모달 버튼 클릭 리스너 **/
