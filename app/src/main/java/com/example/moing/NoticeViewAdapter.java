@@ -1,5 +1,7 @@
 package com.example.moing;
 
+import static com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread;
+
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
@@ -13,7 +15,11 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.moing.Response.AllNoticeResponse;
+import com.example.moing.board.VoteInfoActivity;
+import com.example.moing.s3.DownloadImageCallback;
+import com.example.moing.s3.S3Utils;
 
 import java.util.List;
 
@@ -51,7 +57,21 @@ public class NoticeViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         AllNoticeResponse.NoticeBlock item = listData.get(position);
         NoticeViewHolder vh = (NoticeViewHolder) holder;
 
-        /** 이미지 빼고 연동했습니다. **/
+        /**S3Glide**/
+        S3Utils.downloadImageFromS3(item.getUserImageUrl(), new DownloadImageCallback() {
+            @Override
+            public void onImageDownloaded(byte[] data) {
+                runOnUiThread(() ->  Glide.with(context)
+                        .load(item.getUserImageUrl())
+                        .into(vh.image));
+            }
+            @Override
+            public void onImageDownloadFailed() {
+                runOnUiThread(() ->  Glide.with(context)
+                        .load(item.getUserImageUrl())
+                        .into(vh.image));
+            }
+        });
         vh.image.setBackgroundResource(R.drawable.notice_profile); // 닉네임
         vh.name.setText(item.getNickName()); // 이름
         vh.crown.setBackgroundResource(R.drawable.notice_crown); // 왕관

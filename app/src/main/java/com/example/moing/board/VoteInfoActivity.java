@@ -29,6 +29,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.example.moing.NoticeInfoActivity;
 import com.example.moing.NoticeVoteActivity;
 import com.example.moing.R;
 import com.example.moing.Request.BoardMakeVoteRequest;
@@ -41,6 +43,8 @@ import com.example.moing.Response.BoardVoteMakeCommentResponse;
 import com.example.moing.retrofit.ChangeJwt;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClientJwt;
+import com.example.moing.s3.DownloadImageCallback;
+import com.example.moing.s3.S3Utils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -338,10 +342,23 @@ public class VoteInfoActivity extends AppCompatActivity {
                         time.setText(realTime);
                         // 닉네임 set
                         nickName.setText(infoResponse.getData().getNickName());
-                        /** profile 설정 */
-                        Glide.with(VoteInfoActivity.this)
-                                .load(infoResponse.getData().getUserImageUrl())
-                                .into(profile);
+
+                        /**S3Glide**/
+                        S3Utils.downloadImageFromS3(infoResponse.getData().getUserImageUrl(), new DownloadImageCallback() {
+                            @Override
+                            public void onImageDownloaded(byte[] data) {
+                                runOnUiThread(() ->  Glide.with(VoteInfoActivity.this)
+                                        .load(infoResponse.getData().getUserImageUrl())
+                                        .into(profile));
+                            }
+                            @Override
+                            public void onImageDownloadFailed() {
+                                runOnUiThread(() ->  Glide.with(VoteInfoActivity.this)
+                                        .load(infoResponse.getData().getUserImageUrl())
+                                        .into(profile));
+                            }
+                        });
+
 
                         /** 투표, 각 투표마다 읽은 사람 리스트 설정 **/
                         voteChoiceList = infoResponse.getData().getVoteChoices();

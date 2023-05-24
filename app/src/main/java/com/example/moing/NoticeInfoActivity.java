@@ -2,6 +2,8 @@ package com.example.moing;
 
 import static androidx.constraintlayout.widget.ConstraintLayoutStates.TAG;
 
+import static com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -29,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.moing.Request.NoticeCommentRequest;
 import com.example.moing.Response.NoticeCommentListResponse;
 import com.example.moing.Response.NoticeCommentResponse;
@@ -36,6 +39,8 @@ import com.example.moing.Response.NoticeInfoResponse;
 import com.example.moing.retrofit.ChangeJwt;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClientJwt;
+import com.example.moing.s3.DownloadImageCallback;
+import com.example.moing.s3.S3Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -280,10 +285,25 @@ public class NoticeInfoActivity extends AppCompatActivity {
                         time.setText(realTime);
                         // 닉네임 set
                         nickName.setText(infoResponse.getData().getNickName());
-                        /** profile 설정 */
-                        Glide.with(NoticeInfoActivity.this)
-                                .load(infoResponse.getData().getUserImageUrl())
-                                .into(profile);
+                        /**S3Glide**/
+//                        Glide.with(NoticeInfoActivity.this)
+//                                .load(infoResponse.getData().getUserImageUrl())
+//                                .into(profile);
+                        S3Utils.downloadImageFromS3(infoResponse.getData().getUserImageUrl(), new DownloadImageCallback() {
+                            @Override
+                            public void onImageDownloaded(byte[] data) {
+                                runOnUiThread(() -> Glide.with(NoticeInfoActivity.this)
+                                        .asBitmap()
+                                        .load(data)
+                                        .into(profile));
+                            }
+                            @Override
+                            public void onImageDownloadFailed() {
+                                runOnUiThread(() -> Glide.with(NoticeInfoActivity.this)
+                                        .load(infoResponse.getData().getUserImageUrl())
+                                        .into(profile));
+                            }
+                        });
 
 
                         // 투표 안 읽은 사람 리스트

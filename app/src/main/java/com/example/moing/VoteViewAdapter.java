@@ -1,5 +1,7 @@
 package com.example.moing;
 
+import static com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread;
+
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
@@ -16,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.moing.Response.AllVoteResponse;
+import com.example.moing.s3.DownloadImageCallback;
+import com.example.moing.s3.S3Utils;
 
 import java.util.List;
 
@@ -63,8 +67,21 @@ public class VoteViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             int color = ContextCompat.getColor(context, R.color.secondary_grey_black_12); // R.color.### 대신 실제 사용하는 색상 리소스를 입력하세요
             vh.background.setBackgroundColor(color);
         }
-
-        Glide.with(context).load(item.getUserImageUrl()).into(vh.image);
+        /**S3Glide**/
+        S3Utils.downloadImageFromS3(item.getUserImageUrl(), new DownloadImageCallback() {
+            @Override
+            public void onImageDownloaded(byte[] data) {
+                runOnUiThread(() ->  Glide.with(context)
+                        .load(item.getUserImageUrl())
+                        .into(vh.image));
+            }
+            @Override
+            public void onImageDownloadFailed() {
+                runOnUiThread(() ->  Glide.with(context)
+                        .load(item.getUserImageUrl())
+                        .into(vh.image));
+            }
+        });
         vh.image.setBackgroundResource(R.drawable.notice_profile); // 닉네임
         vh.name.setText(item.getNickName()); // 이름
         vh.crown.setBackgroundResource(R.drawable.notice_crown); // 왕관
