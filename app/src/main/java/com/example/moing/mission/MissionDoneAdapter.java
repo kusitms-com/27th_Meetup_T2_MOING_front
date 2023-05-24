@@ -117,9 +117,21 @@ public class MissionDoneAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 });
 
                 // 프로필 이미지 설정
-                Glide.with(mainContext)
-                        .load(mission.getProfileImg())
-                        .into(doneViewHolder.ivProfile);
+                S3Utils.downloadImageFromS3(mission.getProfileImg(), new DownloadImageCallback() {
+                    @Override
+                    public void onImageDownloaded(byte[] data) {
+                        runOnUiThread(() -> Glide.with(mainContext)
+                                .asBitmap()
+                                .load(data)
+                                .into(doneViewHolder.ivProfile));
+                    }
+                    @Override
+                    public void onImageDownloadFailed() {
+                        runOnUiThread(() -> Glide.with(mainContext)
+                                .load(mission.getProfileImg())
+                                .into(doneViewHolder.ivProfile));
+                    }
+                });
 
                 // 닉네임 설정
                 doneViewHolder.tvNickname.setText(mission.getNickname());

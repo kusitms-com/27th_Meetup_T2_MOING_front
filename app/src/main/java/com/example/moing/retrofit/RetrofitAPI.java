@@ -1,5 +1,6 @@
 package com.example.moing.retrofit;
 
+import com.example.moing.Request.AlarmRequest;
 import com.example.moing.Request.BoardMakeVoteRequest;
 import com.example.moing.Request.BoardVoteDoRequest;
 import com.example.moing.Request.BoardVoteMakeCommentRequest;
@@ -9,8 +10,11 @@ import com.example.moing.Request.MakeTeamRequest;
 import com.example.moing.Request.MissionCreateRequest;
 import com.example.moing.Request.NoticeCommentRequest;
 import com.example.moing.Request.NoticeCreateRequest;
+import com.example.moing.Request.ProfileUpdateRequest;
 import com.example.moing.Request.RegisterAddressRequest;
 import com.example.moing.Request.TeamUpdateRequest;
+import com.example.moing.Response.AlarmResponse;
+import com.example.moing.Response.AlarmSettingResponse;
 import com.example.moing.Response.AllVoteResponse;
 import com.example.moing.Response.BoardCurrentLocateResponse;
 import com.example.moing.Response.BoardFireResponse;
@@ -30,6 +34,7 @@ import com.example.moing.Response.MakeTeamResponse;
 import com.example.moing.Response.AllNoticeResponse;
 import com.example.moing.Response.MissionCreateResponse;
 import com.example.moing.Response.MissionListResponse;
+import com.example.moing.Response.MyPageResponse;
 import com.example.moing.Response.NoticeCommentListResponse;
 import com.example.moing.Response.NoticeCommentResponse;
 import com.example.moing.Response.NoticeCreateResponse;
@@ -38,6 +43,7 @@ import com.example.moing.Response.MissionClearResponse;
 import com.example.moing.Response.MissionInfoResponse;
 import com.example.moing.Response.MissionSkipResponse;
 import com.example.moing.Response.MissionStatusListResponse;
+import com.example.moing.Response.ProfileUpdateResponse;
 import com.example.moing.Response.RegisterAddressResponse;
 import com.example.moing.Response.RegisterNameResponse;
 import com.example.moing.Response.TeamListResponse;
@@ -198,4 +204,27 @@ public interface RetrofitAPI {
     @POST("api/v1/{teamId}/missions/{missionId}/fire/{usermissionId}")
     Call<String> postThrowFire(@Header("Authorization") String token, @Path("teamId") Long teamId, @Path("missionId") Long missionId, @Path("usermissionId") Long usermissionId);
 
+    /** 마이페이지 조회 **/
+    @GET("/api/v1/users/mypage")
+    Call<MyPageResponse> getMyPage(@Header("Authorization") String token);
+
+    /** 알림 설정 상태 조회 **/
+    @GET("/api/v1/users/alarm-setting")
+    Call<AlarmSettingResponse> getAlarmSetting(@Header("Authorization") String token);
+
+    /** 신규 업로드 알림 상태 설정 **/
+    @PUT("/api/v1/users/alarm-setting/new-upload")
+    Call<AlarmResponse> putAlarmNew(@Header("Authorization") String token, @Body AlarmRequest request);
+
+    /** 미션 리마인드 알림 상태 설정 **/
+    @PUT("/api/v1/users/alarm-setting/remind")
+    Call<AlarmResponse> putAlarmRemind(@Header("Authorization") String token, @Body AlarmRequest request);
+
+    /** 불 던지기 알림 상태 설정 **/
+    @PUT("/api/v1/users/alarm-setting/fire")
+    Call<AlarmResponse> putAlarmFire(@Header("Authorization") String token,@Body AlarmRequest request);
+
+    /** 프로필 수정 **/
+    @PUT("/api/v1/users/mypage")
+    Call<ProfileUpdateResponse> putProfileUpdate(@Header("Authorization") String token, @Body ProfileUpdateRequest request);
 }

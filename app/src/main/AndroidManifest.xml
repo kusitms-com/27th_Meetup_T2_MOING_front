@@ -21,6 +21,18 @@
         android:theme="@style/Theme.Moing_Day"
         tools:targetApi="31">
         <activity
+            android:name=".mypage.MyPageModifyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".mypage.MyPageAlarmActivity"
+            android:exported="false" />
+        <activity
+            android:name=".mypage.MyPageDropOutActivity"
+            android:exported="false" />
+        <activity
+            android:name=".mypage.MyPageActivity"
+            android:exported="false" />
+        <activity
             android:name=".mission.MissionPassActivity"
             android:exported="false">
             <meta-data
@@ -36,8 +48,7 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".mission.MissionClickActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".NoticeInfoActivity"
             android:exported="true"
@@ -64,7 +75,7 @@
             android:exported="false" />
         <activity
             android:name=".board.BoardActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".team.MakeTeamActivity4"
             android:exported="false" />

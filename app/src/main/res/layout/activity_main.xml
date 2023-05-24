@@ -9,7 +9,7 @@
     tools:context=".MainActivity">
 
     <ImageButton
-        android:id="@+id/main_btm_my_profile"
+        android:id="@+id/main_btn_my_page"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/black"
@@ -29,7 +29,7 @@
         android:textSize="28dp"
         android:fontFamily="@font/pretendard_semi_bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_btm_my_profile" />
+        app:layout_constraintTop_toBottomOf="@+id/main_btn_my_page" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -41,7 +41,7 @@
         android:fontFamily="@font/pretendard_semi_bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/main_tv_name"
-        app:layout_constraintTop_toBottomOf="@+id/main_btm_my_profile"
+        app:layout_constraintTop_toBottomOf="@+id/main_btn_my_page"
         app:layout_constraintHorizontal_bias="0"/>
 
     <TextView

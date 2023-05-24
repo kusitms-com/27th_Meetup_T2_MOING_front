@@ -1,9 +1,12 @@
 package com.example.moing;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.moing.Response.TeamListResponse;
+import com.example.moing.mypage.MyPageActivity;
 import com.example.moing.retrofit.ChangeJwt;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClientJwt;
@@ -32,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private DotsIndicator dotsIndicator;
     private TextView tvCurTeam;
     private TextView tvNickName;
+    private ImageButton btnMyPage;
 
 
     @Override
@@ -47,10 +52,17 @@ public class MainActivity extends AppCompatActivity {
         viewpager = findViewById(R.id.main_vp_team_list);
         // DotIndicator 설정
         dotsIndicator = findViewById(R.id.main_dots_indicator);
+        // 마이페이지 버튼 설정
+        btnMyPage = findViewById(R.id.main_btn_my_page);
         // 소모임 리스트 get
         setTeamList();
 
     }
+
+    View.OnClickListener onMyPageClickListener = (v -> {
+        Intent intent = new Intent(this, MyPageActivity.class);
+        startActivity(intent);
+    });
 
     @Override
     protected void onResume() {
@@ -88,6 +100,10 @@ public class MainActivity extends AppCompatActivity {
 
                         // DotIndicator 설정
                         dotsIndicator.setViewPager2(viewpager);
+
+                        // 마이페이지 버튼 클릭 리스너 설정
+                        btnMyPage.setOnClickListener(onMyPageClickListener);
+
                     }
                 } else if (response.message().equals("만료된 토큰입니다.")) {
                     // 토큰 재발급 후 다시 호출

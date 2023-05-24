@@ -184,7 +184,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="32dp"
                 android:fontFamily="@font/pretendard_medium"
-                android:text="예상활동 기간"
+                android:text="활동 기간"
                 android:textColor="@color/secondary_grey_black_7"
                 android:textSize="16dp" />
             
@@ -205,7 +205,7 @@
                     android:drawableRight="@drawable/arrow_down2"
                     android:fontFamily="@font/pretendard_medium"
                     android:gravity="left"
-                    android:hint="예상활동 기간을 선택해주세요"
+                    android:hint="활동 기간을 선택해주세요"
                     android:textColorHint="@color/secondary_grey_black_7"
                     android:textSize="18dp" />
 
