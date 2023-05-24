@@ -251,6 +251,14 @@ public class BoardGoalFragment extends Fragment {
                 case R.id.btn_all:
                     Intent intent = new Intent(requireContext(), NoticeVoteActivity.class);
                     intent.putExtra("teamId", teamId);
+                    // 공지
+                    if(btnAll.getText().toString().contains("공지")) {
+                        intent.putExtra("NoticeOrVote", 1);
+                    }
+                    // 투표
+                    else {
+                        intent.putExtra("NoticeOrVote", 2);
+                    }
                     startActivity(intent);
                     break;
             }
