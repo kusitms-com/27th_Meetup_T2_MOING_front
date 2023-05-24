@@ -72,7 +72,7 @@ public class VoteViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             @Override
             public void onImageDownloaded(byte[] data) {
                 runOnUiThread(() ->  Glide.with(context)
-                        .load(item.getUserImageUrl())
+                        .load(data)
                         .into(vh.image));
             }
             @Override

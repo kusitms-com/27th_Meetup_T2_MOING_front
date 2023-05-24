@@ -348,7 +348,7 @@ public class VoteInfoActivity extends AppCompatActivity {
                             @Override
                             public void onImageDownloaded(byte[] data) {
                                 runOnUiThread(() ->  Glide.with(VoteInfoActivity.this)
-                                        .load(infoResponse.getData().getUserImageUrl())
+                                        .load(data)
                                         .into(profile));
                             }
                             @Override

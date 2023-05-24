@@ -62,7 +62,7 @@ public class NoticeViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             @Override
             public void onImageDownloaded(byte[] data) {
                 runOnUiThread(() ->  Glide.with(context)
-                        .load(item.getUserImageUrl())
+                        .load(data)
                         .into(vh.image));
             }
             @Override
