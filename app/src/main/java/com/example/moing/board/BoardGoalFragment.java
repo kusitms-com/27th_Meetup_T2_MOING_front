@@ -421,6 +421,7 @@ public class BoardGoalFragment extends Fragment {
                     // 안 읽은 공지 개수 저장
                     noReadNotice = noticeDataList.size();
                     checkNoRead(noReadNotice, "공지");
+                    btnAll.setText("공지 전체보기");
 
                     Log.d(TAG, "noreadNotice 통신 중 : " + noReadNotice);
                 } else if (msg.equals("만료된 토큰입니다.")) {
@@ -477,6 +478,7 @@ public class BoardGoalFragment extends Fragment {
                     });
 
                     checkNoRead(noReadVote, "투표");
+                    btnAll.setText("투표 전체보기");
                     Log.d(TAG, "noReadVote : " + noReadVote);
 
                 } else if (msg.equals("만료된 토큰입니다.")) {

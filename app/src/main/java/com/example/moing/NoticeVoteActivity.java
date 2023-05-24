@@ -328,9 +328,7 @@ public class NoticeVoteActivity extends AppCompatActivity {
                     List<Long> voteIdList = new ArrayList<>();
                     for (AllVoteResponse.VoteBlock v : voteList) {
                         voteIdList.add(v.getVoteId());
-                        Log.d(TAG, String.valueOf(v.getVoteId()));
                     }
-                    Log.d(TAG, "총 투표 목록 개수 : " + String.valueOf(voteIdList.size()));
 
                     Long num = voteResponse.getData().getNotReadNum();
                     checkNoRead(num, "투표");
@@ -375,7 +373,6 @@ public class NoticeVoteActivity extends AppCompatActivity {
         ColorStateList co = ColorStateList.valueOf(getResources().getColor(R.color.secondary_grey_black_1));
         ColorStateList co2 = ColorStateList.valueOf(getResources().getColor(R.color.secondary_grey_black_13));
 
-        Log.d(TAG, "수행완료1");
         // List의 개수가 0개일 때
         tv_second.setText(num == 0 ? "성실왕 소모임원!" : "기다리고 있을 소모임원들을 위해, 빠르게 확인해주세요!");
     }
