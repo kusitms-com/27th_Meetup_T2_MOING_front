@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.example.moing.Response.AllNoticeResponse;
 import com.example.moing.Response.AllVoteResponse;
 import com.example.moing.board.BoardActivity;
+import com.example.moing.board.BoardGoalFragment;
 import com.example.moing.board.BoardMakeVote;
 import com.example.moing.board.VoteInfoActivity;
 import com.example.moing.retrofit.ChangeJwt;
@@ -58,6 +59,9 @@ public class NoticeVoteActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private List<AllNoticeResponse.NoticeBlock> noticeList;
     private List<AllVoteResponse.VoteBlock> voteList;
+
+    private TabHost tabHost1;
+    private TextView tv, tp;
 
     // RecyclerView
     RecyclerView mRecyclerView, mRecyclerView2;
@@ -135,13 +139,8 @@ public class NoticeVoteActivity extends AppCompatActivity {
         /** 공지사항 **/
         notice();
 
-        TabHost tabHost1 = (TabHost) findViewById(R.id.tabHost1);
+        tabHost1 = (TabHost) findViewById(R.id.tabHost1);
         tabHost1.setup();
-
-        for (int i = 0; i < tabHost1.getTabWidget().getChildCount(); i++) {
-            TextView tv = (TextView) tabHost1.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
-            tv.setTextColor(Color.parseColor("#535457"));
-        }
 
         // 선택된 탭은 흰색, 선택되지 않은 탭은 회색
         tabHost1.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
@@ -152,13 +151,13 @@ public class NoticeVoteActivity extends AppCompatActivity {
                 // 탭의 각 제목의 색깔을 바꾸기 위한 부분
                 for (int i = 0; i < tabHost1.getTabWidget().getChildCount(); i++) {
 
-                    TextView tv = (TextView) tabHost1.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
+                    tv = (TextView) tabHost1.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
                     tv.setTextColor(Color.parseColor("#535457"));
                 }
 
                 // 선택된 것
                 // 선택되는 탭에 대한 제목의 색깔을 바꾸 부분
-                TextView tp = (TextView) tabHost1.getTabWidget().getChildAt(tabHost1.getCurrentTab()).findViewById(android.R.id.title);
+                tp = (TextView) tabHost1.getTabWidget().getChildAt(tabHost1.getCurrentTab()).findViewById(android.R.id.title);
                 tp.setTextColor(Color.parseColor("#FFFFFF"));
 
                 // 선택된 탭에 대한 처리
@@ -187,9 +186,31 @@ public class NoticeVoteActivity extends AppCompatActivity {
         tabHost1.addTab(ts2);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        for (int i = 0; i < tabHost1.getTabWidget().getChildCount(); i++) {
+            TextView tv = (TextView) tabHost1.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
+            tv.setTextColor(Color.parseColor("#535457"));
+        }
+
+        tp = (TextView) tabHost1.getTabWidget().getChildAt(tabHost1.getCurrentTab()).findViewById(android.R.id.title);
+        tp.setTextColor(Color.parseColor("#FFFFFF"));
+
+        if(tv_first.getText().toString().contains("공지"))
+            tabHost1.setCurrentTab(0);
+        else
+            tabHost1.setCurrentTab(1);
+
+    }
+
     // 뒤로 가기 버튼 클릭 리스너
     View.OnClickListener backClickListener = v -> {
-        finish();
+        Intent intent = new Intent(getApplicationContext(), BoardActivity.class);
+        intent.putExtra("teamId", teamId);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     };
 
     // 플로팅 액션 버튼 클릭시 애니메이션 효과
@@ -247,37 +268,19 @@ public class NoticeVoteActivity extends AppCompatActivity {
                     mRecyclerView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
 
-//                     List<Long> noticeIdList = new ArrayList<>();
-//                     for (AllNoticeResponse.NoticeBlock v : noticeList) {
-//                         noticeIdList.add(v.getNoticeId());
-//                         Log.d(TAG, String.valueOf(v.getNoticeId()));
-//                     }
-//                     Log.d(TAG, "총 공지 목록 개수 : " + String.valueOf(noticeIdList.size()));
-
                     if (noticeList.size() == 0)
                         tv_nothing.setVisibility(View.VISIBLE);
                     else
                         tv_nothing.setVisibility(View.GONE);
 
+                    Long num = noticeResponse.getData().getNotReadNum();
+                    checkNoRead(num, "공지");
+
                     /** 리사이클러뷰 아이템 클릭 이벤트 처리 **/
                     adapter.setOnItemClickListener(new NoticeViewAdapter.OnItemClickListener() {
                         @Override
                         public void onItemClick(int pos) {
-                            String s = pos + "번 아이템 선택!!";
-                            Toast.makeText(NoticeVoteActivity.this, s, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
-                    Long num = noticeResponse.getData().getNotReadNum();
-                    checkNoRead(num, "공지");
-
-                    adapter.setOnItemClickListener(new NoticeViewAdapter.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(int pos) {
                             /** 해당 공지사항으로 이동 **/
-                            String s = pos + "번 메뉴 선택!";
-                            Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
-
                             Intent intent = new Intent(NoticeVoteActivity.this, NoticeInfoActivity.class);
                             intent.putExtra("noticeId", noticeId);
                             intent.putExtra("teamId", teamId);
@@ -329,15 +332,14 @@ public class NoticeVoteActivity extends AppCompatActivity {
                     }
                     Log.d(TAG, "총 투표 목록 개수 : " + String.valueOf(voteIdList.size()));
 
+                    Long num = voteResponse.getData().getNotReadNum();
+                    checkNoRead(num, "투표");
+
                     /** **/
                     adapter.voteClickListener(new NoticeViewAdapter.OnItemClickListener() {
                         @Override
                         public void onItemClick(int pos) {
                             /** 해당 투표로 이동 **/
-
-//                            String s = pos + "번 메뉴 선택!";
-//                            Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
-
                             voteId = voteIdList.get(pos);
                             Intent intent = new Intent(NoticeVoteActivity.this, VoteInfoActivity.class);
                             intent.putExtra("voteId", voteId);
@@ -345,12 +347,7 @@ public class NoticeVoteActivity extends AppCompatActivity {
                             startActivity(intent);
                         }
                     });
-
-                    Long num = voteResponse.getData().getNotReadNum();
-                    checkNoRead(num, "투표");
-
                 } else if (msg.equals("만료된 토큰입니다.")) {
-
                     ChangeJwt.updateJwtToken(NoticeVoteActivity.this);
                     vote();
                 }

@@ -37,7 +37,7 @@ public class NoticeWriteActivity extends AppCompatActivity {
     private static final String PREF_NAME = "Token";
     private static final String JWT_ACCESS_TOKEN = "JWT_access_token";
     private SharedPreferences sharedPreferences;
-    private Long teamId;
+    private Long teamId, noticeId;
 
     Button btn_close, upload;
     EditText title, content;
@@ -199,7 +199,7 @@ public class NoticeWriteActivity extends AppCompatActivity {
                     // 생성된 미션 데이터에 접근하여 필요한 작업 수행
                     NoticeCreateResponse.Data noticeData = noticeCreateResponse.getData();
 
-                    Long noticeId = noticeData.getNoticeId();
+                    noticeId = noticeData.getNoticeId();
 
                     Intent intent = new Intent(NoticeWriteActivity.this, NoticeInfoActivity.class);
                     intent.putExtra("teamId", teamId);

@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.example.moing.NoticeInfoActivity;
 import com.example.moing.NoticeVoteActivity;
 import com.example.moing.R;
 
@@ -80,12 +81,12 @@ public class BoardGoalFragment extends Fragment {
 
     // API 연동시 필요한 변수
     String name, profileImg, remainPeriod, nowTime;
-    Long teamId;
+    Long teamId, voteId, noticeId;
     List<BoardNoReadNoticeResponse.NoticeData> noticeDataList;
     List<BoardNoReadVoteResponse.VoteData> voteDataList;
-    private int noReadNotice, noReadVote;
+    private int noReadNotice, noReadVote, acitivityTask;
     private Long personalRate, teamRate;
-    RelativeLayout relative_progress, progress_text;
+    RelativeLayout relative_progress;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_board_goal, container, false);
@@ -399,13 +400,21 @@ public class BoardGoalFragment extends Fragment {
                     recyclerView.setAdapter(boardGoalAdapter);
                     boardGoalAdapter.notifyDataSetChanged();
 
+                    List<Long> noNoticeList = new ArrayList<>();
+                    for (BoardNoReadNoticeResponse.NoticeData noticeData : noticeDataList) {
+                        noNoticeList.add(noticeData.getNoticeId());
+                    }
+
                     /** 리사이클러뷰 아이템 클릭 이벤트 처리 **/
                     boardGoalAdapter.setOnItemClickListener(new BoardGoalAdapter.OnItemClickListener() {
                         @Override
                         public void onItemClick(int pos) {
-                            // 아이템 클릭 이벤트 처리
-                            String s = pos + "번 메뉴 선택...";
-                            Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
+                            noticeId = noNoticeList.get(pos);
+                            Intent intent = new Intent(getActivity(), NoticeInfoActivity.class);
+                            intent.putExtra("teamId", teamId);
+                            intent.putExtra("noticeId", noticeId);
+                            intent.putExtra("acitivityTask", 1);
+                            startActivity(intent);
                         }
                     });
 
@@ -448,19 +457,27 @@ public class BoardGoalFragment extends Fragment {
                     recyclerView.setAdapter(boardGoalAdapter);
                     boardGoalAdapter.notifyDataSetChanged();
 
+                    List<Long> noVoteList = new ArrayList<>();
+                    for (BoardNoReadVoteResponse.VoteData voteData : voteDataList) {
+                        noVoteList.add(voteData.getVoteId());
+                    }
+
                     /** 리사이클러뷰 아이템 클릭 이벤트 처리 **/
                     boardGoalAdapter.setOnItemClickListener(new BoardGoalAdapter.OnItemClickListener() {
                             @Override
                             public void onItemClick(int pos) {
                             // 아이템 클릭 이벤트 처리
-                            String s = pos + "번 메뉴 선택...";
-                            Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
+                                voteId = noVoteList.get(pos);
+                                Intent intent = new Intent(getActivity(), NoticeInfoActivity.class);
+                                intent.putExtra("teamId", teamId);
+                                intent.putExtra("voteId", voteId);
+                                intent.putExtra("acitivityTask", 1);
+                                startActivity(intent);
                         }
                     });
 
                     checkNoRead(noReadVote, "투표");
-
-                    Log.d(TAG, "noreadNotice : " + noReadVote);
+                    Log.d(TAG, "noReadVote : " + noReadVote);
 
                 } else if (msg.equals("만료된 토큰입니다.")) {
                     ChangeJwt.updateJwtToken(requireContext());

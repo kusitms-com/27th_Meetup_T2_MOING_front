@@ -38,11 +38,11 @@
         <View
             android:id="@+id/view_board_line"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="1dp"
             android:layout_marginHorizontal="8dp"
             android:layout_marginTop="16dp"
             android:layout_centerInParent="true"
-            android:background="@color/secondary_grey_black_7"/>
+            android:background="@color/secondary_grey_black_9"/>
 
     </LinearLayout>
 </RelativeLayout>

@@ -373,6 +373,7 @@
                 android:id="@+id/btn_all"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="16dp"
                 android:layout_marginHorizontal="8dp"

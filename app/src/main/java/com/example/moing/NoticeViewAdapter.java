@@ -1,6 +1,7 @@
 package com.example.moing;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moing.Response.AllNoticeResponse;
@@ -60,6 +62,23 @@ public class NoticeViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         boolean read = item.getRead();
         vh.dot.setVisibility(read ? View.INVISIBLE : View.VISIBLE); // 참이면 안보이게, 거짓이면 보이게
+        // 읽었다면
+        if(read) {
+            int colorRes = R.color.secondary_grey_black_14;
+            // 리소스 식별자를 사용하여 ColorStateList 생성
+            ColorStateList colorStateList = ColorStateList.valueOf(ContextCompat.getColor(context, colorRes));
+            // ConstraintLayout 배경색 설정
+            vh.background.setBackgroundTintList(colorStateList);
+            vh.line.setVisibility(View.VISIBLE);
+        }
+        else {
+            int colorRes = R.color.secondary_grey_black_12;
+            // 리소스 식별자를 사용하여 ColorStateList 생성
+            ColorStateList colorStateList = ColorStateList.valueOf(ContextCompat.getColor(context, colorRes));
+            // ConstraintLayout 배경색 설정
+            vh.background.setBackgroundTintList(colorStateList);
+            vh.line.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -70,7 +89,7 @@ public class NoticeViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public class NoticeViewHolder extends RecyclerView.ViewHolder {
         ImageView image, dot, crown, iv_msg;
         ConstraintLayout background;
-        TextView name, title, content, count;
+        TextView name, title, content, count, line;
 
         public NoticeViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -84,6 +103,7 @@ public class NoticeViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             content = itemView.findViewById(R.id.notice_tv_content);
             iv_msg = itemView.findViewById(R.id.notice_iv_message);
             count = itemView.findViewById(R.id.comment_count);
+            line = itemView.findViewById(R.id.view_line);
 
             // 아이템 클릭 이벤트 추가
             itemView.setOnClickListener(new View.OnClickListener() {
