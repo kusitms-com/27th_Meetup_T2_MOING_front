@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.moing.R;
 import com.example.moing.Response.BoardVoteInfoResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class VoteInfoAdapterSecond extends RecyclerView.Adapter<VoteInfoAdapterSecond.VoteSecondViewHolder> {
@@ -41,8 +42,14 @@ public class VoteInfoAdapterSecond extends RecyclerView.Adapter<VoteInfoAdapterS
     @Override
     public int getItemCount() {
         int totalItemCount = 0;
+        List<String> check = new ArrayList<>();
         for (List<String> userList : userList) {
-            totalItemCount += userList.size();
+            for (String user : userList) {
+                if (!check.contains(user)) {
+                    check.add(user);
+                    totalItemCount++;
+                }
+            }
         }
         return totalItemCount;
     }
@@ -59,11 +66,11 @@ public class VoteInfoAdapterSecond extends RecyclerView.Adapter<VoteInfoAdapterS
     /** 이중 List에서 position 값을 통해 사용자 하나의 데이터를 가져온다 **/
     private String getUserForPosition(int position) {
         int count = 0;
-        for (List<String> userList : userList) {
-            if (position < count + userList.size()) {
-                return userList.get(position - count);
+        for (List<String> users : userList) {
+            if (position < count + users.size()) {
+                return users.get(position - count);
             }
-            count += userList.size();
+            count += users.size();
         }
         return null;
     }

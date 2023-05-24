@@ -80,9 +80,7 @@ public class NoticeWriteActivity extends AppCompatActivity {
         xIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 title.setText(null);
-
             }
         });
 

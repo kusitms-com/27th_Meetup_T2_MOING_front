@@ -210,6 +210,7 @@ public class BoardGoalFragment extends Fragment {
         super.onResume();
         // 소모임 정보 수정 후 정보 업데이트
         getApi();
+
     }
 
     private class BtnOnClickListener implements View.OnClickListener {

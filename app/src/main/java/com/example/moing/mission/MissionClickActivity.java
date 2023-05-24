@@ -187,28 +187,11 @@ public class MissionClickActivity extends AppCompatActivity {
                 if (result.getResultCode() == RESULT_OK) {
                     // 수정하지 않은 경우
                     if (result.getData().getStringExtra("value").equals("0")) {
-                        ColorStateList co = ColorStateList.valueOf(getResources().getColor(R.color.secondary_grey_black_10));
-                        rl.setBackgroundTintList(co);
-
-                        curState.setTextColor(ContextCompat.getColor(MissionClickActivity.this, R.color.secondary_grey_black_8));
-                        curState.setPaintFlags(curState.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+                        changeIncomPlete();
                     } else {
-                        // 수정된 경우
-                        ColorStateList co = ColorStateList.valueOf(getResources().getColor(R.color.sub_light_1));
-                        rl.setBackgroundTintList(co);
-                        curState.setTextColor(ContextCompat.getColor(MissionClickActivity.this, R.color.sub_dark_1));
-
-                        // Visibility 설정
-                        // visibility 설정
-                        picture.setVisibility(View.GONE);
-                        fix.setVisibility(View.GONE);
-                        reason.setVisibility(View.GONE);
-                        mission.setVisibility(View.GONE);
-                        across.setVisibility(View.GONE);
-                        smile.setVisibility(View.VISIBLE);
-                        title2.setPaintFlags(title2.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                        /** 수정된 경우 **/
+                        changePending();
                     }
-
                 }
             }
     );
@@ -229,7 +212,6 @@ public class MissionClickActivity extends AppCompatActivity {
      **/
     View.OnClickListener missionClickListener = v -> {
         gallery();
-        missionClear();
     };
 
     /**
@@ -253,20 +235,6 @@ public class MissionClickActivity extends AppCompatActivity {
                         // 팝업 사진에 해당 사진 업로드
                         dialog_picture.setImage(ImageSource.uri(imageFileUri));
 
-                        // 상위 제목 상태 변경
-                        rl.setBackgroundResource(R.color.main_white_500);
-                        curState.setText("인증 완료!");
-                        curState.setTextColor(ContextCompat.getColor(MissionClickActivity.this, R.color.secondary_grey_black_1));
-
-                        // visibility 설정
-                        picture.setVisibility(View.VISIBLE);
-                        fix.setVisibility(View.VISIBLE);
-                        reason.setVisibility(View.GONE);
-                        mission.setVisibility(View.GONE);
-                        across.setVisibility(View.GONE);
-                        smile.setVisibility(View.VISIBLE);
-                        title2.setPaintFlags(title2.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-
                         // 파일의 절대경로 Get
                         String filePath = ImageUtils.getAbsolutePathFromUri(getApplicationContext(), imageFileUri);
                         if (filePath != null) {
@@ -275,6 +243,8 @@ public class MissionClickActivity extends AppCompatActivity {
                             // UUID를 사용하여 고유한 파일 이름 생성 ( 파일명.파일확장자.UUID)
                             uniqueFileNameWithExtension = ImageUtils.generateUniqueFileName(filePath);
                         }
+
+                        missionClear();
                     }
                 }
             }
@@ -319,12 +289,18 @@ public class MissionClickActivity extends AppCompatActivity {
                         title1.setText(response_title);
                         title2.setText(response_title);
                         content.setText(response_content);
-                        d_day.setText(response_dDay);
+                        if(Integer.parseInt(response_dDay) >= 0)
+                            d_day.setText("남은 시간 D-" + response_dDay);
+                        else
+                            d_day.setText("인증 시간 종료");
                         rule.setText(response_rule);
 
                         /** 구현 예정 **/
                         if (response_status.equals("COMPLETE")) {
-
+                            changeClear();
+                        }
+                        else if (response_status.equals("PENDING")) {
+                            changePending();
                         }
 
                     } else if (infoResponse.getMessage().equals("만료된 토큰입니다.")) {
@@ -349,7 +325,7 @@ public class MissionClickActivity extends AppCompatActivity {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
         apiService = RetrofitClientJwt.getApiService(accessToken);
 
-        Call<MissionClearResponse> call = apiService.missionClear(accessToken, teamId, missionId);
+        Call<MissionClearResponse> call = apiService.missionClear(accessToken, teamId, missionId, uniqueFileNameWithExtension);
         call.enqueue(new Callback<MissionClearResponse>() {
             @Override
             public void onResponse(Call<MissionClearResponse> call, Response<MissionClearResponse> response) {
@@ -364,12 +340,12 @@ public class MissionClickActivity extends AppCompatActivity {
                         if(status.equals("COMPLETE")) {
                             // S3 사진 업로드
                             S3Utils.uploadImageToS3(getApplicationContext(), uniqueFileNameWithExtension, imageFile);
-                        }
-                        else if (status.equals("PENDING")) {
+                            ColorStateList co = ColorStateList.valueOf(getResources().getColor(R.color.main_white_500));
+                            rl.setBackgroundTintList(co);
 
-                        }
-                        else if (status.equals("INCOMPLETE")) {
-
+                            curState.setTextColor(ContextCompat.getColor(MissionClickActivity.this, R.color.secondary_grey_black_1));
+                            curState.setText("인증 완료!");
+                            setVisible();
                         }
                     }
                 }
@@ -385,6 +361,48 @@ public class MissionClickActivity extends AppCompatActivity {
                 Log.d(TAG, "인증하기 S3 사진 업로드 연동 실패 ...");
             }
         });
+    }
+
+    /** 미션 인증 성공한 경우 **/
+    private void changeClear() {
+        ColorStateList co = ColorStateList.valueOf(getResources().getColor(R.color.main_white_500));
+        rl.setBackgroundTintList(co);
+
+        curState.setTextColor(ContextCompat.getColor(MissionClickActivity.this, R.color.secondary_grey_black_1));
+        curState.setText("인증 완료!");
+        setVisible();
+    }
+
+    private void changeIncomPlete() {
+        ColorStateList co = ColorStateList.valueOf(getResources().getColor(R.color.secondary_grey_black_10));
+        rl.setBackgroundTintList(co);
+
+        curState.setTextColor(ContextCompat.getColor(MissionClickActivity.this, R.color.secondary_grey_black_8));
+        curState.setPaintFlags(curState.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+    }
+
+    /** 미션 건너뛰기인 경우 **/
+    private void changePending() {
+        ColorStateList co = ColorStateList.valueOf(getResources().getColor(R.color.sub_light_1));
+        rl.setBackgroundTintList(co);
+
+        curState.setTextColor(ContextCompat.getColor(MissionClickActivity.this, R.color.sub_dark_1));
+        curState.setText("이번 미션을 건너뛰었어요");
+        setVisible();
+        smile.setVisibility(View.INVISIBLE);
+    }
+
+    /** 인증성공, 건너뛰기 시 가시성 설정 **/
+    private void setVisible() {
+        // Visibility 설정
+        // visibility 설정
+        picture.setVisibility(View.GONE);
+        fix.setVisibility(View.GONE);
+        reason.setVisibility(View.GONE);
+        mission.setVisibility(View.GONE);
+        across.setVisibility(View.GONE);
+        smile.setVisibility(View.VISIBLE);
+        title2.setPaintFlags(title2.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
     }
 
 }

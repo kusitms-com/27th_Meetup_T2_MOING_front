@@ -203,6 +203,11 @@ public class NoticeVoteActivity extends AppCompatActivity {
         else
             tabHost1.setCurrentTab(1);
 
+        /** 투표 **/
+        vote();
+
+        /** 공지사항 **/
+        notice();
     }
 
     // 뒤로 가기 버튼 클릭 리스너
@@ -273,6 +278,11 @@ public class NoticeVoteActivity extends AppCompatActivity {
                     else
                         tv_nothing.setVisibility(View.GONE);
 
+                    List<Long> noticeIdList = new ArrayList<>();
+                    for (AllNoticeResponse.NoticeBlock v : noticeList) {
+                        noticeIdList.add(v.getNoticeId());
+                    }
+
                     Long num = noticeResponse.getData().getNotReadNum();
                     checkNoRead(num, "공지");
 
@@ -281,6 +291,7 @@ public class NoticeVoteActivity extends AppCompatActivity {
                         @Override
                         public void onItemClick(int pos) {
                             /** 해당 공지사항으로 이동 **/
+                            noticeId = noticeIdList.get(pos);
                             Intent intent = new Intent(NoticeVoteActivity.this, NoticeInfoActivity.class);
                             intent.putExtra("noticeId", noticeId);
                             intent.putExtra("teamId", teamId);

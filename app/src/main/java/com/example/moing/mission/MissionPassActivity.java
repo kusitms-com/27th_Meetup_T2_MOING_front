@@ -47,7 +47,6 @@ public class MissionPassActivity extends AppCompatActivity {
         // Token을 사용할 SharedPreference
         sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
 
-        /** Intent로 teamId, missionId 값 받아와야 한다. **/
         // Intent 값 전달받는다.
         Intent intent = getIntent();
         teamId = intent.getLongExtra("teamId", 0);
@@ -62,7 +61,6 @@ public class MissionPassActivity extends AppCompatActivity {
         //Focus, TextWatcher 등록
         setFoucsChanged(why, reason,cnt);
         setTextWatcher(why, cnt);
-
 
         // 클릭 리스너
         close.setOnClickListener(closeClickListener);
@@ -132,6 +130,7 @@ public class MissionPassActivity extends AppCompatActivity {
         });
     }
 
+    // 미션 건너뛰기
     private void skipMission() {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
         apiService = RetrofitClientJwt.getApiService(accessToken);
