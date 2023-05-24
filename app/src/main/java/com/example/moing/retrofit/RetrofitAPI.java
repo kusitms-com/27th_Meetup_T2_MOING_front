@@ -30,6 +30,7 @@ import com.example.moing.Response.MakeTeamResponse;
 import com.example.moing.Response.AllNoticeResponse;
 import com.example.moing.Response.MissionCreateResponse;
 import com.example.moing.Response.MissionListResponse;
+import com.example.moing.Response.MyPageResponse;
 import com.example.moing.Response.NoticeCommentListResponse;
 import com.example.moing.Response.NoticeCommentResponse;
 import com.example.moing.Response.NoticeCreateResponse;
@@ -196,5 +197,9 @@ public interface RetrofitAPI {
     /** 불 던지기 **/
     @POST("api/v1/{teamId}/missions/{missionId}/fire/{usermissionId}")
     Call<String> postThrowFire(@Header("Authorization") String token, @Path("teamId") Long teamId, @Path("missionId") Long missionId, @Path("usermissionId") Long usermissionId);
+
+    /** 마이페이지 조회 **/
+    @GET("/api/v1/users/mypage")
+    Call<MyPageResponse> getMyPage(@Header("Authorization") String token);
 
 }

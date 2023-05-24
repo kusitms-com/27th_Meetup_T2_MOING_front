@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/layout_round_radius12_black12"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/mypage_team_iv_profile"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/ic_team_sample"
+        android:scaleType="fitXY"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <TextView
+        android:id="@+id/mypage_team_tv_name"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:gravity="bottom|center"
+        android:fontFamily="@font/pretendard_semi_bold"
+        android:text="소모임 이름"
+        android:textColor="@color/secondary_grey_black_1"
+        android:textSize="16dp"
+        app:layout_constraintTop_toTopOf="@+id/mypage_team_iv_profile"
+        app:layout_constraintBottom_toBottomOf="@+id/mypage_team_iv_profile"
+        app:layout_constraintLeft_toLeftOf="@+id/mypage_team_iv_profile"
+        app:layout_constraintRight_toRightOf="@+id/mypage_team_iv_profile"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
