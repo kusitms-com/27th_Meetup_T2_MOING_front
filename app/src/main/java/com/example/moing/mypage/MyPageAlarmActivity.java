@@ -11,6 +11,6 @@ public class MyPageAlarmActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_page_alarm_set);
+        setContentView(R.layout.activity_my_page_alarm);
     }
 }
