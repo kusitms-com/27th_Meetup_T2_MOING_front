@@ -41,7 +41,11 @@ import com.example.moing.s3.DownloadImageCallback;
 import com.example.moing.s3.ImageUtils;
 import com.example.moing.s3.S3Utils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -324,14 +328,31 @@ public class BoardFixTeamActivity extends AppCompatActivity {
                         Log.d(TAG, response.body().toString());
 
                     }
-                }  switch (response.message()) {
-                    case "만료된 토큰입니다.":
-                        ChangeJwt.updateJwtToken(getApplicationContext());
-                        putTeamUpdate(name, endDate, image);
-                        break;
-                    case "소모임장이 아니어서 할 수 없습니다.":
-                        Toast.makeText(getApplicationContext(), "소모임장이 아니어서 할 수 없습니다.", Toast.LENGTH_SHORT).show();
-                        break;
+                }else{
+                    try {
+                        /** 작성자가 아닌 경우 **/
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        // 에러 코드로 에러처리를 하고 싶을 때
+                        // String errorCode = errorObject.getString("errorCode");
+                        /** 메세지로 에러처리를 구분 **/
+                        String message = errorObject.getString("message");
+
+                        if(message.equals("소모임장이 아니어서 할 수 없습니다.")) {
+                            Toast.makeText(getApplicationContext(), "소모임장이 아니어서 할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                        }
+                        else if (message.equals("만료된 토큰입니다.")) {
+                            ChangeJwt.updateJwtToken(getApplicationContext());
+                            putTeamUpdate(name, endDate, image);
+                        }
+
+                    } catch (IOException e) {
+                        // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        // JSON 객체에서 필드 추출에 실패했을 때
+                        e.printStackTrace();
+                    }
                 }
             }
 
