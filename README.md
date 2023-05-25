@@ -1,5 +1,5 @@
-apk 파일 app-release.apk
-![2 KUSITMS 27-01](https://github.com/kusitms-com/27th_Meetup_T2_MOING_front/assets/53565255/f58c8140-8820-4a10-b64f-a8ec68b3f43d)
+[apk 파일 app-release.apk
+](https://github.com/kusitms-com/27th_Meetup_T2_MOING_front/blob/master/app-release.apk)![2 KUSITMS 27-01](https://github.com/kusitms-com/27th_Meetup_T2_MOING_front/assets/53565255/f58c8140-8820-4a10-b64f-a8ec68b3f43d)
 ![2 KUSITMS 27-02](https://github.com/kusitms-com/27th_Meetup_T2_MOING_front/assets/53565255/9767d6bf-a820-453b-a628-9db00b2f9f0f)
 ![2 KUSITMS 27-03](https://github.com/kusitms-com/27th_Meetup_T2_MOING_front/assets/53565255/50022f65-ca1f-439f-92e2-4d030b30cca8)
 ![2 KUSITMS 27-04](https://github.com/kusitms-com/27th_Meetup_T2_MOING_front/assets/53565255/945fd703-030b-4113-b5d6-035171b906f4)
