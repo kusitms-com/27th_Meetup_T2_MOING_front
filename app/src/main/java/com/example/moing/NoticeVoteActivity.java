@@ -5,6 +5,8 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +19,7 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TabHost;
@@ -240,14 +243,14 @@ public class NoticeVoteActivity extends AppCompatActivity {
             fabVoteCreate.setVisibility(View.VISIBLE);
             fabNoticeWrite.setVisibility(View.VISIBLE);
 
-            ObjectAnimator fc_animation = ObjectAnimator.ofFloat(fabVoteCreate, "translationY", -80f);
+            ObjectAnimator fc_animation = ObjectAnimator.ofFloat(fabVoteCreate, "translationY", dpToPx(-80));
             fc_animation.start();
-            ObjectAnimator fe_animation = ObjectAnimator.ofFloat(fabNoticeWrite, "translationY", -140f);
+            ObjectAnimator fe_animation = ObjectAnimator.ofFloat(fabNoticeWrite, "translationY", dpToPx(-140));
             fe_animation.start();
 
-            ObjectAnimator fc_animation2 = ObjectAnimator.ofFloat(fabVoteCreate, "translationX", -40f);
+            ObjectAnimator fc_animation2 = ObjectAnimator.ofFloat(fabVoteCreate, "translationX", dpToPx(-40));
             fc_animation2.start();
-            ObjectAnimator fe_animation2 = ObjectAnimator.ofFloat(fabNoticeWrite, "translationX", -40f);
+            ObjectAnimator fe_animation2 = ObjectAnimator.ofFloat(fabNoticeWrite, "translationX", dpToPx(-40));
             fe_animation2.start();
 
             // 메인 플로팅 이미지 변경
@@ -256,6 +259,13 @@ public class NoticeVoteActivity extends AppCompatActivity {
         // 플로팅 버튼 상태 변경
         fabMain_status = !fabMain_status;
     }
+
+    private int dpToPx(int dp) {
+        float density = getResources().getDisplayMetrics().density;
+        return Math.round(dp * density);
+    }
+
+
 
     /**
      * 공지사항 모든 목록 출력 API
