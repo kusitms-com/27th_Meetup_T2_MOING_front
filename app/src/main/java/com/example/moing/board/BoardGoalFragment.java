@@ -35,6 +35,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.target.Target;
 import com.example.moing.NoticeInfoActivity;
 import com.example.moing.NoticeVoteActivity;
 import com.example.moing.R;
@@ -191,7 +192,7 @@ public class BoardGoalFragment extends Fragment {
         /** 불 그래픽 통신 **/
         apiFire();
         /** 안 읽은 투표 API **/
-        noReadVote(); // voteDataList, noReadVote 값 변경됨!!
+        //noReadVote(); // voteDataList, noReadVote 값 변경됨!!
         /** 안 읽은 공지 API **/
         noReadNotice(); // noticeDataList, noReadNotice 값 변경됨!!
         /** 팀, 나의 위치 API **/
@@ -226,6 +227,7 @@ public class BoardGoalFragment extends Fragment {
         return view;
     }
 
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -258,6 +260,7 @@ public class BoardGoalFragment extends Fragment {
         getApi();
 
     }
+
 
     private class BtnOnClickListener implements View.OnClickListener {
         @Override
@@ -331,6 +334,7 @@ public class BoardGoalFragment extends Fragment {
                             name = data.getName();
                             profileImg = data.getProfileImg();
                             remainPeriod = data.getRemainingPeriod();
+                            Log.d(TAG, remainPeriod);
                             nowTime = data.getNowTime();
 
                             /** 데이터 확인 **/
@@ -478,8 +482,9 @@ public class BoardGoalFragment extends Fragment {
             Drawable d = ContextCompat.getDrawable(requireContext(), R.drawable.ic_board_fire3_3x);
             fire.setBackground(d);
         } else {
-            Drawable d = ContextCompat.getDrawable(requireContext(), R.drawable.ic_board_fire4_3x);
-            fire.setBackground(d);
+//            Drawable d = ContextCompat.getDrawable(requireContext(), R.drawable.ic_fire_motion);
+//            fire.setBackground(d);
+            Glide.with(this).load(R.drawable.ic_fire_motion).override(Target.SIZE_ORIGINAL).into(fire);
         }
     }
 
@@ -598,6 +603,7 @@ public class BoardGoalFragment extends Fragment {
                                 Intent intent = new Intent(getActivity(), NoticeInfoActivity.class);
                                 intent.putExtra("teamId", teamId);
                                 intent.putExtra("voteId", voteId);
+                                Log.d(TAG, "teamId :" + teamId +", voteID : " + voteId);
                                 intent.putExtra("acitivityTask", 1);
                                 startActivity(intent);
                             }

@@ -41,17 +41,7 @@ public class VoteInfoAdapterSecond extends RecyclerView.Adapter<VoteInfoAdapterS
     /** 투표를 한 사람들의 모든 수를 반환한다. **/
     @Override
     public int getItemCount() {
-        int totalItemCount = 0;
-        List<String> check = new ArrayList<>();
-        for (List<String> userList : userList) {
-            for (String user : userList) {
-                if (!check.contains(user)) {
-                    check.add(user);
-                    totalItemCount++;
-                }
-            }
-        }
-        return totalItemCount;
+        return items.size();
     }
 
     public class VoteSecondViewHolder extends RecyclerView.ViewHolder {

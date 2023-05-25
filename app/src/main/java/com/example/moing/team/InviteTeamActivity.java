@@ -133,8 +133,10 @@ public class InviteTeamActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         Log.d(TAG, response.body().toString());
+                        Long teamId = response.body().getData().getTeamId();
                         // 인증 완료
                         Intent intent = new Intent(getApplicationContext(), InviteSuccessTeamActivity.class);
+                        intent.putExtra("teamId", teamId);
                         startActivity(intent);
                     }
                 } else {
