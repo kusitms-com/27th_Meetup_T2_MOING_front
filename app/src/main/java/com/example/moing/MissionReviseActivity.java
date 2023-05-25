@@ -2,6 +2,7 @@ package com.example.moing;
 
 import static androidx.constraintlayout.widget.ConstraintLayoutStates.TAG;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -23,16 +24,24 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.example.moing.Request.MissionCreateRequest;
+import com.example.moing.Request.MissionUpdateRequest;
+import com.example.moing.Request.TeamUpdateRequest;
 import com.example.moing.Response.AllNoticeResponse;
 import com.example.moing.Response.MissionCreateResponse;
+import com.example.moing.Response.MissionUpdateResponse;
+import com.example.moing.Response.TeamUpdateResponse;
 import com.example.moing.board.BoardActivity;
 import com.example.moing.board.BoardMissionFragment;
 import com.example.moing.mission.MissionClickActivity;
+import com.example.moing.retrofit.ChangeJwt;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClientJwt;
+import com.example.moing.s3.S3Utils;
 
+import java.io.IOException;
 import java.util.Calendar;
 
 import retrofit2.Call;
@@ -41,11 +50,18 @@ import retrofit2.Response;
 
 public class MissionReviseActivity extends AppCompatActivity {
 
+    private static final String TAG = "MissionReviseActivity";
     private RetrofitAPI apiService;
     private static final String PREF_NAME = "Token";
     private static final String JWT_ACCESS_TOKEN = "JWT_access_token";
     private SharedPreferences sharedPreferences;
-    private Long teamId;
+    private Long teamId, missionId;
+
+    private String beforeTitle, afterTitle="";
+    private String beforeDueTo, afterDueTo;
+    private String beforeContent, afterContent="";
+    private String beforeRule, afterRule="";
+    private String beforeStatus, afterStatus="";
 
     Button btn_close, et_calendar, et_time, calendarIcon, create;
 
@@ -63,6 +79,13 @@ public class MissionReviseActivity extends AppCompatActivity {
         // Intent 값 전달받는다.
         Intent intent = getIntent();
         teamId = intent.getLongExtra("teamId", 0);
+        missionId = getIntent().getLongExtra("missionId",0);
+        beforeTitle = getIntent().getStringExtra("title");
+        // beforeDueTo = getIntent().getStringExtra("dueTo");
+        beforeContent = getIntent().getStringExtra("content");
+        beforeRule = getIntent().getStringExtra("rule");
+        beforeStatus = getIntent().getStringExtra("status");
+        Log.d(TAG,beforeTitle+" "+beforeDueTo+" "+beforeContent+" "+beforeRule+" "+beforeStatus);
 
         // Token을 사용할 SharedPreference
         sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
@@ -80,11 +103,13 @@ public class MissionReviseActivity extends AppCompatActivity {
         titleTv = (TextView) findViewById(R.id.titleTv);
         // 미션 제목 et
         et_title = (EditText) findViewById(R.id.et_title);
+        et_title.setHint(beforeTitle);
         // 미션 제목 글자 수
         tv_titleCount = (TextView) findViewById(R.id.tv_titleCount);
 
         // 미션 마감일 - 날짜 선택 et
         et_calendar = (Button) findViewById(R.id.et_calendar);
+        et_calendar.setHint(beforeDueTo);
         // 미션 마감일 - 달력 아이콘
         calendarIcon = (Button) findViewById(R.id.calendarIcon);
         // 미션 마감일 - 시간 선택 et
@@ -94,6 +119,7 @@ public class MissionReviseActivity extends AppCompatActivity {
         contentTv = (TextView) findViewById(R.id.contentTv);
         // 미션 내용 et
         et_content = (EditText) findViewById(R.id.et_content);
+        et_content.setHint(beforeContent);
         // 미션 내용 글자 수
         tv_contentCount = (TextView) findViewById(R.id.tv_contentCount);
 
@@ -101,6 +127,7 @@ public class MissionReviseActivity extends AppCompatActivity {
         ruleTv = (TextView) findViewById(R.id.ruleTv);
         // 인증 규칙 et
         et_rule = (EditText) findViewById(R.id.et_rule);
+        et_rule.setHint(beforeRule);
         // 인증 규칙 글자 수
         tv_ruleCount = (TextView) findViewById(R.id.tv_ruleCount);
 
@@ -317,48 +344,96 @@ public class MissionReviseActivity extends AppCompatActivity {
         }
     }
 
-    /** 업로드하기 버튼 **/
-    View.OnClickListener uploadClickListener = v -> {
-        // 미션 정보를 입력한 후 업로드하기 버튼을 클릭할 때 수행되는 코드
+    /** Button click 시 변경된 미션 이름 or 날짜/시간 or 미션 내용 or 인증 규칙) 및 종료 **/
+    View.OnClickListener uploadClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            String title = beforeTitle;
+            String dueto = et_calendar.getText().toString() + " " + et_time.getText().toString();
+            String content = beforeContent;
+            String rule = beforeRule;
 
-        String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
-        apiService = RetrofitClientJwt.getApiService(accessToken);
+            if(afterTitle.length() >0 && !beforeTitle.equals(afterTitle)){
+                title = afterTitle;
+                Log.d(TAG, "바뀐 title : " + title);
+            }
 
-        // 미션 정보를 가져옴
-        String title = et_title.getText().toString();
-        String dueTo = et_calendar.getText().toString() + " " + et_time.getText().toString();
-        String content = et_content.getText().toString();
-        String rule = et_rule.getText().toString();
+            if (afterDueTo != null &&!beforeDueTo.equals(afterDueTo)){
+                dueto = afterDueTo;
+                Log.d(TAG, "바뀐 dueTO : " + dueto);
+            }
+            Log.d(TAG,dueto);
 
-        // 미션 생성 요청 객체 생성
-        MissionCreateRequest missionCreateRequest = new MissionCreateRequest(title, dueTo, content, rule);
+            if(afterContent.length() >0 && !beforeContent.equals(afterContent)){
+                content = afterContent;
+                Log.d(TAG, "바뀐 content : " + content);
+            }
 
-        Call<MissionCreateResponse> call = apiService.makeMission(accessToken, teamId, missionCreateRequest);
+            if(afterRule.length() >0 && !beforeRule.equals(afterRule)){
+                rule = afterRule;
+                Log.d(TAG, "바뀐 rule : " + rule);
+            }
 
-        call.enqueue(new Callback<MissionCreateResponse>() {
+            else{
+                putMissionUpdate(title,dueto,content,rule);
+            }
+
+            finish();
+
+        }
+    };
+
+    /**
+     * 미션 정보 수정
+     **/
+    private void putMissionUpdate(String title, String dueTo, String content, String rule) {
+//        Log.d(TAG,endDate);
+        // Token 을 가져오기 위한 SharedPreferences Token
+        SharedPreferences sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        String jwtAccessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
+        Log.d(TAG, jwtAccessToken);
+
+        RetrofitAPI apiService = RetrofitClientJwt.getApiService(jwtAccessToken);
+        Call<MissionUpdateResponse> call = apiService.putMissionUpdate(jwtAccessToken, teamId, missionId, new MissionUpdateRequest(title, dueTo, content, rule));
+        call.enqueue(new Callback<MissionUpdateResponse>() {
             @Override
-            public void onResponse(Call<MissionCreateResponse> call, Response<MissionCreateResponse> response) {
+            public void onResponse(@NonNull Call<MissionUpdateResponse> call, @NonNull Response<MissionUpdateResponse> response) {
+
+                // 연결 성공
                 if (response.isSuccessful()) {
-                    // 요청이 성공적으로 처리됨
-                    MissionCreateResponse missionCreateResponse = response.body();
-                    // 생성된 미션 데이터에 접근하여 필요한 작업 수행
-                    MissionCreateResponse.MissionData missionData = missionCreateResponse.getData();
+                    if (response.body() != null) {
+                        Log.d(TAG, response.body().toString());
 
-                    Intent intent = new Intent(MissionReviseActivity.this, MissionClickActivity.class);
-                    intent.putExtra("teamId", teamId);
-                    startActivity(intent);
+                        Log.d(TAG, "Title: " + title);
+                        Log.d(TAG, "DueTo: " + dueTo);
+                        Log.d(TAG, "Content: " + content);
+                        Log.d(TAG, "Rule: " + rule);
+                    }
+                }
+                else{
+                    try {
+                        Log.d(TAG, response.errorBody().string());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    switch (response.message()) {
 
-                } else {
-                    // 요청이 실패함
-                    // 실패 처리를 위한 코드 작성
+                        case "만료된 토큰입니다.":
+                            ChangeJwt.updateJwtToken(getApplicationContext());
+                            putMissionUpdate(title, dueTo, content, rule);
+                            break;
+                        case "소모임장이 아니어서 할 수 없습니다.":
+                            Toast.makeText(getApplicationContext(), "소모임장이 아니어서 할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                            break;
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<MissionCreateResponse> call, Throwable t) {
-                // 요청이 실패함
-                // 실패 처리를 위한 코드 작성
+            public void onFailure(@NonNull Call<MissionUpdateResponse> call, @NonNull Throwable t) {
+                // 응답 실패
+                Log.d(TAG, "실패");
             }
         });
-    };
+    }
 }

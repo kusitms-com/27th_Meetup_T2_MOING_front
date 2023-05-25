@@ -282,6 +282,8 @@ public class MissionClickActivity extends AppCompatActivity {
                         String response_title = infoResponse.getData().getTitle();
                         String response_content = infoResponse.getData().getContent();
                         String response_dDay = infoResponse.getData().getDueTo();
+                        Log.d(TAG, "missionID" + missionId);
+                        Log.d(TAG, "d_Day : " + response_dDay);
                         String response_rule = infoResponse.getData().getRule();
                         String response_status = infoResponse.getData().getStatus();
 
@@ -289,10 +291,16 @@ public class MissionClickActivity extends AppCompatActivity {
                         title1.setText(response_title);
                         title2.setText(response_title);
                         content.setText(response_content);
-                        if(Integer.parseInt(response_dDay) >= 0)
-                            d_day.setText("남은 시간 D-" + response_dDay);
-                        else
-                            d_day.setText("인증 시간 종료");
+                        try {
+                            int num = Integer.parseInt(response_dDay);
+                            if (num >= 0)
+                                d_day.setText("남은 시간 D-" + response_dDay);
+                            else
+                                d_day.setText("인증 시간 종료");
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+
                         rule.setText(response_rule);
 
                         /** 구현 예정 **/
