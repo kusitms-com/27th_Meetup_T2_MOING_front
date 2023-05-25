@@ -28,13 +28,17 @@ import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClientJwt;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class NoticeDeleteFragment extends BottomSheetDialogFragment {
-
-    private static final String TAG = "BoardDotFragment";
+    private static final String TAG = "NoticeDeleteFragment";
     private static final String PREF_NAME = "Token";
     private static final String JWT_ACCESS_TOKEN = "JWT_access_token";
 
@@ -114,6 +118,7 @@ public class NoticeDeleteFragment extends BottomSheetDialogFragment {
             public void onResponse(Call<NoticeVoteFinishResponse> call, Response<NoticeVoteFinishResponse> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
+                        Log.d(TAG, "테스트 1");
                         // 연결 성공 -> 삭제후 목록으로 이동!!!
                         deleteDialog.dismiss();
 
@@ -129,21 +134,37 @@ public class NoticeDeleteFragment extends BottomSheetDialogFragment {
                         Toast.makeText(getActivity(), "공지가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    if(response.message().equals("만료된 토큰입니다.")) {
-                        ChangeJwt.updateJwtToken(getContext());
-                        deleteNoticeAPI();
-                    }
-                    else if(response.message().equals("해당 공지를 작성한 유저가 아닙니다")) {
-                        Toast.makeText(getActivity(), "작성자만 공지를 삭제할 수 있습니다.", Toast.LENGTH_SHORT).show();
-                        deleteDialog.dismiss();
+                    try {
+                        /** 작성자가 아닌 경우 **/
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        // 에러 코드로 에러처리를 하고 싶을 때
+                        // String errorCode = errorObject.getString("errorCode");
+                        /** 메세지로 에러처리를 구분 **/
+                        String message = errorObject.getString("message");
 
+                        if(message.equals("해당 공지를 작성한 유저가 아닙니다")) {
+                            Toast.makeText(getActivity(), "작성자만 공지를 삭제할 수 있습니다.", Toast.LENGTH_SHORT).show();
+                            deleteDialog.dismiss();
+                        }
+                        else if (message.equals("만료된 토큰입니다.")) {
+                            ChangeJwt.updateJwtToken(getContext());
+                            deleteNoticeAPI();
+                        }
+
+                    } catch (IOException e) {
+                        // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        // JSON 객체에서 필드 추출에 실패했을 때
+                        e.printStackTrace();
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<NoticeVoteFinishResponse> call, Throwable t) {
-
+                Log.d(TAG, "테스트 4");
             }
         });
     }

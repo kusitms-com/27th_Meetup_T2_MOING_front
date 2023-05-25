@@ -27,7 +27,7 @@
         android:background="@color/secondary_grey_black_11"
         android:text="아니오"
         android:textSize="16dp"
-        android:textColor="@color/secondary_grey_black_12"
+        android:textColor="@color/secondary_grey_black_7"
         android:fontFamily="@font/pretendard_medium"
         android:layout_marginBottom="24dp"
         android:layout_marginLeft="16dp"/>

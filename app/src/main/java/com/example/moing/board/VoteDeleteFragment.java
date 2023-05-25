@@ -26,13 +26,18 @@ import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClientJwt;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class VoteDeleteFragment extends BottomSheetDialogFragment {
 
-    private static final String TAG = "BoardDotFragment";
+    private static final String TAG = "VoteDeleteFragment";
     private static final String PREF_NAME = "Token";
     private static final String JWT_ACCESS_TOKEN = "JWT_access_token";
 
@@ -127,15 +132,30 @@ public class VoteDeleteFragment extends BottomSheetDialogFragment {
                         Toast.makeText(getActivity(), "투표가 종료되었습니다.", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    switch (response.message()) {
-                        case "만료된 토큰입니다.":
+                    try {
+                        /** 작성자가 아닌 경우 **/
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        // 에러 코드로 에러처리를 하고 싶을 때
+                        // String errorCode = errorObject.getString("errorCode");
+                        /** 메세지로 에러처리를 구분 **/
+                        String message = errorObject.getString("message");
+
+                        if(message.equals("해당 투표를 작성한 유저가 아닙니다.")) {
+                            Toast.makeText(getActivity(), "작성자만 투표를 삭제할 수 있습니다.", Toast.LENGTH_SHORT).show();
+                            deleteVoteDialog.dismiss();
+                        }
+                        else if (message.equals("만료된 토큰입니다.")) {
                             ChangeJwt.updateJwtToken(getContext());
                             deleteVoteAPI();
-                            break;
-                        case "해당 투표를 작성한 유저가 아닙니다..":
-                            deleteVoteDialog.dismiss();
-                            Toast.makeText(getActivity(), "작성자만 투표를 삭제할 수 있습니다.", Toast.LENGTH_SHORT).show();
-                            break;
+                        }
+
+                    } catch (IOException e) {
+                        // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        // JSON 객체에서 필드 추출에 실패했을 때
+                        e.printStackTrace();
                     }
                 }
             }
