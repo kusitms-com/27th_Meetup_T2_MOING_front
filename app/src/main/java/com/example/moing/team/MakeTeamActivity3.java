@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -37,13 +38,18 @@ import com.example.moing.retrofit.RetrofitClientJwt;
 import com.example.moing.s3.ImageUtils;
 import com.example.moing.s3.S3Utils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MakeTeamActivity3 extends AppCompatActivity {
+    private static final String TAG = "MakeTeamActivity3";
     private static final int READ_EXTERNAL_STORAGE_REQUEST = 0;
 
     private EditText etIntroduce;
@@ -119,17 +125,18 @@ public class MakeTeamActivity3 extends AppCompatActivity {
 
     }
 
-    /** 버튼 클릭 시 소모임 Data 전송 후 다음 화면 실행 **/
+    /**
+     * 버튼 클릭 시 소모임 Data 전송 후 다음 화면 실행
+     **/
     View.OnClickListener onCreateTeamClickListener = view -> {
         // 구현 예정 - 소모임 Data Retrofit 사용하여 전달
-        String token = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
-        Log.d("MAKETEAMACITIVITY3", token);
-        String period = predictDate.substring(0,1);
-        String category= "";
 
-        switch(major) {
+        String period = predictDate.substring(0, 1);
+        String category = "";
+
+        switch (major) {
             case "스포츠/운동":
-                category="SPORTS";
+                category = "SPORTS";
                 break;
             case "생활습관 개선":
                 category = "HABIT";
@@ -148,6 +155,12 @@ public class MakeTeamActivity3 extends AppCompatActivity {
                 break;
         }
 
+        postMakeTeam(category, period);
+    };
+
+    private void postMakeTeam(String category, String period) {
+        String token = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
+        Log.d(TAG, token);
         RetrofitAPI apiService = RetrofitClientJwt.getApiService(token);
 
         MakeTeamRequest makeTeamRequest = new MakeTeamRequest(category, etIntroduce.getText().toString(), name,
@@ -159,73 +172,54 @@ public class MakeTeamActivity3 extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<MakeTeamResponse> call, @NonNull Response<MakeTeamResponse> response) {
                 // 응답 성공 시
-                Log.d("MAKETEAMACTIVITY3", "응답 성공!!!");
+                Log.d(TAG, "응답 성공");
 
-                //
-                MakeTeamResponse mtResponse = response.body();
-                String msg = null;
-                if (mtResponse != null) {
-                    msg = mtResponse.getMessage();
-                }
                 // 연결 성공
-                if (msg != null) {
-                    if(msg.equals("소모임을 생성하였습니다"))
-                    {
-                        Log.d("test","생성완료");
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
                         // s3를 통한 사진 업로드
-                        S3Utils.uploadImageToS3(getApplicationContext(),uniqueFileNameWithExtension,imageFile);
+                        S3Utils.uploadImageToS3(getApplicationContext(), uniqueFileNameWithExtension, imageFile);
 
                         // 다음 화면
                         Intent intent = new Intent(getApplicationContext(), MakeTeamActivity4.class);
                         startActivity(intent);
                     }
+                } else {
+                    try {
+                        /** 작성자가 아닌 경우 **/
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        // 에러 코드로 에러처리를 하고 싶을 때
+                        // String errorCode = errorObject.getString("errorCode");
+                        /** 메세지로 에러처리를 구분 **/
+                        String message = errorObject.getString("message");
 
-                    else if (msg.equals("만료된 토큰입니다."))
-                    {
-                        /* 만료된 토큰 처리 **/
-                        ChangeJwt.updateJwtToken(MakeTeamActivity3.this);
-                        sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-                        String access_token = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
-                        RetrofitAPI apiService = RetrofitClientJwt.getApiService(access_token);
+                        if (message.equals("만료된 토큰입니다.")) {
+                            ChangeJwt.updateJwtToken(getApplicationContext());
+                            postMakeTeam(category, period);
+                        }
 
-                        Call<MakeTeamResponse> call2 = apiService.makeTeam(token, makeTeamRequest);
-                        call2.enqueue(new Callback<MakeTeamResponse>() {
-                            @Override
-                            public void onResponse(@NonNull Call<MakeTeamResponse> call, @NonNull Response<MakeTeamResponse> response) {
-                                MakeTeamResponse mtResponse = response.body();
-                                assert mtResponse != null;
-                                String msg = mtResponse.getMessage();
-                                // 연결 성공
-                                if(msg.equals("소모임을 생성하였습니다")) {
-                                    // s3를 통한 사진 업로드
-                                    S3Utils.uploadImageToS3(getApplicationContext(),uniqueFileNameWithExtension,imageFile);
-
-                                    // 다음 화면
-                                    Intent intent = new Intent(getApplicationContext(), MakeTeamActivity4.class);
-                                    startActivity(intent);
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(@NonNull Call<MakeTeamResponse> call, @NonNull Throwable t) {
-                                Log.d("MAKETEAMACITIVTY3", "만료된 토큰 연동 실패 ...");
-                            }
-                        });
+                    } catch (IOException e) {
+                        // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        // JSON 객체에서 필드 추출에 실패했을 때
+                        e.printStackTrace();
                     }
                 }
 
             }
-
             @Override
             public void onFailure(@NonNull Call<MakeTeamResponse> call, @NonNull Throwable t) {
                 // 응답 실패 시
                 Log.d("MAKETEAMACTIVITY3", "응답 실패 ...");
             }
         });
+    }
 
-    };
-
-    /** 버튼 클릭 시 권한 확인 후 갤러리 접근 **/
+    /**
+     * 버튼 클릭 시 권한 확인 후 갤러리 접근
+     **/
     View.OnClickListener onImageUploadClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -241,7 +235,9 @@ public class MakeTeamActivity3 extends AppCompatActivity {
         }
     };
 
-    /** 갤러리에서 이미지 선택을 위한 ActivityResultLauncher **/
+    /**
+     * 갤러리에서 이미지 선택을 위한 ActivityResultLauncher
+     **/
     ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
                 @Override
@@ -277,28 +273,33 @@ public class MakeTeamActivity3 extends AppCompatActivity {
             }
     );
 
-    /** EditText focus 시 제목 색상 변경 **/
+    /**
+     * EditText focus 시 제목 색상 변경
+     **/
     private void setFocus(EditText editText, TextView textView, TextView textViewCnt) {
         editText.setOnFocusChangeListener((view, isFocused) -> {
-            if(isFocused){
-                textView.setTextColor(ContextCompat.getColor(this,R.color.main_dark_200));
-                textViewCnt.setTextColor(ContextCompat.getColor(this,R.color.main_dark_200));
-            }
-            else{
-                textView.setTextColor(ContextCompat.getColor(this,R.color.secondary_grey_black_7));
-                textViewCnt.setTextColor(ContextCompat.getColor(this,R.color.secondary_grey_black_7));
+            if (isFocused) {
+                textView.setTextColor(ContextCompat.getColor(this, R.color.main_dark_200));
+                textViewCnt.setTextColor(ContextCompat.getColor(this, R.color.main_dark_200));
+            } else {
+                textView.setTextColor(ContextCompat.getColor(this, R.color.secondary_grey_black_7));
+                textViewCnt.setTextColor(ContextCompat.getColor(this, R.color.secondary_grey_black_7));
             }
         });
     }
 
-    /** EditText 입력 시 입력된 글자 수 변경 **/
+    /**
+     * EditText 입력 시 입력된 글자 수 변경
+     **/
     private void setTextWatcher(EditText editText, TextView countTextView, int maxLength) {
         editText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -309,15 +310,16 @@ public class MakeTeamActivity3 extends AppCompatActivity {
         });
     }
 
-    /** 소모임 소개, 각오, 사진이 올바르게 입력되었는지 확인 후 버튼 및 ProgressBar 변경 **/
-    private void checkInputs(){
-        if(etIntroduce.length() > 0 && etResolution.length() > 0 && ivImageUpload.getVisibility() == View.VISIBLE) {
+    /**
+     * 소모임 소개, 각오, 사진이 올바르게 입력되었는지 확인 후 버튼 및 ProgressBar 변경
+     **/
+    private void checkInputs() {
+        if (etIntroduce.length() > 0 && etResolution.length() > 0 && ivImageUpload.getVisibility() == View.VISIBLE) {
             btnCreateTeam.setBackgroundResource(R.drawable.button_round_black1);
             btnCreateTeam.setTextColor(ContextCompat.getColorStateList(getApplicationContext(), R.color.secondary_grey_black_12));
             btnCreateTeam.setClickable(true);
             ivProgressBar.setBackgroundResource(R.drawable.maketeam_progress5);
-        }
-        else{
+        } else {
             btnCreateTeam.setTextColor(ContextCompat.getColorStateList(getApplicationContext(), R.color.secondary_grey_black_10));
             btnCreateTeam.setBackgroundResource(R.drawable.button_round_black12);
             btnCreateTeam.setClickable(false);

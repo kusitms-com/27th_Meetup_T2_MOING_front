@@ -20,6 +20,11 @@ import com.example.moing.retrofit.ChangeJwt;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClientJwt;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -171,11 +176,28 @@ public class MyPageAlarmActivity extends AppCompatActivity {
                         rgFire.setOnCheckedChangeListener(onFireCheckedChangeListener);
 
                     }
-                } else if (response.message().equals("만료된 토큰입니다.")) {
+                } else  {
                     Log.d(TAG, response.message());
-                    // 토큰 재발급 후 다시 호출
-                    ChangeJwt.updateJwtToken(MyPageAlarmActivity.this);
-                    getAlarmSetting();
+                    try {
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        // 에러 코드로 에러처리를 하고 싶을 때
+                        // String errorCode = errorObject.getString("errorCode");
+                        /** 메세지로 에러처리를 구분 **/
+                        String message = errorObject.getString("message");
+
+                        if (message.equals("만료된 토큰입니다.")) {
+                            ChangeJwt.updateJwtToken(getApplicationContext());
+                            getAlarmSetting();
+                        }
+
+                    } catch (IOException e) {
+                        // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        // JSON 객체에서 필드 추출에 실패했을 때
+                        e.printStackTrace();
+                    }
                 }
             }
             @Override
@@ -198,11 +220,28 @@ public class MyPageAlarmActivity extends AppCompatActivity {
                     if (response.body() != null) {
                         Log.d(TAG, "신규미션 알림 설정 성공");
                     }
-                } else if (response.message().equals("만료된 토큰입니다.")) {
+                } else {
                     Log.d(TAG, response.message());
-                    // 토큰 재발급 후 다시 호출
-                    ChangeJwt.updateJwtToken(MyPageAlarmActivity.this);
-                    putAlarmNew();
+                    try {
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        // 에러 코드로 에러처리를 하고 싶을 때
+                        // String errorCode = errorObject.getString("errorCode");
+                        /** 메세지로 에러처리를 구분 **/
+                        String message = errorObject.getString("message");
+
+                        if (message.equals("만료된 토큰입니다.")) {
+                            ChangeJwt.updateJwtToken(getApplicationContext());
+                            putAlarmNew();
+                        }
+
+                    } catch (IOException e) {
+                        // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        // JSON 객체에서 필드 추출에 실패했을 때
+                        e.printStackTrace();
+                    }
                 }
             }
             @Override
@@ -225,11 +264,28 @@ public class MyPageAlarmActivity extends AppCompatActivity {
                     if (response.body() != null) {
                         Log.d(TAG, "리마인드 알림 설정 성공");
                     }
-                } else if (response.message().equals("만료된 토큰입니다.")) {
+                } else{
                     Log.d(TAG, response.message());
-                    // 토큰 재발급 후 다시 호출
-                    ChangeJwt.updateJwtToken(MyPageAlarmActivity.this);
-                    putAlarmRemind();
+                    try {
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        // 에러 코드로 에러처리를 하고 싶을 때
+                        // String errorCode = errorObject.getString("errorCode");
+                        /** 메세지로 에러처리를 구분 **/
+                        String message = errorObject.getString("message");
+
+                        if (message.equals("만료된 토큰입니다.")) {
+                            ChangeJwt.updateJwtToken(getApplicationContext());
+                            putAlarmRemind();
+                        }
+
+                    } catch (IOException e) {
+                        // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        // JSON 객체에서 필드 추출에 실패했을 때
+                        e.printStackTrace();
+                    }
                 }
             }
             @Override
@@ -252,11 +308,28 @@ public class MyPageAlarmActivity extends AppCompatActivity {
                     if (response.body() != null) {
                         Log.d(TAG, "불던지기 알림 설정 성공");
                     }
-                } else if (response.message().equals("만료된 토큰입니다.")) {
+                } else{
                     Log.d(TAG, response.message());
-                    // 토큰 재발급 후 다시 호출
-                    ChangeJwt.updateJwtToken(MyPageAlarmActivity.this);
-                    putAlarmFire();
+                    try {
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        // 에러 코드로 에러처리를 하고 싶을 때
+                        // String errorCode = errorObject.getString("errorCode");
+                        /** 메세지로 에러처리를 구분 **/
+                        String message = errorObject.getString("message");
+
+                        if (message.equals("만료된 토큰입니다.")) {
+                            ChangeJwt.updateJwtToken(getApplicationContext());
+                            putAlarmFire();
+                        }
+
+                    } catch (IOException e) {
+                        // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        // JSON 객체에서 필드 추출에 실패했을 때
+                        e.printStackTrace();
+                    }
                 }
             }
             @Override
