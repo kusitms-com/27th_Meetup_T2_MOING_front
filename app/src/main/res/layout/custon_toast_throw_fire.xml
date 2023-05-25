@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/layout_round_radius12_black1"
+    android:orientation="horizontal"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/custom_toast_tv_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/pretendard_medium"
+        android:gravity="center"
+        android:paddingVertical="12dp"
+        android:paddingLeft="20dp"
+        android:text="닉네임"
+        android:textColor="@color/main_dark_500"
+        android:textSize="12dp" />
+
+    <TextView
+        android:id="@+id/custom_toast_tv_none1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingVertical="12dp"
+        android:paddingRight="20dp"
+        android:text="님에게 불을 던졌어요! 목표달성까지 고고!"
+        android:textColor="@color/secondary_grey_black_12"
+        android:textSize="12dp"
+        android:fontFamily="@font/pretendard_medium"
+        android:gravity="center"/>
+
+</LinearLayout>

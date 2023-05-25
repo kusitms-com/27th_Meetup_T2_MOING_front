@@ -9,6 +9,9 @@ import android.os.Handler;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.example.moing.board.BoardActivity;
+import com.example.moing.login.LoginActivity;
+
 public class SplashActivity extends AppCompatActivity {
 
     @Override

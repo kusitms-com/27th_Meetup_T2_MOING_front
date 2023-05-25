@@ -37,29 +37,43 @@
             android:textSize="18dp" />
     </LinearLayout>
 
-    <android.widget.Button
-        android:id="@+id/btn_next"
+    <LinearLayout
+        android:id="@+id/lin_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginLeft="16dp"
-        android:background="@drawable/button_round_black12"
-        android:fontFamily="@font/pretendard_semi_bold"
-        android:text="다음으로"
-        android:textColor="@color/secondary_grey_black_10"
-        android:textSize="18dp"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="vertical">
+
+
+        <ImageView
+            android:id="@+id/iv_pg1"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:background="@drawable/maketeam_progress3" />
+
+        <android.widget.Button
+            android:id="@+id/btn_next2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/button_round_black12"
+            android:fontFamily="@font/pretendard_semi_bold"
+            android:text="다음으로"
+            android:textColor="@color/secondary_grey_black_10"
+            android:textSize="18dp" />
+    </LinearLayout>
+
 
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/lin_nav"
-        app:layout_constraintBottom_toTopOf="@id/btn_next">
+        app:layout_constraintBottom_toTopOf="@id/lin_bottom">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -102,7 +116,9 @@
                 android:textColor="@color/secondary_grey_black_2"
                 android:textColorHint="@color/secondary_grey_black_7"
                 android:textSize="18dp"
-                android:maxLength="10"/>
+                android:singleLine="true"
+                android:maxLength="10"
+                android:inputType="text" />
 
             <TextView
                 android:id="@+id/tv_nameCount"
@@ -140,33 +156,22 @@
                 android:textColor="@color/secondary_grey_black_2"
                 android:textColorHint="@color/secondary_grey_black_7"
                 android:textSize="18dp"
+                android:inputType="phone"
+                android:singleLine="true"
+                android:nextFocusDown="@id/base_cardView"
                 android:maxLength="2"/>
 
             <TextView
-                android:id="@+id/tv_startDay"
-                android:layout_width="120dp"
+                android:id="@+id/tv_warn1"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="32dp"
-                android:fontFamily="@font/pretendard_medium"
-                android:text="소모임 시작일"
-                android:textColor="@color/secondary_grey_black_7"
-                android:textSize="16dp" />
-
-            <android.widget.Button
-                android:id="@+id/btn_start"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
                 android:layout_marginTop="4dp"
-                android:layout_marginRight="16dp"
-                android:background="@drawable/edittext_round_corner_rectangle"
-                android:drawableRight="@drawable/ic_calendar"
+                android:layout_marginLeft="16dp"
                 android:fontFamily="@font/pretendard_medium"
-                android:gravity="left"
-                android:hint="날짜를 선택해주세요"
-                android:textColorHint="@color/secondary_grey_black_7"
-                android:textSize="18dp" />
+                android:textSize="16dp"
+                android:text="20명 이내로 입력해주세요."
+                android:textColor="#F43A6F"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/tv_predict"
@@ -175,13 +180,96 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="32dp"
                 android:fontFamily="@font/pretendard_medium"
-                android:text="예상활동 기간"
+                android:text="활동 기간"
                 android:textColor="@color/secondary_grey_black_7"
                 android:textSize="16dp" />
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/base_cardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:backgroundTint="@color/secondary_grey_black_14">
 
+                <android.widget.Button
+                    android:id="@+id/btn_predict"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/button_press_to_select_pink"
+                    android:drawableRight="@drawable/arrow_down2"
+                    android:fontFamily="@font/pretendard_medium"
+                    android:gravity="left"
+                    android:hint="활동 기간을 선택해주세요"
+                    android:textColorHint="@color/secondary_grey_black_7"
+                    android:textSize="18dp" />
+
+                <LinearLayout
+                    android:id="@+id/hidden_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/tv_month1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_round_corner_rectangle"
+                        android:fontFamily="@font/pretendard_medium"
+                        android:text="1개월"
+                        android:textColor="@color/secondary_grey_black_7"
+                        android:textSize="18dp"
+                        android:layout_marginTop="60dp"
+                        android:backgroundTint="@color/secondary_grey_black_13" />
+
+                    <TextView
+                        android:id="@+id/tv_month2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_round_corner_rectangle"
+                        android:fontFamily="@font/pretendard_medium"
+                        android:text="2개월"
+                        android:textColor="@color/secondary_grey_black_7"
+                        android:textSize="18dp"
+                        android:backgroundTint="@color/secondary_grey_black_13" />
+
+                    <TextView
+                        android:id="@+id/tv_month3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_round_corner_rectangle"
+                        android:fontFamily="@font/pretendard_medium"
+                        android:text="3개월"
+                        android:textColor="@color/secondary_grey_black_7"
+                        android:textSize="18dp"
+                        android:backgroundTint="@color/secondary_grey_black_13" />
+
+                    <TextView
+                        android:id="@+id/tv_month4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_round_corner_rectangle"
+                        android:fontFamily="@font/pretendard_medium"
+                        android:text="4개월"
+                        android:textColor="@color/secondary_grey_black_7"
+                        android:textSize="18dp"
+                        android:backgroundTint="@color/secondary_grey_black_13" />
+
+                    <TextView
+                        android:id="@+id/tv_month5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_round_corner_rectangle"
+                        android:fontFamily="@font/pretendard_medium"
+                        android:text="5개월"
+                        android:textColor="@color/secondary_grey_black_7"
+                        android:textSize="18dp"
+                        android:backgroundTint="@color/secondary_grey_black_13" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
         </LinearLayout>
     </ScrollView>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

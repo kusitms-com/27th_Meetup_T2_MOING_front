@@ -44,6 +44,9 @@ public class MakeTeamActivity extends AppCompatActivity implements View.OnClickL
         btn_next.setOnClickListener(this);
         img_pg = (ImageView) findViewById(R.id.iv_pg1);
 
+        // 처음에는 '다음으로 버튼' clickable false
+        btn_next.setClickable(false);
+
     }
 
 
@@ -166,12 +169,14 @@ public class MakeTeamActivity extends AppCompatActivity implements View.OnClickL
             btn_next.setBackgroundResource(R.drawable.button_round_black12);
             // 프로그레스 진행버튼 1
             img_pg.setBackgroundResource(R.drawable.maketeam_progress1);
+            btn_next.setClickable(false);
         } else {
             // 다음으로 버튼을 하얗게
             btn_next.setBackgroundResource(R.drawable.button_round_black1);
             btn_next.setTextColor(ContextCompat.getColorStateList(MakeTeamActivity.this, R.color.secondary_grey_black_12));
             // 프로그레스 진행버튼 2로 변경
             img_pg.setBackgroundResource(R.drawable.maketeam_progress2);
+            btn_next.setClickable(true);
         }
     }
 

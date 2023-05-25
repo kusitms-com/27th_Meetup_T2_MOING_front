@@ -3,26 +3,95 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
+        android:name=".login.GlobalApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
+        android:enableOnBackInvokedCallback="true"
+        android:usesCleartextTraffic="true"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_moing_logo"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.Moing_Day"
         tools:targetApi="31">
         <activity
-            android:name=".team.MakeTeamActivity3"
+            android:name=".mypage.MyPageModifyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".mypage.MyPageAlarmActivity"
+            android:exported="false" />
+        <activity
+            android:name=".mypage.MyPageDropOutActivity"
+            android:exported="false" />
+        <activity
+            android:name=".mypage.MyPageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".mission.MissionPassActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
+            android:name=".MissionReviseActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MissionCreateActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".mission.MissionClickActivity"
+            android:exported="true" />
+        <activity
+            android:name=".NoticeInfoActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".NoticeWriteActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".NoticeVoteActivity"
+            android:exported="true" />
+        <activity
+            android:name=".board.VoteInfoActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:exported="false" />
+        <activity
+            android:name=".board.BoardMakeVote"
+            android:exported="true">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".board.BoardFixTeamActivity"
+            android:exported="false" />
+        <activity
+            android:name=".board.BoardActivity"
+            android:exported="true" />
+        <activity
+            android:name=".team.MakeTeamActivity4"
+            android:exported="false" />
+        <activity
+            android:name=".team.MakeTeamActivity3"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".team.MakeTeamActivity2"
-            android:exported="false">
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -43,7 +112,8 @@
         </activity>
         <activity
             android:name=".team.InviteTeamActivity"
-            android:exported="false">
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -61,16 +131,15 @@
         </service>
 
         <activity
-            android:name=".RegisterInputAddressActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:exported="true" />
+            android:name=".login.RegisterInputAddressActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".RegisterInputNameActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:exported="true">
-        </activity>
+            android:name=".login.RegisterInputNameActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".login.LoginActivity"
             android:exported="true" />
         <activity
             android:name=".SplashActivity"
@@ -84,6 +153,29 @@
         <activity
             android:name=".MainActivity"
             android:exported="true" />
+        <activity
+            android:name=".mission.MissionStatusActivity"
+            android:exported="true" />
+
+        <service
+            android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
+            android:enabled="true" />
+
+        <activity
+            android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <!-- Redirect URI: "kakao${NATIVE_APP_KEY}://oauth" -->
+                <data
+                    android:host="oauth"
+                    android:scheme="kakao877d84c9c8b609abd803b36914a8fbeb" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="87dp"
+    android:layout_marginTop="8dp"
+    android:background="@drawable/layout_round_mission_bg"
+    android:id="@+id/recycle_background">
+
+    <ImageView
+        android:id="@+id/btn_check"
+        android:layout_width="40dp"
+        android:layout_height="59dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="16dp"
+        android:background="@drawable/mission_not" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_toRightOf="@id/btn_check"
+        android:fontFamily="@font/pretendard_semi_bold"
+        android:text="책 10페이지 읽고 요약 갈기기"
+        android:layout_marginTop="15dp"
+        android:textColor="#FFFFFF"
+        android:textSize="18dp" />
+
+    <TextView
+        android:id="@+id/tv_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_title"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginBottom="23dp"
+        android:layout_toLeftOf="@+id/btn_voteCheck"
+        android:layout_toEndOf="@+id/btn_check"
+        android:fontFamily="@font/pretendard_medium"
+        android:text="남은시간 D - 3"
+        android:textColor="#FFFFFF"
+        android:textSize="12dp" />
+
+    <android.widget.Button
+        android:id="@+id/btn_voteCheck"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="33dp"
+        android:layout_marginRight="19dp"
+        android:layout_marginBottom="33dp"
+        android:background="@drawable/arrow_right_long" />
+</RelativeLayout>
