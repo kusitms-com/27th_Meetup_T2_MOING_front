@@ -36,6 +36,8 @@ import com.example.moing.Request.NoticeCommentRequest;
 import com.example.moing.Response.NoticeCommentListResponse;
 import com.example.moing.Response.NoticeCommentResponse;
 import com.example.moing.Response.NoticeInfoResponse;
+import com.example.moing.board.NoticeDeleteFragment;
+import com.example.moing.board.VoteDeleteFragment;
 import com.example.moing.retrofit.ChangeJwt;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClientJwt;
@@ -185,6 +187,14 @@ public class NoticeInfoActivity extends AppCompatActivity {
 
     /** 모달 버튼 클릭 리스너 **/
     View.OnClickListener modalClickListener = v -> {
+        NoticeDeleteFragment noticeDeleteFragment = new NoticeDeleteFragment();
+        Log.d(TAG, "voteDelete에 전달하기 위한 teamId 값 : " + teamId);
+        Bundle bundle = new Bundle();
+        bundle.putLong("teamId", teamId);
+        bundle.putLong("noticeId", noticeId);
+        bundle.putInt("activityTask", activityTask);
+        noticeDeleteFragment.setArguments(bundle);
+        noticeDeleteFragment.show(getSupportFragmentManager(), noticeDeleteFragment.getTag());
 
     };
 
