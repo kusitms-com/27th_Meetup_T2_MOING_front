@@ -48,8 +48,8 @@ public class MissionStatusActivity extends AppCompatActivity implements Serializ
     private Fragment fragmentUnDone;
     private TabLayout tabs;
 
-    private long teamId = 1;
-    private long missionId = 6;
+    private long teamId;
+    private long missionId;
 
 
 
@@ -58,10 +58,11 @@ public class MissionStatusActivity extends AppCompatActivity implements Serializ
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mission_status);
 
-//        // teamId 값 받아오기
-//        long teamId = getIntent().getLongExtra("teamId", 0);
-//        // missionId 값 받아오기
-//        long missionId = getIntent().getLongExtra("teamId", 0);
+        // teamId 값 받아오기
+        teamId = getIntent().getLongExtra("teamId", 0);
+        // missionId 값 받아오기
+        missionId = getIntent().getLongExtra("teamId", 0);
+        Log.d(TAG,"teamId :"+teamId+"missionId: "+missionId);
 
         // 내 인증 상태 확인 컴포넌트 - 진행 상태에 따라 다르게 나옴
         ivStatus = findViewById(R.id.mission_status_iv_status); // 나의 인증 상태
@@ -86,14 +87,9 @@ public class MissionStatusActivity extends AppCompatActivity implements Serializ
             finish();
         });
 
-        // 더미 - 삭제 예정
-        long teamId = 1;
-        long missionId = 6;
-
         // 미션 목록 리스트 불러오고 설정
         getMissionStatusList(teamId,missionId);
     }
-
     private void getMissionStatusList(long teamId, long missionId) {
         // Token 을 가져오기 위한 SharedPreferences Token
         SharedPreferences sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
@@ -141,6 +137,12 @@ public class MissionStatusActivity extends AppCompatActivity implements Serializ
                             Bundle undoneBundle = new Bundle();
                             undoneBundle.putSerializable("undoneList", new ArrayList<>(undoneList)); // 미완료한 인원 목록 저장
                             undoneBundle.putSerializable("fireList", new ArrayList<>(fireList));    // 불을 맞은 인원 목록 저장
+
+                            // teamId, missionId 저장
+                            doneBundle.putLong("teamId",teamId);
+                            doneBundle.putLong("missionId",missionId);
+                            undoneBundle.putLong("teamId",teamId);
+                            undoneBundle.putLong("missionId",missionId);
 
                             // "나"를 표현하기 위한 나의 상태 체크
                             if(myStatus.equals("COMPLETE") || myStatus.equals("PENDING")){

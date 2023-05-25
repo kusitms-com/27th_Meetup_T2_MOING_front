@@ -52,9 +52,9 @@ public class MissionStatusUndoneFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_mission_status_undone, container, false);
 
-        // 더미 - 삭제 예정
-        teamId = 1;
-        missionId = 6;
+        // teamId, missionId 받아오기
+        teamId = getArguments().getLong("teamId");
+        missionId = getArguments().getLong("missionId");
 
         // MissionStatusActivity에서 전달받은 인증 미완료 리스트
         Bundle bundle = getArguments();

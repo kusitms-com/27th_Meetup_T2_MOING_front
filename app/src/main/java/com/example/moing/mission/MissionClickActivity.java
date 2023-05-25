@@ -289,10 +289,12 @@ public class MissionClickActivity extends AppCompatActivity {
                         title1.setText(response_title);
                         title2.setText(response_title);
                         content.setText(response_content);
-                        if(Integer.parseInt(response_dDay) >= 0)
-                            d_day.setText("남은 시간 D-" + response_dDay);
-                        else
-                            d_day.setText("인증 시간 종료");
+                        if(response_dDay != null){
+                            if(Integer.parseInt(response_dDay) >= 0)
+                                d_day.setText("남은 시간 D-" + response_dDay);
+                            else
+                                d_day.setText("인증 시간 종료");
+                        }
                         rule.setText(response_rule);
 
                         /** 구현 예정 **/
