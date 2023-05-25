@@ -374,26 +374,27 @@ public class MyPageModifyActivity extends AppCompatActivity {
                         Log.d(TAG, response.body().toString());
 
                     }
-                }
-                try {
-                    String errorJson = response.errorBody().string();
-                    JSONObject errorObject = new JSONObject(errorJson);
-                    // 에러 코드로 에러처리를 하고 싶을 때
-                    // String errorCode = errorObject.getString("errorCode");
-                    /** 메세지로 에러처리를 구분 **/
-                    String message = errorObject.getString("message");
+                }else{
+                    try {
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        // 에러 코드로 에러처리를 하고 싶을 때
+                        // String errorCode = errorObject.getString("errorCode");
+                        /** 메세지로 에러처리를 구분 **/
+                        String message = errorObject.getString("message");
 
-                    if (message.equals("만료된 토큰입니다.")) {
-                        ChangeJwt.updateJwtToken(getApplicationContext());
-                        putProfileUpdate(nickname, introduction, profile);
+                        if (message.equals("만료된 토큰입니다.")) {
+                            ChangeJwt.updateJwtToken(getApplicationContext());
+                            putProfileUpdate(nickname, introduction, profile);
+                        }
+
+                    } catch (IOException e) {
+                        // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        // JSON 객체에서 필드 추출에 실패했을 때
+                        e.printStackTrace();
                     }
-
-                } catch (IOException e) {
-                    // 에러 응답의 JSON 문자열을 읽을 수 없을 때
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    // JSON 객체에서 필드 추출에 실패했을 때
-                    e.printStackTrace();
                 }
             }
             @Override
