@@ -23,6 +23,7 @@ public class MissionListResponse {
         private Long missionId;
         private String title;
         private String dueTo;
+        private String dueDate;
         private String status;
 
         public Long getMissionId() {
@@ -39,6 +40,9 @@ public class MissionListResponse {
 
         public String getStatus() {
             return status;
+        }
+        public String getDueDate() {
+            return dueDate;
         }
 
         public void setStatus(String status) {
