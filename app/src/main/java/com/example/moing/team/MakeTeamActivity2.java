@@ -157,7 +157,6 @@ public class MakeTeamActivity2 extends AppCompatActivity {
 
         // 예상활동 기간 선택
         btn_predict.setOnClickListener(v -> {
-            tv_predict.setTextColor(ContextCompat.getColorStateList(MakeTeamActivity2.this, R.color.main_dark_200));
             btn_predict.setSelected(true);
 
             // 보이는 상태라면

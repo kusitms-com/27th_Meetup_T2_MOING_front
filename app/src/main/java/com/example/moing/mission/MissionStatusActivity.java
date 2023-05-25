@@ -52,8 +52,8 @@ public class MissionStatusActivity extends AppCompatActivity implements Serializ
     private Fragment fragmentUnDone;
     private TabLayout tabs;
 
-    private long teamId;
-    private long missionId;
+    private Long teamId;
+    private Long missionId;
 
 
 
@@ -65,7 +65,7 @@ public class MissionStatusActivity extends AppCompatActivity implements Serializ
         // teamId 값 받아오기
         teamId = getIntent().getLongExtra("teamId", 0);
         // missionId 값 받아오기
-        missionId = getIntent().getLongExtra("teamId", 0);
+        missionId = getIntent().getLongExtra("missionId", 0);
         Log.d(TAG,"teamId :"+teamId+"missionId: "+missionId);
 
         // 내 인증 상태 확인 컴포넌트 - 진행 상태에 따라 다르게 나옴

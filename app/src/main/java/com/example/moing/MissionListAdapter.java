@@ -68,6 +68,19 @@ public class MissionListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             vh.tv_date.setPaintFlags(vh.tv_date.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
             vh.tv_date.setTextColor(Color.parseColor("#FFFFFF"));
         }
+        // 아이템 클릭 이벤트 추가
+        vh.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int pos = vh.getAdapterPosition();
+                if (pos != RecyclerView.NO_POSITION) {
+                    // 리스너 객체 메서드 호출
+                    if(onItemClickListener != null) {
+                        onItemClickListener.onItemClick(pos);
+                    }
+                }
+            }
+        });
 
         // 아이템 클릭 이벤트 처리
 //        vh.btn_check.setOnClickListener(new View.OnClickListener() {
@@ -121,19 +134,7 @@ public class MissionListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             tv_title = itemView.findViewById(R.id.tv_title);
             tv_date = itemView.findViewById(R.id.tv_date);
 
-            // 아이템 클릭 이벤트 추가
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int pos = getAdapterPosition();
-                    if (pos != RecyclerView.NO_POSITION) {
-                        // 리스너 객체 메서드 호출
-                        if(onItemClickListener != null) {
-                            onItemClickListener.onItemClick(pos);
-                        }
-                    }
-                }
-            });
+
         }
     }
 }
