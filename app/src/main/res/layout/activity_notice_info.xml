@@ -222,7 +222,7 @@
 
         <EditText
             android:id="@+id/et_comment"
-            android:layout_width="270dp"
+            android:layout_width="310dp"
             android:layout_height="50dp"
             android:layout_marginHorizontal="16dp"
             android:background="@drawable/layout_round_black10"

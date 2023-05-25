@@ -158,19 +158,22 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapter.
     View.OnClickListener addContentClickListener = v -> {
         Log.d("CONTENTCLICKADD", String.valueOf(makeVoteList.size()));
 
-        MakeVote makeVote = new MakeVote();
-        makeVoteList.add(makeVote);
-        addContentCount = makeVoteList.size();
-        addContent.setText("항목 추가하기("+addContentCount+"/10)");
-        makeVoteAdapter.notifyDataSetChanged();
+        if (makeVoteList.size() < 10) { // 최대 10개까지 추가 가능
+            MakeVote makeVote = new MakeVote();
+            makeVoteList.add(makeVote);
+            addContentCount = makeVoteList.size();
+            addContent.setText("항목 추가하기(" + addContentCount + "/10)");
+            makeVoteAdapter.notifyDataSetChanged();
+        }
 
         Log.d("CONTENTCLICKADD", String.valueOf(makeVoteList.size()));
 
-        if(makeVoteList.size() >= 2) {
+        if (makeVoteList.size() >= 2) {
             btn_erase_content.setClickable(true);
             btn_erase_content.setTextColor(Color.parseColor("#F43A6F"));
         }
     };
+
 
     /** 선택한 항목 지우기 버튼 클릭 **/
     View.OnClickListener deleteContentClickListener = v -> {
