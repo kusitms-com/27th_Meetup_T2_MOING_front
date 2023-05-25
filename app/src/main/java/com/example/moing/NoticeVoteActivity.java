@@ -224,10 +224,16 @@ public class NoticeVoteActivity extends AppCompatActivity {
         tp = (TextView) tabHost1.getTabWidget().getChildAt(tabHost1.getCurrentTab()).findViewById(android.R.id.title);
         tp.setTextColor(Color.parseColor("#FFFFFF"));
 
-        if(NoticeOrVote == 1)
+        if(NoticeOrVote == 1) {
             tabHost1.setCurrentTab(0);
-        else
+            notice();
+        }
+
+        else {
             tabHost1.setCurrentTab(1);
+            vote();
+        }
+
     }
 
     // 뒤로 가기 버튼 클릭 리스너
