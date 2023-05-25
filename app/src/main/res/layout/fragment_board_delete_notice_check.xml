@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="312dp"
+    android:layout_height="wrap_content"
+    android:background="@color/secondary_grey_black_12"
+    android:id="@+id/view_all"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:text="해당 공지를 정말 삭제하시겠습니까?"
+        android:textColor="@color/secondary_grey_black_4"
+        android:textSize="18dp"
+        android:fontFamily="@font/pretendard_semi_bold"
+        android:gravity="center" />
+
+    <android.widget.Button
+        android:id="@+id/btn_delete_no"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_title"
+        android:layout_marginTop="24dp"
+        android:background="@color/secondary_grey_black_11"
+        android:text="아니오"
+        android:textSize="16dp"
+        android:textColor="@color/secondary_grey_black_12"
+        android:fontFamily="@font/pretendard_medium"
+        android:layout_marginBottom="24dp"
+        android:layout_marginLeft="16dp"/>
+
+    <android.widget.Button
+        android:id="@+id/btn_delete_yes"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_title"
+        android:layout_toRightOf="@+id/btn_delete_no"
+        android:layout_marginTop="24dp"
+        android:background="@color/secondary_grey_black_1"
+        android:text="예"
+        android:textSize="16dp"
+        android:textColor="@color/black"
+        android:fontFamily="@font/pretendard_medium"
+        android:layout_marginBottom="24dp"
+        android:layout_marginLeft="16dp"/>
+</RelativeLayout>

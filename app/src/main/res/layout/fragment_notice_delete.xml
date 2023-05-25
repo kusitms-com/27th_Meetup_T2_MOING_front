@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".board.NoticeDeleteFragment"
+    android:background="@color/secondary_grey_black_12">
+
+    <ImageButton
+        android:id="@+id/board_dot_delete_notice"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/ic_delete_notice_3x"/>
+
+    <ImageButton
+        android:id="@+id/board_dot_btn_close"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_below="@+id/board_dot_delete_notice"
+        android:background="@drawable/board_dot_close"/>
+</RelativeLayout>
