@@ -46,6 +46,8 @@ public class NoticeDeleteFragment extends BottomSheetDialogFragment {
     private Long teamId, noticeId;
     private int activityTask;
 
+    private Call<NoticeVoteFinishResponse> call;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -74,6 +76,14 @@ public class NoticeDeleteFragment extends BottomSheetDialogFragment {
         deleteDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // 타이틀 제거
         deleteDialog.setContentView(R.layout.fragment_board_delete_notice_check);
        return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if(call != null)
+            call.cancel();
     }
 
     // 뒤로 가기
@@ -112,7 +122,7 @@ public class NoticeDeleteFragment extends BottomSheetDialogFragment {
         String jwtAccessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
 
         RetrofitAPI apiService = RetrofitClientJwt.getApiService(jwtAccessToken);
-        Call<NoticeVoteFinishResponse> call = apiService.deleteNotice(jwtAccessToken, teamId, noticeId);
+        call = apiService.deleteNotice(jwtAccessToken, teamId, noticeId);
         call.enqueue(new Callback<NoticeVoteFinishResponse>() {
             @Override
             public void onResponse(Call<NoticeVoteFinishResponse> call, Response<NoticeVoteFinishResponse> response) {

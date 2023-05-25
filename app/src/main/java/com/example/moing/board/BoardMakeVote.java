@@ -59,6 +59,8 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapter.
     private static final String JWT_ACCESS_TOKEN = "JWT_access_token";
     private SharedPreferences sharedPreferences;
 
+    private Call<BoardMakeVoteResponse> call;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +131,14 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapter.
         upload = (Button) findViewById(R.id.btn_upload);
         upload.setOnClickListener(uploadClickListener);
         upload.setClickable(false);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(call != null)
+            call.cancel();
     }
 
     // 취소 버튼
@@ -326,7 +336,7 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapter.
         Log.d(TAG, "teamId : " + teamId);
 
         BoardMakeVoteRequest br = new BoardMakeVoteRequest(requestList, str_content, str_title, multi.isChecked(), anony.isChecked());
-        Call<BoardMakeVoteResponse> call = apiService.makeVote(accessToken, teamId, br);
+        call = apiService.makeVote(accessToken, teamId, br);
         call.enqueue(new Callback<BoardMakeVoteResponse>() {
             @Override
             public void onResponse(Call<BoardMakeVoteResponse> call, Response<BoardMakeVoteResponse> response) {

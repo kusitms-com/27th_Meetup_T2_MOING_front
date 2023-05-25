@@ -34,6 +34,8 @@ public class RegisterInputNameActivity extends AppCompatActivity {
     private static final String JWT_ACCESS_TOKEN = "JWT_access_token";
 
     private SharedPreferences sharedPreferences;
+
+    private Call<RegisterNameResponse> call;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,7 +126,7 @@ public class RegisterInputNameActivity extends AppCompatActivity {
 
                 String nickname = editText.getText().toString();
 
-                Call<RegisterNameResponse> call = retrofitAPI.NameAvailable(nickname);
+                call = retrofitAPI.NameAvailable(nickname);
                 call.enqueue(new Callback<RegisterNameResponse>() {
                     @Override
                     public void onResponse(Call<RegisterNameResponse> call, Response<RegisterNameResponse> response) {
@@ -183,4 +185,12 @@ public class RegisterInputNameActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(call != null){
+            call.cancel();
+        }
+    }
 }

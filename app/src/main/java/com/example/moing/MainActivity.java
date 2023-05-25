@@ -43,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvNickName;
     private ImageButton btnMyPage;
 
+    private  Call<TeamListResponse> call;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +72,14 @@ public class MainActivity extends AppCompatActivity {
     });
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (call != null)
+            call.cancel();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         setTeamList();
@@ -82,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         String jwtAccessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
         Log.d(TAG, jwtAccessToken);
         RetrofitAPI apiService = RetrofitClientJwt.getApiService(jwtAccessToken);
-        Call<TeamListResponse> call = apiService.getTeamList(jwtAccessToken);
+        call = apiService.getTeamList(jwtAccessToken);
         call.enqueue(new Callback<TeamListResponse>() {
             @Override
             public void onResponse(@NonNull Call<TeamListResponse> call, @NonNull Response<TeamListResponse> response) {

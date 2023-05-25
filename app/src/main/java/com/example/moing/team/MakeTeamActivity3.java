@@ -70,6 +70,10 @@ public class MakeTeamActivity3 extends AppCompatActivity {
     private File imageFile;  // 업로드할 이미지 파일
     private String uniqueFileNameWithExtension; // 업로드할 이미지 파일의 이름
 
+    private Call<MakeTeamResponse> call;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,6 +129,15 @@ public class MakeTeamActivity3 extends AppCompatActivity {
 
     }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (call != null) {
+            call.cancel(); // API 요청 취소
+        }
+    }
+
     /**
      * 버튼 클릭 시 소모임 Data 전송 후 다음 화면 실행
      **/
@@ -167,7 +180,7 @@ public class MakeTeamActivity3 extends AppCompatActivity {
                 Integer.parseInt(period), Integer.parseInt(cnt), uniqueFileNameWithExtension,
                 etResolution.getText().toString(), date);
 
-        Call<MakeTeamResponse> call = apiService.makeTeam(token, makeTeamRequest);
+        call = apiService.makeTeam(token, makeTeamRequest);
         call.enqueue(new Callback<MakeTeamResponse>() {
             @Override
             public void onResponse(@NonNull Call<MakeTeamResponse> call, @NonNull Response<MakeTeamResponse> response) {

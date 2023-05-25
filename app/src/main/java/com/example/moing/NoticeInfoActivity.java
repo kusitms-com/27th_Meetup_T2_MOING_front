@@ -31,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.moing.Request.NoticeCommentRequest;
 import com.example.moing.Response.NoticeCommentListResponse;
@@ -80,6 +81,12 @@ public class NoticeInfoActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private Long teamId, noticeId, userId, noticeCommentId;
     private int activityTask;
+
+    private  Call<NoticeInfoResponse> noticeInfoResponseCall;
+    private Call<NoticeCommentListResponse> noticeCommentListResponseCall;
+    private  Call<NoticeCommentResponse> noticeCommentResponseCall;
+    private Context context;
+    private RequestManager glideManager; // RequestManager 객체 선언
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,6 +176,30 @@ public class NoticeInfoActivity extends AppCompatActivity {
         /** 댓글 API 호출 **/
         getComment();
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        context = this;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(glideManager != null){
+            glideManager.clear(profile);
+        }
+
+        if(noticeInfoResponseCall != null)
+            noticeInfoResponseCall.cancel();
+
+        if(noticeCommentListResponseCall != null)
+            noticeCommentListResponseCall.cancel();
+
+        if(noticeCommentResponseCall != null)
+            noticeCommentResponseCall.cancel();
     }
 
     /** 뒤로 가기 버튼 클릭 리스너 **/
@@ -274,8 +305,8 @@ public class NoticeInfoActivity extends AppCompatActivity {
 
         Log.d(TAG, "noticeId : " + String.valueOf(noticeId));
 
-        Call<NoticeInfoResponse> call = apiService.NoticeInfo(accessToken, teamId, noticeId);
-        call.enqueue(new Callback<NoticeInfoResponse>() {
+        noticeInfoResponseCall = apiService.NoticeInfo(accessToken, teamId, noticeId);
+        noticeInfoResponseCall.enqueue(new Callback<NoticeInfoResponse>() {
             @Override
             public void onResponse(Call<NoticeInfoResponse> call, Response<NoticeInfoResponse> response) {
                 // 응답이 성공적일 때
@@ -306,18 +337,32 @@ public class NoticeInfoActivity extends AppCompatActivity {
 //                                .load(infoResponse.getData().getUserImageUrl())
 //                                .into(profile);
                         S3Utils.downloadImageFromS3(infoResponse.getData().getUserImageUrl(), new DownloadImageCallback() {
+
                             @Override
                             public void onImageDownloaded(byte[] data) {
-                                runOnUiThread(() -> Glide.with(NoticeInfoActivity.this)
-                                        .asBitmap()
-                                        .load(data)
-                                        .into(profile));
+                                if(context != null){
+                                    runOnUiThread(() ->{
+                                        glideManager = Glide.with(context);
+
+                                        glideManager
+                                                .asBitmap()
+                                                .load(data)
+                                                .into(profile);
+                                    });
+                                }
                             }
                             @Override
                             public void onImageDownloadFailed() {
-                                runOnUiThread(() -> Glide.with(NoticeInfoActivity.this)
-                                        .load(infoResponse.getData().getUserImageUrl())
-                                        .into(profile));
+                                if(context != null){
+                                    runOnUiThread(() ->{
+                                        glideManager = Glide.with(context);
+
+                                        glideManager
+                                                .asBitmap()
+                                                .load(infoResponse.getData().getUserImageUrl())
+                                                .into(profile);
+                                    });
+                                }
                             }
                         });
 
@@ -367,8 +412,8 @@ public class NoticeInfoActivity extends AppCompatActivity {
     private void getComment() {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
         apiService = RetrofitClientJwt.getApiService(accessToken);
-        Call<NoticeCommentListResponse> call = apiService.makeNoticeCommentList(accessToken, teamId, noticeId);
-        call.enqueue(new Callback<NoticeCommentListResponse>() {
+        noticeCommentListResponseCall = apiService.makeNoticeCommentList(accessToken, teamId, noticeId);
+        noticeCommentListResponseCall.enqueue(new Callback<NoticeCommentListResponse>() {
             @Override
             public void onResponse(Call<NoticeCommentListResponse> call, Response<NoticeCommentListResponse> response) {
                 if(response.isSuccessful()) {
@@ -419,8 +464,8 @@ public class NoticeInfoActivity extends AppCompatActivity {
         apiService = RetrofitClientJwt.getApiService(accessToken);
         String content = et_comment.getText().toString();
         NoticeCommentRequest commentRequest = new NoticeCommentRequest(content);
-        Call<NoticeCommentResponse> call = apiService.makeNoticeComment(accessToken, teamId, noticeId, commentRequest);
-        call.enqueue(new Callback<NoticeCommentResponse>() {
+        noticeCommentResponseCall = apiService.makeNoticeComment(accessToken, teamId, noticeId, commentRequest);
+        noticeCommentResponseCall.enqueue(new Callback<NoticeCommentResponse>() {
             @Override
             public void onResponse(Call<NoticeCommentResponse> call, Response<NoticeCommentResponse> response) {
                 if(response.isSuccessful()) {

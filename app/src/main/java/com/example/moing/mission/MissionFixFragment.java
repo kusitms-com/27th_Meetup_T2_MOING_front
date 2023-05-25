@@ -44,6 +44,8 @@ public class MissionFixFragment extends BottomSheetDialogFragment {
     private static final String JWT_ACCESS_TOKEN = "JWT_access_token";
     private Long teamId, missionId;
 
+    private Call<MissionInfoResponse> call;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -71,6 +73,14 @@ public class MissionFixFragment extends BottomSheetDialogFragment {
         return view;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(call != null){
+            call.cancel();
+        }
+    }
+
     // 닫기 버튼 클릭 시
     View.OnClickListener closeClickListener = v -> dismiss();
     // 미션 수정 버튼 클릭 시 미션 수정 액티비티 실행
@@ -86,7 +96,7 @@ public class MissionFixFragment extends BottomSheetDialogFragment {
         Log.d(TAG, jwtAccessToken);
 
         RetrofitAPI apiService = RetrofitClientJwt.getApiService(jwtAccessToken);
-        Call<MissionInfoResponse> call = apiService.getMission(jwtAccessToken, teamId, missionId);
+        call = apiService.getMission(jwtAccessToken, teamId, missionId);
         call.enqueue(new Callback<MissionInfoResponse>() {
             @Override
             public void onResponse(@NonNull Call<MissionInfoResponse> call, @NonNull Response<MissionInfoResponse> response) {

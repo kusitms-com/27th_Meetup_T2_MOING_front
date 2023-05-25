@@ -71,6 +71,8 @@ public class MissionReviseActivity extends AppCompatActivity {
 
     ImageView xIcon;
 
+    private Call<MissionUpdateResponse> call;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -210,6 +212,14 @@ public class MissionReviseActivity extends AppCompatActivity {
                 timePickerDialog.show();
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(call != null)
+            call.cancel();
     }
 
     // 취소 버튼
@@ -394,7 +404,7 @@ public class MissionReviseActivity extends AppCompatActivity {
         Log.d(TAG, jwtAccessToken);
 
         RetrofitAPI apiService = RetrofitClientJwt.getApiService(jwtAccessToken);
-        Call<MissionUpdateResponse> call = apiService.putMissionUpdate(jwtAccessToken, teamId, missionId, new MissionUpdateRequest(title, dueTo, content, rule));
+        call = apiService.putMissionUpdate(jwtAccessToken, teamId, missionId, new MissionUpdateRequest(title, dueTo, content, rule));
         call.enqueue(new Callback<MissionUpdateResponse>() {
             @Override
             public void onResponse(@NonNull Call<MissionUpdateResponse> call, @NonNull Response<MissionUpdateResponse> response) {

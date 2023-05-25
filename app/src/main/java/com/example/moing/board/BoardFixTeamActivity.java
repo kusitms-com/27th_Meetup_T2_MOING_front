@@ -80,6 +80,8 @@ public class BoardFixTeamActivity extends AppCompatActivity {
     // 소모임 정보 수정
     private Button btnFixTeam;
 
+    private Call<TeamUpdateResponse> call;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -145,6 +147,15 @@ public class BoardFixTeamActivity extends AppCompatActivity {
         ImageButton btnClose = findViewById(R.id.board_fix_btn_close);
         btnClose.setOnClickListener(view -> finish());
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(call != null)
+            call.cancel();
+    }
+
     /** Button click 시 변경된 소모임 이름 or 종료날짜 or 사진 서버에 전송 구현 예정) 및 종료 **/
     View.OnClickListener onFixTeamClickListener = new View.OnClickListener() {
         @Override
@@ -316,7 +327,7 @@ public class BoardFixTeamActivity extends AppCompatActivity {
         Log.d(TAG, jwtAccessToken);
 
         RetrofitAPI apiService = RetrofitClientJwt.getApiService(jwtAccessToken);
-        Call<TeamUpdateResponse> call = apiService.putTeamUpdate(jwtAccessToken, teamId, new TeamUpdateRequest(endDate, name, image, teamId));
+        call = apiService.putTeamUpdate(jwtAccessToken, teamId, new TeamUpdateRequest(endDate, name, image, teamId));
         call.enqueue(new Callback<TeamUpdateResponse>() {
             @Override
             public void onResponse(@NonNull Call<TeamUpdateResponse> call, @NonNull Response<TeamUpdateResponse> response) {
