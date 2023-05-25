@@ -31,7 +31,7 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
     private List<BoardVoteInfoResponse.VoteChoice> voteSelected;
     private Context context;
     private OnItemClickListener clickListener = null;
-    private boolean anonymous, multi;
+    private boolean anonymous, multi, checkResult;
 
     // 리사이클러뷰 안의 리사이클러뷰 관련
     // 두번째 어댑터와 연결
@@ -46,11 +46,13 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
         this.clickListener = listener;
     }
 
+    // checkResult 변수는 결과를 가져올 때와, 투표를 선택했을 때를 구분하기 위해 집어넣은 변수 (false는 투표 전 결과, true는 투표 후 결과를 의미한다.)
     public VoteInfoAdapterFirst(List<BoardVoteInfoResponse.VoteChoice> voteChoiceList, List<BoardVoteInfoResponse.VoteChoice> voteSelected,
-                                Context context) {
+                                Context context, boolean checkResult) {
         this.voteChoiceList = voteChoiceList;
         this.voteSelected = voteSelected;
         this.context = context;
+        this.checkResult = checkResult;
     }
 
     @Override
@@ -84,6 +86,14 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
         // 익명일 때 가시성 여부
         vH.btn_people.setVisibility(anonymous ? View.INVISIBLE : View.VISIBLE);
 
+        if(checkResult) {
+            // 제일 많이 투표한 항목 중에서
+            if (voteChoice.getVoteUserNickName().size() == getMaxUserCount()) {
+                vH.mView.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.main_dark_500));
+                vH.tv_text.setTextColor(ContextCompat.getColor(context, R.color.secondary_grey_black_1));
+                vH.count.setTextColor(ContextCompat.getColor(context, R.color.secondary_grey_black_1));
+            }
+        }
 
         // Checkbox 상태 변경
         vH.checkBox.setChecked(voteChoice.isChecked());
@@ -95,7 +105,6 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
             // 선택되지 않은 상태의 배경색 제거
             vH.checkBox.setButtonTintList(ColorStateList.valueOf(Color.parseColor("#959698")));
         }
-
 
         int spanCount = 4; // 열 개수를 의미
 
@@ -110,19 +119,6 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
         vH.recyclerView.addItemDecoration(voteNoReadGridSpacing);
         vH.recyclerView.setLayoutManager(llm2);
 
-        // SpanSizeLookup 설정
-        llm2.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                // 아이템의 스팬(너비)을 동적으로 조정
-                if (position % (spanCount + 1) == 0) {
-                    // 가로가 긴 아이템은 현재 열 개수만큼 스팬(너비)을 차지하도록 설정
-                    return spanCount;
-                } else return 1;
-            }
-        });
-
-
         /** 각 투표 리스트 별 사용자 항목을 구분해주기 위한 이중 리스트 생성 **/
         List<List<String>> userList2 = new ArrayList<>();
         // 2개 선택했다면 2번 반복
@@ -132,7 +128,7 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
             userList2.add(tmp);
         }
 
-        second_adapter = new VoteInfoAdapterSecond(voteChoiceList, userList2);
+        second_adapter = new VoteInfoAdapterSecond(voteChoiceList, voteChoice.getVoteUserNickName(), multi);
         vH.recyclerView.setAdapter(second_adapter);
         /** Second Adapter 전달 완료 **/
 
@@ -219,5 +215,16 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
             }
 
         }
+    }
+    /** 가장 많이 투표한 항목 계산 메서드 **/
+    private int getMaxUserCount() {
+        int maxCount = 0;
+        for (BoardVoteInfoResponse.VoteChoice voteChoice : voteChoiceList) {
+            int userCount = voteChoice.getVoteUserNickName().size();
+            if (userCount > maxCount) {
+                maxCount = userCount;
+            }
+        }
+        return maxCount;
     }
 }

@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -40,6 +41,7 @@ import com.example.moing.Response.BoardMakeVoteResponse;
 import com.example.moing.Response.BoardVoteCommentResponse;
 import com.example.moing.Response.BoardVoteInfoResponse;
 import com.example.moing.Response.BoardVoteMakeCommentResponse;
+import com.example.moing.Response.NoticeVoteFinishResponse;
 import com.example.moing.retrofit.ChangeJwt;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClientJwt;
@@ -97,6 +99,11 @@ public class VoteInfoActivity extends AppCompatActivity {
     private Long teamId, voteId, userId, voteCommentId;
     private int activityTask;
 
+    private Call<BoardVoteInfoResponse> boardVoteInfoResponseCall;
+    private Call<BoardVoteCommentResponse> boardVoteCommentResponseCall;
+    private Call<BoardVoteMakeCommentResponse> boardVoteMakeCommentResponseCall;
+    private  Call<BoardVoteInfoResponse> getBoardVoteInfoResponseCall;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,9 +111,6 @@ public class VoteInfoActivity extends AppCompatActivity {
 
         // Token을 사용할 SharedPreference
         sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-
-        Long user_id = sharedPreferences.getLong(USER_ID, 0);
-        Log.d(TAG, "user id : " + user_id);
 
         // Intent로 값 전달 받기.
         teamId = getIntent().getLongExtra("teamId", 0);
@@ -215,12 +219,31 @@ public class VoteInfoActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+
+        if(boardVoteInfoResponseCall != null)
+            boardVoteInfoResponseCall.cancel();
+
+        if(boardVoteCommentResponseCall != null)
+            boardVoteCommentResponseCall.cancel();
+
+        if(boardVoteMakeCommentResponseCall != null)
+            boardVoteMakeCommentResponseCall.cancel();
+
+        if(getBoardVoteInfoResponseCall != null)
+            getBoardVoteInfoResponseCall.cancel();
+    }
+
     /**
      * 뒤로 가기 버튼 클릭 리스너
      **/
     View.OnClickListener backClickListener = v -> {
         Intent intent = new Intent(getApplicationContext(), NoticeVoteActivity.class);
         intent.putExtra("teamId", teamId);
+        intent.putExtra("NoticeOrVote", 2);
         // 목표보드에서 투표 상세로 바로 이동했을 때
         if (activityTask != 1) {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -228,7 +251,6 @@ public class VoteInfoActivity extends AppCompatActivity {
         // 투표 생성 후 투표 상세로 이동했거나, 투표 목록에서 투표 상세로 이동했을 때
         startActivity(intent);
     };
-
 
     /**
      * 모달 버튼 클릭 리스너
@@ -245,7 +267,7 @@ public class VoteInfoActivity extends AppCompatActivity {
     };
 
     /**
-     * 투표 완료 버튼 클릭 리스너
+     * 투표하기 완료 버튼 클릭 리스너
      **/
     View.OnClickListener completeClickListener = v -> {
         selectComment();
@@ -288,13 +310,8 @@ public class VoteInfoActivity extends AppCompatActivity {
             /** 화면 새로고침 **/
             makeComment();
             getComment();
-            Intent intent = getIntent();
-            teamId = getIntent().getLongExtra("teamId", 0);
-            voteId = getIntent().getLongExtra("voteId", 0);
-            finish();
-            overridePendingTransition(0, 0); // 인텐트 애니메이션 없애기
-            startActivity(intent); // 현재 액티비티 재실행
-            overridePendingTransition(0, 0); // 인텐트 애니메이션 없애기
+            restartActivity();
+
         }
     };
 
@@ -329,8 +346,10 @@ public class VoteInfoActivity extends AppCompatActivity {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
         apiService = RetrofitClientJwt.getApiService(accessToken);
 
-        Call<BoardVoteInfoResponse> call = apiService.voteDetailInfo(accessToken, teamId, voteId);
-        call.enqueue(new Callback<BoardVoteInfoResponse>() {
+
+        boardVoteInfoResponseCall = apiService.voteDetailInfo(accessToken, teamId, voteId);
+        boardVoteInfoResponseCall.enqueue(new Callback<BoardVoteInfoResponse>() {
+
             @Override
             public void onResponse(Call<BoardVoteInfoResponse> call, Response<BoardVoteInfoResponse> response) {
                 // 응답이 성공적일 때
@@ -342,8 +361,6 @@ public class VoteInfoActivity extends AppCompatActivity {
                         title.setText(infoResponse.getData().getTitle());
                         // 내용 set
                         content.setText(infoResponse.getData().getMemo());
-                        // userId set
-                        userId = infoResponse.getData().getUserId();
 
                         // 시간 set
                         String tmpTime = infoResponse.getData().getCreatedDate();
@@ -395,7 +412,7 @@ public class VoteInfoActivity extends AppCompatActivity {
                         /** 익명 여부에 따른 텍스트 처리 **/
                         tvAnony.setVisibility(anonymous ? View.VISIBLE : View.INVISIBLE);
 
-                        VoteInfoAdapterFirst voteInfoAdapterFirst = new VoteInfoAdapterFirst(voteChoiceList, voteSelected, VoteInfoActivity.this);
+                        VoteInfoAdapterFirst voteInfoAdapterFirst = new VoteInfoAdapterFirst(voteChoiceList, voteSelected, VoteInfoActivity.this, false);
                         voteInfoAdapterFirst.setMultiAnony(multiple, anonymous);
                         voteRecycle.setAdapter(voteInfoAdapterFirst);
 
@@ -466,20 +483,33 @@ public class VoteInfoActivity extends AppCompatActivity {
     private void getComment() {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
         apiService = RetrofitClientJwt.getApiService(accessToken);
-        Call<BoardVoteCommentResponse> call = apiService.voteCommentInfo(accessToken, teamId, voteId);
-        call.enqueue(new Callback<BoardVoteCommentResponse>() {
+        boardVoteCommentResponseCall = apiService.voteCommentInfo(accessToken, teamId, voteId);
+        boardVoteCommentResponseCall.enqueue(new Callback<BoardVoteCommentResponse>() {
             @Override
             public void onResponse(Call<BoardVoteCommentResponse> call, Response<BoardVoteCommentResponse> response) {
 
                 if (response.isSuccessful()) {
                     BoardVoteCommentResponse commentResponse = response.body();
                     if (commentResponse.getMessage().equals("투표 댓글 목록을 최신순으로 조회하였습니다")) {
+                        userId = sharedPreferences.getLong(USER_ID, 0);
                         voteCommentList = commentResponse.getData();
-                        voteCommentAdapter = new VoteCommentAdapter(voteCommentList, VoteInfoActivity.this);
-                        commentRecycle.setAdapter(voteCommentAdapter);
-                        voteCommentAdapter.notifyDataSetChanged();
-                    }
-                    else{
+                        VoteCommentAdapter commentAdapter = new VoteCommentAdapter(voteCommentList, VoteInfoActivity.this);
+                        Log.d(TAG, "userId : " + userId);
+                        commentAdapter.setUserId(userId);
+                        // 삭제 버튼 클릭 리스너
+                        commentAdapter.setOnCommentButtonClickListener(new VoteCommentAdapter.OnCommentButtonClickListener() {
+                            @Override
+                            public void onCommentButtonClick(int position) {
+                                // 해당 Position의 버튼이 클릭됐을 때 수행할 동작을 구한다.
+                                /** 삭제 API **/
+                                Long commentId = voteCommentList.get(position).getVoteCommentId();
+                                deleteVoteComment(commentId);
+                            }
+                        });
+
+                        commentRecycle.setAdapter(commentAdapter);
+                        commentAdapter.notifyDataSetChanged();
+                    } else {
                         try {
                             /** 작성자가 아닌 경우 **/
                             String errorJson = response.errorBody().string();
@@ -521,8 +551,8 @@ public class VoteInfoActivity extends AppCompatActivity {
         apiService = RetrofitClientJwt.getApiService(accessToken);
         String content = et_comment.getText().toString();
         BoardVoteMakeCommentRequest commentRequest = new BoardVoteMakeCommentRequest(content);
-        Call<BoardVoteMakeCommentResponse> call = apiService.voteMakeComment(accessToken, teamId, voteId, commentRequest);
-        call.enqueue(new Callback<BoardVoteMakeCommentResponse>() {
+        boardVoteMakeCommentResponseCall = apiService.voteMakeComment(accessToken, teamId, voteId, commentRequest);
+        boardVoteMakeCommentResponseCall.enqueue(new Callback<BoardVoteMakeCommentResponse>() {
             @Override
             public void onResponse(Call<BoardVoteMakeCommentResponse> call, Response<BoardVoteMakeCommentResponse> response) {
 
@@ -584,8 +614,8 @@ public class VoteInfoActivity extends AppCompatActivity {
         }
 
         BoardVoteDoRequest request = new BoardVoteDoRequest(voteList);
-        Call<BoardVoteInfoResponse> call = apiService.voteResult(accessToken, teamId, voteId, request);
-        call.enqueue(new Callback<BoardVoteInfoResponse>() {
+        getBoardVoteInfoResponseCall = apiService.voteResult(accessToken, teamId, voteId, request);
+        getBoardVoteInfoResponseCall.enqueue(new Callback<BoardVoteInfoResponse>() {
             @Override
             public void onResponse(Call<BoardVoteInfoResponse> call, Response<BoardVoteInfoResponse> response) {
                 BoardVoteInfoResponse infoResponse = response.body();
@@ -597,12 +627,12 @@ public class VoteInfoActivity extends AppCompatActivity {
                         boolean anonymous = infoResponse.getData().isAnonymous();
                         boolean multiple = infoResponse.getData().isMultiple();
 
-                        voteInfoAdapterFirst = new VoteInfoAdapterFirst(voteChoiceList, voteSelected, VoteInfoActivity.this);
-                        voteInfoAdapterFirst.setMultiAnony(multiple, anonymous);
-                        voteRecycle.setAdapter(voteInfoAdapterFirst);
-                        voteInfoAdapterFirst.notifyDataSetChanged();
+                        VoteInfoAdapterFirst adapterFirst = new VoteInfoAdapterFirst(voteChoiceList, voteSelected, VoteInfoActivity.this, true);
+                        adapterFirst.setMultiAnony(multiple, anonymous);
+                        voteRecycle.setAdapter(adapterFirst);
+                        adapterFirst.notifyDataSetChanged();
 
-                        voteComplete.setText("투표 수정하기");
+                        voteComplete.setText("투표 완료");
                         voteComplete.setTextColor(Color.parseColor("#37383C"));
                         voteComplete.setBackgroundColor(Color.parseColor("#1A1919"));
                         tv_noread.setText(voteNoReadList.size() + "명이 아직 안 읽었어요");
@@ -651,5 +681,71 @@ public class VoteInfoActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    /**
+     * 댓글 삭제 API
+     **/
+    private void deleteVoteComment(Long commentId) {
+        String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
+        apiService = RetrofitClientJwt.getApiService(accessToken);
+        userId = sharedPreferences.getLong(USER_ID, 0);
+
+        Call<NoticeVoteFinishResponse> call = apiService.deleteVoteComment(accessToken, teamId, voteId, commentId);
+        call.enqueue(new Callback<NoticeVoteFinishResponse>() {
+            @Override
+            public void onResponse(Call<NoticeVoteFinishResponse> call, Response<NoticeVoteFinishResponse> response) {
+                if (response.isSuccessful()) {
+                    NoticeVoteFinishResponse finishResponse = response.body();
+                    if (finishResponse.getMessage().equals("투표의 댓글을 삭제하였습니다")) {
+                        restartActivity();
+                        Toast.makeText(getApplicationContext(), "해당 댓글이 삭제되었습니다", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    try {
+                        /** 작성자가 아닌 경우 **/
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        // 에러 코드로 에러처리를 하고 싶을 때
+                        // String errorCode = errorObject.getString("errorCode");
+                        /** 메세지로 에러처리를 구분 **/
+                        String message = errorObject.getString("message");
+
+                        if (message.equals("만료된 토큰입니다.")) {
+                            ChangeJwt.updateJwtToken(VoteInfoActivity.this);
+                            deleteVoteComment(commentId);
+                        }
+
+                    } catch (IOException e) {
+                        // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        // JSON 객체에서 필드 추출에 실패했을 때
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NoticeVoteFinishResponse> call, Throwable t) {
+                Log.d(TAG, "댓글 삭제 실패 ..." + t.getMessage());
+            }
+        });
+    }
+
+    private void restartActivity() {
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = getIntent();
+                teamId = getIntent().getLongExtra("teamId", 0);
+                voteId = getIntent().getLongExtra("voteId", 0);
+                finish();
+                overridePendingTransition(0, 0); // 인텐트 애니메이션 없애기
+                startActivity(intent); // 현재 액티비티 재실행
+                overridePendingTransition(0, 0); // 인텐트 애니메이션 없애기
+            }
+        }, 500); // 1초(1000밀리초) 딜레이
     }
 }

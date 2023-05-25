@@ -59,6 +59,8 @@ public class MissionCreateActivity extends AppCompatActivity {
 
     ImageView xIcon;
 
+    private  Call<MissionCreateResponse> call;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -178,7 +180,19 @@ public class MissionCreateActivity extends AppCompatActivity {
                                 // 사용자가 선택한 시간 처리
                                 // hourOfDay와 minute 변수에 선택한 시간 정보가 전달됨
                                 // 이곳에 선택한 시간에 대한 처리 코드를 작성하면 됩니다.
-                                String selectedTime = hourOfDay + ":" + minute;
+                                String hour = "";
+                                if(hourOfDay < 10) {
+                                    hour = "0" + String.valueOf(hourOfDay);
+                                } else {
+                                    hour = String.valueOf(hourOfDay);
+                                }
+                                String min = "";
+                                if (minute < 10) {
+                                    min = "0" + String.valueOf(min);
+                                } else {
+                                    min = String.valueOf(minute);
+                                }
+                                String selectedTime = hour+":"+min;
                                 et_time.setText(selectedTime);
                             }
                         }, hour, minute, false);
@@ -187,6 +201,14 @@ public class MissionCreateActivity extends AppCompatActivity {
                 timePickerDialog.show();
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if( call != null)
+            call.cancel();
     }
 
     // 취소 버튼
@@ -341,7 +363,7 @@ public class MissionCreateActivity extends AppCompatActivity {
        // 미션 생성 요청 객체 생성
        MissionCreateRequest missionCreateRequest = new MissionCreateRequest(title, dueTo, content, rule);
 
-       Call<MissionCreateResponse> call = apiService.makeMission(accessToken, teamId, missionCreateRequest);
+       call = apiService.makeMission(accessToken, teamId, missionCreateRequest);
 
        call.enqueue(new Callback<MissionCreateResponse>() {
            @Override
@@ -354,6 +376,7 @@ public class MissionCreateActivity extends AppCompatActivity {
 
                    Intent intent = new Intent(MissionCreateActivity.this, BoardActivity.class);
                    intent.putExtra("teamId", teamId);
+                   intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                    startActivity(intent);
 
                } else {

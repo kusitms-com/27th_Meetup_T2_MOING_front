@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -32,7 +33,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.target.Target;
 import com.example.moing.NoticeInfoActivity;
 import com.example.moing.NoticeVoteActivity;
 import com.example.moing.R;
@@ -91,6 +94,21 @@ public class BoardGoalFragment extends Fragment {
     private int noReadNotice, noReadVote, acitivityTask;
     private Long personalRate, teamRate;
     RelativeLayout relative_progress;
+
+    private  Call<BoardMoimResponse> boardMoimResponseCall;
+    private  Call<BoardFireResponse> boardFireResponseCall;
+    private Call<BoardNoReadNoticeResponse> boardNoReadNoticeResponseCall;
+    private Call<BoardNoReadVoteResponse> boardNoReadVoteResponseCall;
+    private Call<BoardCurrentLocateResponse> boardCurrentLocateResponseCall;
+    private Context context; // 컨텍스트 변수 추가
+    private RequestManager glideManager; // RequestManager 객체 선언
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        this.context = context; // 컨텍스트 저장
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_board_goal, container, false);
@@ -174,7 +192,7 @@ public class BoardGoalFragment extends Fragment {
         /** 불 그래픽 통신 **/
         apiFire();
         /** 안 읽은 투표 API **/
-        noReadVote(); // voteDataList, noReadVote 값 변경됨!!
+        //noReadVote(); // voteDataList, noReadVote 값 변경됨!!
         /** 안 읽은 공지 API **/
         noReadNotice(); // noticeDataList, noReadNotice 값 변경됨!!
         /** 팀, 나의 위치 API **/
@@ -209,6 +227,32 @@ public class BoardGoalFragment extends Fragment {
         return view;
     }
 
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if (glideManager != null) {
+            glideManager.clear(teamImg); // Glide 이미지 로딩 취소
+        }
+
+        if(boardMoimResponseCall != null)
+            boardMoimResponseCall.cancel();
+
+        if(boardFireResponseCall != null)
+            boardFireResponseCall.cancel();
+
+        if(boardNoReadNoticeResponseCall != null)
+            boardNoReadNoticeResponseCall.cancel();
+
+        if(boardNoReadVoteResponseCall != null)
+            boardNoReadVoteResponseCall.cancel();
+
+        if(boardCurrentLocateResponseCall != null)
+            boardCurrentLocateResponseCall.cancel();
+
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -216,6 +260,7 @@ public class BoardGoalFragment extends Fragment {
         getApi();
 
     }
+
 
     private class BtnOnClickListener implements View.OnClickListener {
         @Override
@@ -276,8 +321,8 @@ public class BoardGoalFragment extends Fragment {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
         Log.d(TAG, accessToken);
         apiService = RetrofitClientJwt.getApiService(accessToken);
-        Call<BoardMoimResponse> call = apiService.moimInfo(accessToken, teamId);
-        call.enqueue(new Callback<BoardMoimResponse>() {
+        boardMoimResponseCall = apiService.moimInfo(accessToken, teamId);
+        boardMoimResponseCall.enqueue(new Callback<BoardMoimResponse>() {
             @Override
             public void onResponse(Call<BoardMoimResponse> call, Response<BoardMoimResponse> response) {
                 if(response.isSuccessful()) {
@@ -289,6 +334,7 @@ public class BoardGoalFragment extends Fragment {
                             name = data.getName();
                             profileImg = data.getProfileImg();
                             remainPeriod = data.getRemainingPeriod();
+                            Log.d(TAG, remainPeriod);
                             nowTime = data.getNowTime();
 
                             /** 데이터 확인 **/
@@ -305,12 +351,20 @@ public class BoardGoalFragment extends Fragment {
                             S3Utils.downloadImageFromS3(profileImg, new DownloadImageCallback() {
                                 @Override
                                 public void onImageDownloaded(byte[] data) {
-                                    runOnUiThread(() -> Glide.with(getContext())
-                                            .asBitmap()
-                                            .load(data)
-                                            .centerCrop()
-                                            .transform(new RoundedCorners(24))
-                                            .into(teamImg));
+                                    if(context != null) {
+                                        runOnUiThread(() -> {
+                                            glideManager = Glide.with(context);
+
+                                            glideManager
+                                                    .asBitmap()
+                                                    .load(data)
+                                                    .centerCrop()
+                                                    .transform(new RoundedCorners(24))
+                                                    .into(teamImg);
+
+                                        });
+                                    }
+
                                 }
 
                                 @Override
@@ -364,8 +418,8 @@ public class BoardGoalFragment extends Fragment {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
         apiService = RetrofitClientJwt.getApiService(accessToken);
 
-        Call<BoardFireResponse> call = apiService.newBoardFire(accessToken, teamId);
-        call.enqueue(new Callback<BoardFireResponse>() {
+        boardFireResponseCall = apiService.newBoardFire(accessToken, teamId);
+        boardFireResponseCall.enqueue(new Callback<BoardFireResponse>() {
             @Override
             public void onResponse(Call<BoardFireResponse> call, Response<BoardFireResponse> response) {
                 if(response.isSuccessful()) {
@@ -428,8 +482,9 @@ public class BoardGoalFragment extends Fragment {
             Drawable d = ContextCompat.getDrawable(requireContext(), R.drawable.ic_board_fire3_3x);
             fire.setBackground(d);
         } else {
-            Drawable d = ContextCompat.getDrawable(requireContext(), R.drawable.ic_board_fire4_3x);
-            fire.setBackground(d);
+//            Drawable d = ContextCompat.getDrawable(requireContext(), R.drawable.ic_fire_motion);
+//            fire.setBackground(d);
+            Glide.with(this).load(R.drawable.ic_fire_motion).override(Target.SIZE_ORIGINAL).into(fire);
         }
     }
 
@@ -440,8 +495,8 @@ public class BoardGoalFragment extends Fragment {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
         apiService = RetrofitClientJwt.getApiService(accessToken);
 
-        Call<BoardNoReadNoticeResponse> call = apiService.noReadNotice(accessToken, teamId);
-        call.enqueue(new Callback<BoardNoReadNoticeResponse>() {
+        boardNoReadNoticeResponseCall = apiService.noReadNotice(accessToken, teamId);
+        boardNoReadNoticeResponseCall.enqueue(new Callback<BoardNoReadNoticeResponse>() {
             @Override
             public void onResponse(Call<BoardNoReadNoticeResponse> call, Response<BoardNoReadNoticeResponse> response) {
                 if(response.isSuccessful()) {
@@ -519,8 +574,8 @@ public class BoardGoalFragment extends Fragment {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
         apiService = RetrofitClientJwt.getApiService(accessToken);
 
-        Call<BoardNoReadVoteResponse> call = apiService.noReadVote(accessToken, teamId);
-        call.enqueue(new Callback<BoardNoReadVoteResponse>() {
+        boardNoReadVoteResponseCall = apiService.noReadVote(accessToken, teamId);
+        boardNoReadVoteResponseCall.enqueue(new Callback<BoardNoReadVoteResponse>() {
             @Override
             public void onResponse(Call<BoardNoReadVoteResponse> call, Response<BoardNoReadVoteResponse> response) {
                 if(response.isSuccessful()) {
@@ -548,6 +603,7 @@ public class BoardGoalFragment extends Fragment {
                                 Intent intent = new Intent(getActivity(), NoticeInfoActivity.class);
                                 intent.putExtra("teamId", teamId);
                                 intent.putExtra("voteId", voteId);
+                                Log.d(TAG, "teamId :" + teamId +", voteID : " + voteId);
                                 intent.putExtra("acitivityTask", 1);
                                 startActivity(intent);
                             }
@@ -653,8 +709,8 @@ public class BoardGoalFragment extends Fragment {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
         apiService = RetrofitClientJwt.getApiService(accessToken);
 
-        Call<BoardCurrentLocateResponse> call = apiService.curLocate(accessToken, teamId);
-        call.enqueue(new Callback<BoardCurrentLocateResponse>() {
+        boardCurrentLocateResponseCall = apiService.curLocate(accessToken, teamId);
+        boardCurrentLocateResponseCall.enqueue(new Callback<BoardCurrentLocateResponse>() {
             @Override
             public void onResponse(Call<BoardCurrentLocateResponse> call, Response<BoardCurrentLocateResponse> response) {
                 BoardCurrentLocateResponse locateResponse = response.body();

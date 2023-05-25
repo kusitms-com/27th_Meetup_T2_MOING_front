@@ -44,6 +44,8 @@ public class MissionPassActivity extends AppCompatActivity {
 
     private Long teamId, missionId;
 
+    private Call<MissionSkipResponse> call;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +73,15 @@ public class MissionPassActivity extends AppCompatActivity {
         close.setOnClickListener(closeClickListener);
         complete.setOnClickListener(completeClickListener);
         complete.setClickable(false);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(call != null){
+            call.cancel();
+        }
     }
 
     // 뒤로가기 버튼 눌렀을 때
@@ -140,7 +151,7 @@ public class MissionPassActivity extends AppCompatActivity {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
         apiService = RetrofitClientJwt.getApiService(accessToken);
 
-        Call<MissionSkipResponse> call = apiService.skipMyMission(accessToken,teamId,missionId,why.getText().toString());
+        call = apiService.skipMyMission(accessToken,teamId,missionId,why.getText().toString());
         call.enqueue(new Callback<MissionSkipResponse>() {
             @Override
             public void onResponse(Call<MissionSkipResponse> call, Response<MissionSkipResponse> response) {

@@ -53,10 +53,9 @@
 
     <ImageView
         android:id="@+id/iv_fire"
-        android:layout_width="88dp"
-        android:layout_height="88dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_marginTop="108dp"
-        android:src="@drawable/arrow_left"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv2" />
@@ -67,7 +66,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/pretendard_medium"
         android:textSize="16dp"
-        android:text="북시즘의 모잉불이 기다리고 있어요."
+        android:text="소모임의 팀원들이 당신을 기다리고 있어요!"
         android:textColor="@color/secondary_grey_black_6"
         android:gravity="center"
         app:layout_constraintTop_toBottomOf="@+id/iv_fire"

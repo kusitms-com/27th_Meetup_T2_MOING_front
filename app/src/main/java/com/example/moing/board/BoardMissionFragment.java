@@ -66,6 +66,8 @@ public class BoardMissionFragment extends Fragment {
     TextView et_content;
     ImageView createBtn;
 
+    private Call<MissionListResponse> call;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -103,6 +105,14 @@ public class BoardMissionFragment extends Fragment {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if(call != null)
+            call.cancel();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         MissionList();
@@ -115,7 +125,7 @@ public class BoardMissionFragment extends Fragment {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
         apiService = RetrofitClientJwt.getApiService(accessToken);
 
-        Call<MissionListResponse> call = apiService.MissionList(accessToken, teamId);
+        call = apiService.MissionList(accessToken, teamId);
         call.enqueue(new Callback<MissionListResponse>() {
             @Override
             public void onResponse(Call<MissionListResponse> call, Response<MissionListResponse> response) {

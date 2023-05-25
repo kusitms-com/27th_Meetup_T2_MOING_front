@@ -45,6 +45,8 @@ public class InviteTeamActivity extends AppCompatActivity {
     TextView tv_code, tv3, tv4;
     public String checkCode;
 
+    private Call<InviteTeamResponse> call;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +106,14 @@ public class InviteTeamActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (call != null) {
+            call.cancel(); // API 요청 취소
+        }
+    }
+
     /**
      * 입력한 초대코드 전달 -> 성공시 소모임 가입 완료
      **/
@@ -114,7 +124,7 @@ public class InviteTeamActivity extends AppCompatActivity {
         Log.d(TAG, jwtAccessToken);
 
         RetrofitAPI apiService = RetrofitClientJwt.getApiService(jwtAccessToken);
-        Call<InviteTeamResponse> call = apiService.postAuthInvitationCode(jwtAccessToken,invitationCode);
+        call = apiService.postAuthInvitationCode(jwtAccessToken,invitationCode);
         call.enqueue(new Callback<InviteTeamResponse>() {
             @SuppressLint("ShowToast")
             @Override
@@ -123,8 +133,12 @@ public class InviteTeamActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         Log.d(TAG, response.body().toString());
+                        Long teamId = response.body().getData().getTeamId();
+                        String profileImg = response.body().getData().getProfileImg();
                         // 인증 완료
                         Intent intent = new Intent(getApplicationContext(), InviteSuccessTeamActivity.class);
+                        intent.putExtra("teamId", teamId);
+                        intent.putExtra("profileImg", profileImg);
                         startActivity(intent);
                     }
                 } else {

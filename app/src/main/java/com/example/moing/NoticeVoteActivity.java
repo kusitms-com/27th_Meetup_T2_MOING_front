@@ -74,6 +74,9 @@ public class NoticeVoteActivity extends AppCompatActivity {
     // RecyclerView
     RecyclerView mRecyclerView, mRecyclerView2;
 
+    private  Call<AllNoticeResponse> allNoticeResponseCall;
+    private   Call<AllVoteResponse> allVoteResponseCall;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -199,6 +202,17 @@ public class NoticeVoteActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (allVoteResponseCall != null)
+            allVoteResponseCall.cancel();
+
+        if (allNoticeResponseCall != null)
+            allNoticeResponseCall.cancel();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
 
@@ -274,8 +288,8 @@ public class NoticeVoteActivity extends AppCompatActivity {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
         apiService = RetrofitClientJwt.getApiService(accessToken);
 
-        Call<AllNoticeResponse> call = apiService.viewNotice(accessToken, teamId);
-        call.enqueue(new Callback<AllNoticeResponse>() {
+        allNoticeResponseCall = apiService.viewNotice(accessToken, teamId);
+        allNoticeResponseCall.enqueue(new Callback<AllNoticeResponse>() {
             @Override
             public void onResponse(Call<AllNoticeResponse> call, Response<AllNoticeResponse> response) {
                 AllNoticeResponse noticeResponse = response.body();
@@ -350,8 +364,8 @@ public class NoticeVoteActivity extends AppCompatActivity {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
         apiService = RetrofitClientJwt.getApiService(accessToken);
 
-        Call<AllVoteResponse> call = apiService.viewVote(accessToken, teamId);
-        call.enqueue(new Callback<AllVoteResponse>() {
+        allVoteResponseCall = apiService.viewVote(accessToken, teamId);
+        allVoteResponseCall.enqueue(new Callback<AllVoteResponse>() {
             @Override
             public void onResponse(Call<AllVoteResponse> call, Response<AllVoteResponse> response) {
                 AllVoteResponse voteResponse = response.body();

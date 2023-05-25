@@ -54,6 +54,8 @@ public class MyPageActivity extends AppCompatActivity {
     private String introduction;
     private String profile;
 
+    private Call<MyPageResponse> call;
+
 
 
     @Override
@@ -98,6 +100,14 @@ public class MyPageActivity extends AppCompatActivity {
         getMyPageInfo();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (call != null) {
+            call.cancel(); // API 요청 취소
+        }
+    }
+
     // 프로필 수정 버튼 클릭 - 프로필 정보 설정 액티비티로 이동
     View.OnClickListener onModifyClickListener = v -> {
         Intent intent = new Intent(getApplicationContext(), MyPageModifyActivity.class);
@@ -137,7 +147,7 @@ public class MyPageActivity extends AppCompatActivity {
 
 
         RetrofitAPI apiService = RetrofitClientJwt.getApiService(jwtAccessToken);
-        Call<MyPageResponse> call = apiService.getMyPage(jwtAccessToken);
+        call = apiService.getMyPage(jwtAccessToken);
         call.enqueue(new Callback<MyPageResponse>() {
             @Override
             public void onResponse(@NonNull Call<MyPageResponse> call, @NonNull Response<MyPageResponse> response) {

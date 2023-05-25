@@ -40,6 +40,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private static final String PROCESS = "process";
 
+    private Call<LoginResponse> call;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +53,15 @@ public class LoginActivity extends AppCompatActivity {
         retrofitAPI = RetrofitClient.getApiService();
 
         sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(call !=  null){
+            call.cancel();
+        }
     }
 
     View.OnClickListener loginClickListener = view -> {
@@ -107,7 +118,7 @@ public class LoginActivity extends AppCompatActivity {
         String TAG = "LoginStart";
         Log.d(TAG, accessToken);
         LoginRequest loginRequest = new LoginRequest(accessToken);
-        Call<LoginResponse> call = retrofitAPI.kakaoLogin(loginRequest);
+        call = retrofitAPI.kakaoLogin(loginRequest);
 
         call.enqueue(new Callback<LoginResponse>() {
             @Override

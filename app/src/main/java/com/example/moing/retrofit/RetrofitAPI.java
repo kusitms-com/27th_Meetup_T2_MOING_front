@@ -136,6 +136,12 @@ public interface RetrofitAPI {
     @POST("/api/v1/{teamId}/notice/{noticeId}/comment")
     Call<NoticeCommentResponse> makeNoticeComment(@Header("Authorization") String token, @Path("teamId") Long teamId, @Path("noticeId") Long noticeId, @Body NoticeCommentRequest noticeCommentRequest);
 
+    /** 공지 댓글 삭제 **/
+    @DELETE("/api/v1/{teamId}/notice/{noticeId}/comment/{commentId}")
+    Call<NoticeVoteFinishResponse> deleteNoticeComment(@Header("Authorization") String token,
+                                                     @Path("teamId") Long teamId, @Path("noticeId") Long noticeId,
+                                                     @Path("commentId") Long commentId);
+
     /** 공지 댓글 목록 조회 **/
     @GET("/api/v1/{teamId}/notice/{noticeId}/comment")
     Call<NoticeCommentListResponse> makeNoticeCommentList(@Header("Authorization") String token, @Path("teamId") Long teamId, @Path("noticeId") Long noticeId);
@@ -172,11 +178,17 @@ public interface RetrofitAPI {
     @DELETE("/api/v1/{teamId}/notice/{noticeId}")
     Call<NoticeVoteFinishResponse> deleteNotice(@Header("Authorization") String token, @Path("teamId") Long teamId, @Path("noticeId") Long noticeId);
     /**
-     * 댓글 생성
+     * 투표 댓글 생성
      **/
     @POST("/api/v1/{teamId}/vote/{voteId}/comment")
     Call<BoardVoteMakeCommentResponse> voteMakeComment(@Header("Authorization") String token, @Path("teamId") Long teamId,
                                                        @Path("voteId") Long voteId, @Body BoardVoteMakeCommentRequest request);
+
+    /** 투표 댓글 삭제 **/
+    @DELETE("/api/v1/{teamId}/vote/{voteId}/comment/{commentId}")
+    Call<NoticeVoteFinishResponse> deleteVoteComment(@Header("Authorization") String token,
+                                                     @Path("teamId") Long teamId, @Path("voteId") Long voteId,
+                                                     @Path("commentId") Long commentId);
 
     /** 미션 인증 **/
     @POST("api/v1/{teamId}/missions/{missionId}/submit")

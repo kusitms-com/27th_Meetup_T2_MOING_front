@@ -52,6 +52,8 @@ public class MissionStatusUndoneFragment extends Fragment {
     private long missionId;
     private boolean isExist;
 
+    private Call<String> call;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_mission_status_undone, container, false);
@@ -93,6 +95,15 @@ public class MissionStatusUndoneFragment extends Fragment {
         undoneDialog.setContentView(R.layout.fragment_mission_status_undone_popup); // xml 레이아웃 파일 연결
 
         return rootView;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if(call != null){
+            call.cancel();
+        }
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
@@ -163,7 +174,7 @@ public class MissionStatusUndoneFragment extends Fragment {
         Log.d(TAG, jwtAccessToken);
 
         RetrofitAPI apiService = RetrofitClientJwt.getApiService(jwtAccessToken);
-        Call<String> call = apiService.postThrowFire(jwtAccessToken,teamId,missionId,usermissionId);
+        call = apiService.postThrowFire(jwtAccessToken,teamId,missionId,usermissionId);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(@androidx.annotation.NonNull Call<String> call, @androidx.annotation.NonNull Response<String> response) {

@@ -55,6 +55,7 @@ public class MissionStatusActivity extends AppCompatActivity implements Serializ
     private Long teamId;
     private Long missionId;
 
+    private Call<MissionStatusListResponse> call;
 
 
     @Override
@@ -94,6 +95,16 @@ public class MissionStatusActivity extends AppCompatActivity implements Serializ
         // 미션 목록 리스트 불러오고 설정
         getMissionStatusList(teamId,missionId);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(call != null){
+            call.cancel();
+        }
+    }
+
     private void getMissionStatusList(long teamId, long missionId) {
         // Token 을 가져오기 위한 SharedPreferences Token
         SharedPreferences sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
@@ -102,7 +113,7 @@ public class MissionStatusActivity extends AppCompatActivity implements Serializ
         RetrofitAPI apiService = RetrofitClientJwt.getApiService(jwtAccessToken);
 
         // 미션 현황 리스트를 가져옴
-        Call<MissionStatusListResponse> call = apiService.getMissionStatusList(jwtAccessToken,teamId, missionId);
+        call = apiService.getMissionStatusList(jwtAccessToken,teamId, missionId);
         call.enqueue(new Callback<MissionStatusListResponse>() {
             @Override
             public void onResponse(@NonNull Call<MissionStatusListResponse> call, @NonNull Response<MissionStatusListResponse> response) {

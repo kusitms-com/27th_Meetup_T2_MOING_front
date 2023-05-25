@@ -73,7 +73,6 @@
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="28dp"
                 android:fontFamily="@font/pretendard_semi_bold"
-                android:text="4월에 같이 읽을 책 추천 댓글로 남기기"
                 android:textColor="@color/secondary_grey_black_3"
                 android:textSize="20dp" />
 
@@ -97,7 +96,6 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="8dp"
                     android:fontFamily="@font/pretendard_semi_bold"
-                    android:text="뺭뺭"
                     android:textColor="@color/secondary_grey_black_6"
                     android:textSize="16dp" />
 
@@ -132,8 +130,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="18dp"
                 android:fontFamily="@font/pretendard_medium"
-                android:text="여러분, 벌써 4월이 찾아왔어요 ..이번 달에 읽을 책을 같이 정해봅시다! 댓글로 한 권씩 책 추천 해주세요!
-                저는 ‘스즈메의 문단속'에 한 표 던지겠습니다! 하하저는 ‘스즈메의 문단속'에 한 표 던지겠습니다! 하하저는 ‘스즈메의 문단속'에 한 표 던지겠습니다! 하하"
+                android:text=""
                 android:textColor="@color/secondary_grey_black_3"
                 android:textSize="16dp" />
 
@@ -213,18 +210,21 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
     <!-- 댓글 작성 부분 -->
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:background="@color/secondary_grey_black_13"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
 
         <EditText
             android:id="@+id/et_comment"
-            android:layout_width="310dp"
+            android:layout_width="0dp"
             android:layout_height="50dp"
-            android:layout_marginHorizontal="16dp"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="24dp"
             android:background="@drawable/layout_round_black10"
             android:fontFamily="@font/pretendard_medium"
             android:hint="댓글을 작성해주세요"
@@ -232,24 +232,18 @@
             android:textColor="@color/secondary_grey_black_3"
             android:textColorHint="@color/secondary_grey_black_7"
             android:textSize="18dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/imgbtn_send"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_gravity="center"/>
 
         <ImageButton
             android:id="@+id/imgbtn_send"
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="25dp"
+            android:layout_marginHorizontal="16dp"
             android:background="@android:color/transparent"
             android:src="@drawable/ic_send"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_marginLeft="16dp"
+            android:layout_gravity="center" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

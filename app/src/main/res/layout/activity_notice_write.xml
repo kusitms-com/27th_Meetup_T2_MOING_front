@@ -147,7 +147,7 @@
                 android:layout_marginTop="4dp"
                 android:background="@drawable/border_all"
                 android:gravity="left"
-                android:hint="투표 관련 내용을 적어주세요"
+                android:hint="공지 관련 내용을 적어주세요"
                 android:padding="16dp"
                 android:textColorHint="@color/secondary_grey_black_7"
                 android:textSize="18dp"
