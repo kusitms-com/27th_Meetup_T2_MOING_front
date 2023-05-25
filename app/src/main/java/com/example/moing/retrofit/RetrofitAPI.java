@@ -8,6 +8,7 @@ import com.example.moing.Request.ChangeJwtRequest;
 import com.example.moing.Request.LoginRequest;
 import com.example.moing.Request.MakeTeamRequest;
 import com.example.moing.Request.MissionCreateRequest;
+import com.example.moing.Request.MissionUpdateRequest;
 import com.example.moing.Request.NoticeCommentRequest;
 import com.example.moing.Request.NoticeCreateRequest;
 import com.example.moing.Request.ProfileUpdateRequest;
@@ -35,6 +36,7 @@ import com.example.moing.Response.MakeTeamResponse;
 import com.example.moing.Response.AllNoticeResponse;
 import com.example.moing.Response.MissionCreateResponse;
 import com.example.moing.Response.MissionListResponse;
+import com.example.moing.Response.MissionUpdateResponse;
 import com.example.moing.Response.MyPageResponse;
 import com.example.moing.Response.NoticeCommentListResponse;
 import com.example.moing.Response.NoticeCommentResponse;
@@ -236,4 +238,9 @@ public interface RetrofitAPI {
     /** 프로필 수정 **/
     @PUT("/api/v1/users/mypage")
     Call<ProfileUpdateResponse> putProfileUpdate(@Header("Authorization") String token, @Body ProfileUpdateRequest request);
+
+    /** 미션 정보 수정  **/
+    @PUT("api/v1/{teamId}/missions/{missionId}")
+    Call<MissionUpdateResponse> putMissionUpdate(@Header("Authorization") String token, @Path("teamId") Long teamId, @Path("missionId") Long missionId, @Body MissionUpdateRequest missionUpdateRequest);
+
 }

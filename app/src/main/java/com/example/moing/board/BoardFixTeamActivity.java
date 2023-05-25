@@ -171,8 +171,6 @@ public class BoardFixTeamActivity extends AppCompatActivity {
                 putTeamUpdate(name,endDate,beforeImage);
             }
 
-
-
             finish();
         }
     };
