@@ -46,7 +46,11 @@ import com.example.moing.s3.DownloadImageCallback;
 import com.example.moing.s3.ImageUtils;
 import com.example.moing.s3.S3Utils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -323,7 +327,26 @@ public class MyPageModifyActivity extends AppCompatActivity {
                         activeBtnDone();
                     }
                 } else {
-                    // 응답 실패 처리 로직
+                    try {
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        // 에러 코드로 에러처리를 하고 싶을 때
+                        // String errorCode = errorObject.getString("errorCode");
+                        /** 메세지로 에러처리를 구분 **/
+                        String message = errorObject.getString("message");
+
+                        if (message.equals("만료된 토큰입니다.")) {
+                            ChangeJwt.updateJwtToken(getApplicationContext());
+                            getNicknameDup();
+                        }
+
+                    } catch (IOException e) {
+                        // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        // JSON 객체에서 필드 추출에 실패했을 때
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -351,11 +374,27 @@ public class MyPageModifyActivity extends AppCompatActivity {
                         Log.d(TAG, response.body().toString());
 
                     }
-                }  switch (response.message()) {
-                    case "만료된 토큰입니다.":
-                        ChangeJwt.updateJwtToken(getApplicationContext());
-                        putProfileUpdate(nickname, introduction, profile);
-                        break;
+                }else{
+                    try {
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        // 에러 코드로 에러처리를 하고 싶을 때
+                        // String errorCode = errorObject.getString("errorCode");
+                        /** 메세지로 에러처리를 구분 **/
+                        String message = errorObject.getString("message");
+
+                        if (message.equals("만료된 토큰입니다.")) {
+                            ChangeJwt.updateJwtToken(getApplicationContext());
+                            putProfileUpdate(nickname, introduction, profile);
+                        }
+
+                    } catch (IOException e) {
+                        // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        // JSON 객체에서 필드 추출에 실패했을 때
+                        e.printStackTrace();
+                    }
                 }
             }
             @Override

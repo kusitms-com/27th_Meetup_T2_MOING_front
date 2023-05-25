@@ -24,8 +24,14 @@ import com.example.moing.Request.NoticeCreateRequest;
 import com.example.moing.Response.MissionCreateResponse;
 import com.example.moing.Response.NoticeCreateResponse;
 import com.example.moing.board.BoardActivity;
+import com.example.moing.retrofit.ChangeJwt;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClientJwt;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -176,12 +182,16 @@ public class NoticeWriteActivity extends AppCompatActivity {
     View.OnClickListener uploadClickListener = v -> {
         // 미션 정보를 입력한 후 업로드하기 버튼을 클릭할 때 수행되는 코드
 
-        String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
-        apiService = RetrofitClientJwt.getApiService(accessToken);
-
         // 공지 정보를 가져옴
         String title1 = title.getText().toString();
         String content2 =  content.getText().toString();
+
+        upload(title1,content2);
+    };
+
+    private void upload(String title1, String content2){
+        String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
+        apiService = RetrofitClientJwt.getApiService(accessToken);
 
         // 공지 생성 요청 객체 생성
         NoticeCreateRequest noticeCreateRequest = new NoticeCreateRequest(title1, content2);
@@ -206,8 +216,27 @@ public class NoticeWriteActivity extends AppCompatActivity {
                     startActivity(intent);
 
                 } else {
-                    // 요청이 실패함
-                    // 실패 처리를 위한 코드 작성
+                    try {
+                        /** 작성자가 아닌 경우 **/
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        // 에러 코드로 에러처리를 하고 싶을 때
+                        // String errorCode = errorObject.getString("errorCode");
+                        /** 메세지로 에러처리를 구분 **/
+                        String message = errorObject.getString("message");
+
+                        if (message.equals("만료된 토큰입니다.")) {
+                            ChangeJwt.updateJwtToken(NoticeWriteActivity.this);
+                            upload(title1,content2);
+                        }
+
+                    } catch (IOException e) {
+                        // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        // JSON 객체에서 필드 추출에 실패했을 때
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -217,6 +246,6 @@ public class NoticeWriteActivity extends AppCompatActivity {
                 // 실패 처리를 위한 코드 작성
             }
         });
-    };
+    }
 
 }

@@ -300,7 +300,6 @@ public class MissionClickActivity extends AppCompatActivity {
                         } catch (NumberFormatException e) {
                             e.printStackTrace();
                         }
-
                         rule.setText(response_rule);
 
                         /** 구현 예정 **/

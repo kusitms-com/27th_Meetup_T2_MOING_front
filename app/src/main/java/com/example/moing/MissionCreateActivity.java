@@ -29,9 +29,14 @@ import com.example.moing.Response.AllNoticeResponse;
 import com.example.moing.Response.MissionCreateResponse;
 import com.example.moing.board.BoardActivity;
 import com.example.moing.board.BoardMissionFragment;
+import com.example.moing.retrofit.ChangeJwt;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClientJwt;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.Calendar;
 
 import retrofit2.Call;
@@ -320,44 +325,67 @@ public class MissionCreateActivity extends AppCompatActivity {
    View.OnClickListener uploadClickListener = v -> {
             // 미션 정보를 입력한 후 업로드하기 버튼을 클릭할 때 수행되는 코드
 
-            String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
-            apiService = RetrofitClientJwt.getApiService(accessToken);
-
             // 미션 정보를 가져옴
             String title = et_title.getText().toString();
             String dueTo = et_calendar.getText().toString() + " " + et_time.getText().toString();
             String content = et_content.getText().toString();
             String rule = et_rule.getText().toString();
 
-            // 미션 생성 요청 객체 생성
-            MissionCreateRequest missionCreateRequest = new MissionCreateRequest(title, dueTo, content, rule);
+            uploadMission(title,dueTo,content,rule);
 
-            Call<MissionCreateResponse> call = apiService.makeMission(accessToken, teamId, missionCreateRequest);
+   };
 
-            call.enqueue(new Callback<MissionCreateResponse>() {
-                @Override
-                public void onResponse(Call<MissionCreateResponse> call, Response<MissionCreateResponse> response) {
-                    if (response.isSuccessful()) {
-                        // 요청이 성공적으로 처리됨
-                        MissionCreateResponse missionCreateResponse = response.body();
-                        // 생성된 미션 데이터에 접근하여 필요한 작업 수행
-                        MissionCreateResponse.MissionData missionData = missionCreateResponse.getData();
+   private void uploadMission(String title, String dueTo, String content, String rule){
+       String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
+       apiService = RetrofitClientJwt.getApiService(accessToken);
+       // 미션 생성 요청 객체 생성
+       MissionCreateRequest missionCreateRequest = new MissionCreateRequest(title, dueTo, content, rule);
 
-                        Intent intent = new Intent(MissionCreateActivity.this, BoardActivity.class);
-                        intent.putExtra("teamId", teamId);
-                        startActivity(intent);
+       Call<MissionCreateResponse> call = apiService.makeMission(accessToken, teamId, missionCreateRequest);
 
-                    } else {
-                        // 요청이 실패함
-                        // 실패 처리를 위한 코드 작성
-                    }
-                }
+       call.enqueue(new Callback<MissionCreateResponse>() {
+           @Override
+           public void onResponse(Call<MissionCreateResponse> call, Response<MissionCreateResponse> response) {
+               if (response.isSuccessful()) {
+                   // 요청이 성공적으로 처리됨
+                   MissionCreateResponse missionCreateResponse = response.body();
+                   // 생성된 미션 데이터에 접근하여 필요한 작업 수행
+                   MissionCreateResponse.MissionData missionData = missionCreateResponse.getData();
 
-                @Override
-                public void onFailure(Call<MissionCreateResponse> call, Throwable t) {
-                    // 요청이 실패함
-                    // 실패 처리를 위한 코드 작성
-                }
-            });
-        };
+                   Intent intent = new Intent(MissionCreateActivity.this, BoardActivity.class);
+                   intent.putExtra("teamId", teamId);
+                   startActivity(intent);
+
+               } else {
+                   try {
+                       /** 작성자가 아닌 경우 **/
+                       String errorJson = response.errorBody().string();
+                       JSONObject errorObject = new JSONObject(errorJson);
+                       // 에러 코드로 에러처리를 하고 싶을 때
+                       // String errorCode = errorObject.getString("errorCode");
+                       /** 메세지로 에러처리를 구분 **/
+                       String message = errorObject.getString("message");
+
+                       if (message.equals("만료된 토큰입니다.")) {
+                           ChangeJwt.updateJwtToken(getApplicationContext());
+                           uploadMission(title,dueTo,content,rule);
+                       }
+
+                   } catch (IOException e) {
+                       // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                       e.printStackTrace();
+                   } catch (JSONException e) {
+                       // JSON 객체에서 필드 추출에 실패했을 때
+                       e.printStackTrace();
+                   }
+               }
+           }
+
+           @Override
+           public void onFailure(Call<MissionCreateResponse> call, Throwable t) {
+               // 요청이 실패함
+               // 실패 처리를 위한 코드 작성
+           }
+       });
+   }
 }

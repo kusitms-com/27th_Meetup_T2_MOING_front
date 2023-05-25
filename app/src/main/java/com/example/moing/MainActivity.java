@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +22,10 @@ import com.example.moing.retrofit.RetrofitClientJwt;
 import com.example.moing.team.TeamAdapter;
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.List;
 
 import retrofit2.Call;
@@ -105,12 +110,30 @@ public class MainActivity extends AppCompatActivity {
                         btnMyPage.setOnClickListener(onMyPageClickListener);
 
                     }
-                } else if (response.message().equals("만료된 토큰입니다.")) {
-                    // 토큰 재발급 후 다시 호출
-                    ChangeJwt.updateJwtToken(MainActivity.this);
-                    setTeamList();
+                } else {
+                    try {
+                        /** 작성자가 아닌 경우 **/
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        // 에러 코드로 에러처리를 하고 싶을 때
+                        // String errorCode = errorObject.getString("errorCode");
+                        /** 메세지로 에러처리를 구분 **/
+                        String message = errorObject.getString("message");
+
+                        if (message.equals("만료된 토큰입니다.")) {
+                            ChangeJwt.updateJwtToken(getApplicationContext());
+                            setTeamList();
+                        }
+
+                    } catch (IOException e) {
+                        // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        // JSON 객체에서 필드 추출에 실패했을 때
+                        e.printStackTrace();
+                    }
                 }
-            }
+                }
 
             @Override
             public void onFailure(@NonNull Call<TeamListResponse> call, @NonNull Throwable t) {

@@ -28,6 +28,10 @@ import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClientJwt;
 import com.google.android.material.tabs.TabLayout;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +52,8 @@ public class MissionStatusActivity extends AppCompatActivity implements Serializ
     private Fragment fragmentUnDone;
     private TabLayout tabs;
 
-    private long teamId = 1;
-    private long missionId = 6;
+    private long teamId;
+    private long missionId;
 
 
 
@@ -58,10 +62,11 @@ public class MissionStatusActivity extends AppCompatActivity implements Serializ
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mission_status);
 
-//        // teamId 값 받아오기
-//        long teamId = getIntent().getLongExtra("teamId", 0);
-//        // missionId 값 받아오기
-//        long missionId = getIntent().getLongExtra("teamId", 0);
+        // teamId 값 받아오기
+        teamId = getIntent().getLongExtra("teamId", 0);
+        // missionId 값 받아오기
+        missionId = getIntent().getLongExtra("teamId", 0);
+        Log.d(TAG,"teamId :"+teamId+"missionId: "+missionId);
 
         // 내 인증 상태 확인 컴포넌트 - 진행 상태에 따라 다르게 나옴
         ivStatus = findViewById(R.id.mission_status_iv_status); // 나의 인증 상태
@@ -86,14 +91,9 @@ public class MissionStatusActivity extends AppCompatActivity implements Serializ
             finish();
         });
 
-        // 더미 - 삭제 예정
-        long teamId = 1;
-        long missionId = 6;
-
         // 미션 목록 리스트 불러오고 설정
         getMissionStatusList(teamId,missionId);
     }
-
     private void getMissionStatusList(long teamId, long missionId) {
         // Token 을 가져오기 위한 SharedPreferences Token
         SharedPreferences sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
@@ -142,6 +142,12 @@ public class MissionStatusActivity extends AppCompatActivity implements Serializ
                             undoneBundle.putSerializable("undoneList", new ArrayList<>(undoneList)); // 미완료한 인원 목록 저장
                             undoneBundle.putSerializable("fireList", new ArrayList<>(fireList));    // 불을 맞은 인원 목록 저장
 
+                            // teamId, missionId 저장
+                            doneBundle.putLong("teamId",teamId);
+                            doneBundle.putLong("missionId",missionId);
+                            undoneBundle.putLong("teamId",teamId);
+                            undoneBundle.putLong("missionId",missionId);
+
                             // "나"를 표현하기 위한 나의 상태 체크
                             if(myStatus.equals("COMPLETE") || myStatus.equals("PENDING")){
                                 // 나의 인증 현황이 완료 or 건너뛰기 - 인증 완료에 true 전달
@@ -187,14 +193,34 @@ public class MissionStatusActivity extends AppCompatActivity implements Serializ
                             tvCompleteUser.setText(completeUser);
                         });
                     }
-                } else if (response.message().equals("만료된 토큰입니다.")) {
-                    Log.d(TAG, "만료된 토큰입니다.");
-                    // 토큰 재발급 후 다시 호출
-                    ChangeJwt.updateJwtToken(MissionStatusActivity.this);
-                    getMissionStatusList(teamId, missionId);
                 }
-                else if (response.message().equals("접근이 거부되었습니다.")) {
-                    Log.d(TAG, "접근이 거부되었습니다.");
+                else{
+                    Log.d(TAG, response.message());
+                    try {
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        // 에러 코드로 에러처리를 하고 싶을 때
+                        // String errorCode = errorObject.getString("errorCode");
+                        /** 메세지로 에러처리를 구분 **/
+                        String message = errorObject.getString("message");
+
+                        if (message.equals("만료된 토큰입니다.")) {
+                            // 토큰 재발급 후 다시 호출
+                            ChangeJwt.updateJwtToken(MissionStatusActivity.this);
+                            getMissionStatusList(teamId, missionId);
+                        }
+                        else if(message.equals("접근이 거부되었습니다.")){
+                            Log.d(TAG, "접근이 거부되었습니다.");
+                        }
+
+
+                    } catch (IOException e) {
+                        // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        // JSON 객체에서 필드 추출에 실패했을 때
+                        e.printStackTrace();
+                    }
                 }
             }
 

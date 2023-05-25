@@ -49,6 +49,10 @@ import com.example.moing.retrofit.RetrofitClientJwt;
 import com.example.moing.s3.DownloadImageCallback;
 import com.example.moing.s3.S3Utils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -276,53 +280,73 @@ public class BoardGoalFragment extends Fragment {
         call.enqueue(new Callback<BoardMoimResponse>() {
             @Override
             public void onResponse(Call<BoardMoimResponse> call, Response<BoardMoimResponse> response) {
-                BoardMoimResponse moimResponse = response.body();
-                String msg = moimResponse.getMessage();
-                if (msg.equals("목표보드 프로필을 조회하였습니다")) {
-                    BoardMoimResponse.Data data = moimResponse.getData();
-                    name = data.getName();
-                    profileImg = data.getProfileImg();
-                    remainPeriod = data.getRemainingPeriod();
-                    nowTime = data.getNowTime();
+                if(response.isSuccessful()) {
+                    if(response.body() != null) {
+                        BoardMoimResponse moimResponse = response.body();
+                        String msg = moimResponse.getMessage();
+                        if (msg.equals("목표보드 프로필을 조회하였습니다")) {
+                            BoardMoimResponse.Data data = moimResponse.getData();
+                            name = data.getName();
+                            profileImg = data.getProfileImg();
+                            remainPeriod = data.getRemainingPeriod();
+                            nowTime = data.getNowTime();
 
-                    /** 데이터 확인 **/
-                    Log.d("BOARDGOALFRAGMENT", name);
-                    Log.d("BOARDGOALFRAGMENT", profileImg);
-                    Log.d("BOARDGOALFRAGMENT", remainPeriod);
-                    Log.d("BOARDGOALFRAGMENT", nowTime);
+                            /** 데이터 확인 **/
+                            Log.d("BOARDGOALFRAGMENT", name);
+                            Log.d("BOARDGOALFRAGMENT", profileImg);
+                            Log.d("BOARDGOALFRAGMENT", remainPeriod);
+                            Log.d("BOARDGOALFRAGMENT", nowTime);
 
-                    // 소모임 이름 설정
-                    teamName.setText(name);
+                            // 소모임 이름 설정
+                            teamName.setText(name);
 
-                    // S3 이미지 다운로드 -> 이미지 뷰에 설정
-                    // 소모임 사진 설정
-                    S3Utils.downloadImageFromS3(profileImg, new DownloadImageCallback() {
-                        @Override
-                        public void onImageDownloaded(byte[] data) {
-                            runOnUiThread(() -> Glide.with(getContext())
-                                    .asBitmap()
-                                    .load(data)
-                                    .centerCrop()
-                                    .transform(new RoundedCorners(24))
-                                    .into(teamImg));
+                            // S3 이미지 다운로드 -> 이미지 뷰에 설정
+                            // 소모임 사진 설정
+                            S3Utils.downloadImageFromS3(profileImg, new DownloadImageCallback() {
+                                @Override
+                                public void onImageDownloaded(byte[] data) {
+                                    runOnUiThread(() -> Glide.with(getContext())
+                                            .asBitmap()
+                                            .load(data)
+                                            .centerCrop()
+                                            .transform(new RoundedCorners(24))
+                                            .into(teamImg));
+                                }
+
+                                @Override
+                                public void onImageDownloadFailed() {
+
+                                }
+                            });
+
+                            // D-Day 설정
+                            teamDay.setText("종료 " + remainPeriod);
+                            // nowTime 설정
+                            curDate.setText(nowTime);
                         }
-
-                        @Override
-                        public void onImageDownloadFailed() {
-
-                        }
-                    });
-
-                    // D-Day 설정
-                    teamDay.setText("종료 " + remainPeriod);
-                    // nowTime 설정
-                    curDate.setText(nowTime);
+                    }
                 }
+                else {
+                    try {
+                        /** 작성자가 아닌 경우 **/
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        // 에러 코드로 에러처리를 하고 싶을 때
+                        // String errorCode = errorObject.getString("errorCode");
+                        /** 메세지로 에러처리를 구분 **/
+                        String message = errorObject.getString("message");
 
-                /** 만료된 토큰일 시 재실행 **/
-                else if (msg.equals("만료된 토큰입니다.")) {
-                    ChangeJwt.updateJwtToken(requireContext());
-                    getApi();
+                        if (message.equals("만료된 토큰입니다.")) {
+                            ChangeJwt.updateJwtToken(getContext());
+                            getApi();
+                        }
+                    } catch (IOException e) {
+                        // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        // JSON 객체에서 필드 추출에 실패했을 때
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -344,20 +368,41 @@ public class BoardGoalFragment extends Fragment {
         call.enqueue(new Callback<BoardFireResponse>() {
             @Override
             public void onResponse(Call<BoardFireResponse> call, Response<BoardFireResponse> response) {
-                BoardFireResponse fireResponse = response.body();
-                String msg = fireResponse.getMessage();
+                if(response.isSuccessful()) {
+                    BoardFireResponse fireResponse = response.body();
+                    String msg = fireResponse.getMessage();
 
-                Log.d(TAG, msg);
+                    Log.d(TAG, msg);
 
-                if (msg.equals("개인별 개인별 미션 인증 현황 조회 성공")) {
-                    BoardFireResponse.Data data = fireResponse.getData();
-                    checkFire(data.getPercent());
-                    Log.d(TAG, data.getFireCopy());
-                    tv_hot.setText(data.getFireCopy());
+                    if (msg.equals("개인별 개인별 미션 인증 현황 조회 성공")) {
+                        BoardFireResponse.Data data = fireResponse.getData();
+                        checkFire(data.getPercent());
+                        Log.d(TAG, data.getFireCopy());
+                        tv_hot.setText(data.getFireCopy());
 
-                } else if (msg.equals("만료된 토큰입니다.")) {
-                    ChangeJwt.updateJwtToken(requireContext());
-                    apiFire();
+                    }
+                }
+                else {
+                    try {
+                        /** 작성자가 아닌 경우 **/
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        // 에러 코드로 에러처리를 하고 싶을 때
+                        // String errorCode = errorObject.getString("errorCode");
+                        /** 메세지로 에러처리를 구분 **/
+                        String message = errorObject.getString("message");
+
+                        if (message.equals("만료된 토큰입니다.")) {
+                            ChangeJwt.updateJwtToken(getContext());
+                            apiFire();
+                        }
+                    } catch (IOException e) {
+                        // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        // JSON 객체에서 필드 추출에 실패했을 때
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -399,43 +444,64 @@ public class BoardGoalFragment extends Fragment {
         call.enqueue(new Callback<BoardNoReadNoticeResponse>() {
             @Override
             public void onResponse(Call<BoardNoReadNoticeResponse> call, Response<BoardNoReadNoticeResponse> response) {
-                BoardNoReadNoticeResponse noReadResponse = response.body();
-                String msg = noReadResponse.getMessage();
-                if (msg.equals("확인하지 않은 공지를 최신순으로 조회하였습니다")) {
-                    // 리스트 저장
-                    noticeDataList = noReadResponse.getData();
-                    boardGoalAdapter = new BoardGoalAdapter<BoardNoReadNoticeResponse.NoticeData>
-                            (noticeDataList, BoardGoalFragment.this);
-                    recyclerView.setAdapter(boardGoalAdapter);
-                    boardGoalAdapter.notifyDataSetChanged();
+                if(response.isSuccessful()) {
+                    BoardNoReadNoticeResponse noReadResponse = response.body();
+                    String msg = noReadResponse.getMessage();
+                    if (msg.equals("확인하지 않은 공지를 최신순으로 조회하였습니다")) {
+                        // 리스트 저장
+                        noticeDataList = noReadResponse.getData();
+                        boardGoalAdapter = new BoardGoalAdapter<BoardNoReadNoticeResponse.NoticeData>
+                                (noticeDataList, BoardGoalFragment.this);
+                        recyclerView.setAdapter(boardGoalAdapter);
+                        boardGoalAdapter.notifyDataSetChanged();
 
-                    List<Long> noNoticeList = new ArrayList<>();
-                    for (BoardNoReadNoticeResponse.NoticeData noticeData : noticeDataList) {
-                        noNoticeList.add(noticeData.getNoticeId());
-                    }
-
-                    /** 리사이클러뷰 아이템 클릭 이벤트 처리 **/
-                    boardGoalAdapter.setOnItemClickListener(new BoardGoalAdapter.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(int pos) {
-                            noticeId = noNoticeList.get(pos);
-                            Intent intent = new Intent(getActivity(), NoticeInfoActivity.class);
-                            intent.putExtra("teamId", teamId);
-                            intent.putExtra("noticeId", noticeId);
-                            intent.putExtra("acitivityTask", 1);
-                            startActivity(intent);
+                        List<Long> noNoticeList = new ArrayList<>();
+                        for (BoardNoReadNoticeResponse.NoticeData noticeData : noticeDataList) {
+                            noNoticeList.add(noticeData.getNoticeId());
                         }
-                    });
 
-                    // 안 읽은 공지 개수 저장
-                    noReadNotice = noticeDataList.size();
-                    checkNoRead(noReadNotice, "공지");
-                    btnAll.setText("공지 전체보기");
+                        /** 리사이클러뷰 아이템 클릭 이벤트 처리 **/
+                        boardGoalAdapter.setOnItemClickListener(new BoardGoalAdapter.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(int pos) {
+                                noticeId = noNoticeList.get(pos);
+                                Intent intent = new Intent(getActivity(), NoticeInfoActivity.class);
+                                intent.putExtra("teamId", teamId);
+                                intent.putExtra("noticeId", noticeId);
+                                intent.putExtra("acitivityTask", 1);
+                                startActivity(intent);
+                            }
+                        });
 
-                    Log.d(TAG, "noreadNotice 통신 중 : " + noReadNotice);
-                } else if (msg.equals("만료된 토큰입니다.")) {
-                    ChangeJwt.updateJwtToken(requireContext());
-                    noReadNotice();
+                        // 안 읽은 공지 개수 저장
+                        noReadNotice = noticeDataList.size();
+                        checkNoRead(noReadNotice, "공지");
+                        btnAll.setText("공지 전체보기");
+
+                        Log.d(TAG, "noreadNotice 통신 중 : " + noReadNotice);
+                    }
+                }
+                else {
+                    try {
+                        /** 작성자가 아닌 경우 **/
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        // 에러 코드로 에러처리를 하고 싶을 때
+                        // String errorCode = errorObject.getString("errorCode");
+                        /** 메세지로 에러처리를 구분 **/
+                        String message = errorObject.getString("message");
+
+                        if (message.equals("만료된 토큰입니다.")) {
+                            ChangeJwt.updateJwtToken(getContext());
+                            noReadNotice();
+                        }
+                    } catch (IOException e) {
+                        // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        // JSON 객체에서 필드 추출에 실패했을 때
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -457,42 +523,63 @@ public class BoardGoalFragment extends Fragment {
         call.enqueue(new Callback<BoardNoReadVoteResponse>() {
             @Override
             public void onResponse(Call<BoardNoReadVoteResponse> call, Response<BoardNoReadVoteResponse> response) {
-                BoardNoReadVoteResponse voteResponse = response.body();
-                String msg = voteResponse.getMessage();
-                if (msg.equals("확인하지 않은 투표를  최신순으로 조회하였습니다")) {
-                    voteDataList = voteResponse.getData();
-                    noReadVote = voteDataList.size();
+                if(response.isSuccessful()) {
+                    BoardNoReadVoteResponse voteResponse = response.body();
+                    String msg = voteResponse.getMessage();
+                    if (msg.equals("확인하지 않은 투표를  최신순으로 조회하였습니다")) {
+                        voteDataList = voteResponse.getData();
+                        noReadVote = voteDataList.size();
 
-                    boardGoalAdapter = new BoardGoalAdapter<BoardNoReadVoteResponse.VoteData>(voteDataList, BoardGoalFragment.this);
-                    recyclerView.setAdapter(boardGoalAdapter);
-                    boardGoalAdapter.notifyDataSetChanged();
+                        boardGoalAdapter = new BoardGoalAdapter<BoardNoReadVoteResponse.VoteData>(voteDataList, BoardGoalFragment.this);
+                        recyclerView.setAdapter(boardGoalAdapter);
+                        boardGoalAdapter.notifyDataSetChanged();
 
-                    List<Long> noVoteList = new ArrayList<>();
-                    for (BoardNoReadVoteResponse.VoteData voteData : voteDataList) {
-                        noVoteList.add(voteData.getVoteId());
-                    }
+                        List<Long> noVoteList = new ArrayList<>();
+                        for (BoardNoReadVoteResponse.VoteData voteData : voteDataList) {
+                            noVoteList.add(voteData.getVoteId());
+                        }
 
-                    /** 리사이클러뷰 아이템 클릭 이벤트 처리 **/
-                    boardGoalAdapter.setOnItemClickListener(new BoardGoalAdapter.OnItemClickListener() {
+                        /** 리사이클러뷰 아이템 클릭 이벤트 처리 **/
+                        boardGoalAdapter.setOnItemClickListener(new BoardGoalAdapter.OnItemClickListener() {
                             @Override
                             public void onItemClick(int pos) {
-                            // 아이템 클릭 이벤트 처리
+                                // 아이템 클릭 이벤트 처리
                                 voteId = noVoteList.get(pos);
                                 Intent intent = new Intent(getActivity(), NoticeInfoActivity.class);
                                 intent.putExtra("teamId", teamId);
                                 intent.putExtra("voteId", voteId);
                                 intent.putExtra("acitivityTask", 1);
                                 startActivity(intent);
+                            }
+                        });
+
+                        checkNoRead(noReadVote, "투표");
+                        btnAll.setText("투표 전체보기");
+                        Log.d(TAG, "noReadVote : " + noReadVote);
+
+                    }
+                }
+                else {
+                    try {
+                        /** 작성자가 아닌 경우 **/
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        // 에러 코드로 에러처리를 하고 싶을 때
+                        // String errorCode = errorObject.getString("errorCode");
+                        /** 메세지로 에러처리를 구분 **/
+                        String message = errorObject.getString("message");
+
+                        if (message.equals("만료된 토큰입니다.")) {
+                            ChangeJwt.updateJwtToken(getContext());
+                            noReadVote();
                         }
-                    });
-
-                    checkNoRead(noReadVote, "투표");
-                    btnAll.setText("투표 전체보기");
-                    Log.d(TAG, "noReadVote : " + noReadVote);
-
-                } else if (msg.equals("만료된 토큰입니다.")) {
-                    ChangeJwt.updateJwtToken(requireContext());
-                    noReadVote();
+                    } catch (IOException e) {
+                        // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        // JSON 객체에서 필드 추출에 실패했을 때
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -578,12 +665,28 @@ public class BoardGoalFragment extends Fragment {
                     computeLocate(personalRate, teamRate);
 
                 }
-                else if (locateResponse.getMessage().equals("만료된 토큰입니다.")) {
-                    ChangeJwt.updateJwtToken(requireContext());
-                    curLocation();
+                else {
+                    try {
+                        /** 작성자가 아닌 경우 **/
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        // 에러 코드로 에러처리를 하고 싶을 때
+                        // String errorCode = errorObject.getString("errorCode");
+                        /** 메세지로 에러처리를 구분 **/
+                        String message = errorObject.getString("message");
+
+                        if (message.equals("만료된 토큰입니다.")) {
+                            ChangeJwt.updateJwtToken(getContext());
+                            curLocation();
+                        }
+                    } catch (IOException e) {
+                        // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        // JSON 객체에서 필드 추출에 실패했을 때
+                        e.printStackTrace();
+                    }
                 }
-                else
-                    Log.d(TAG, "팀, 나의 퍼센트 연동 실패.." + response.body().getMessage());
             }
 
             @Override

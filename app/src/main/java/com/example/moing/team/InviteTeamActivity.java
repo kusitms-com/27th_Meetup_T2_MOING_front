@@ -26,6 +26,11 @@ import com.example.moing.retrofit.ChangeJwt;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClientJwt;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -123,18 +128,34 @@ public class InviteTeamActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 } else {
-                    switch (response.message()){
-                        case "만료된 토큰입니다.":
+                    try {
+                        /** 작성자가 아닌 경우 **/
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        // 에러 코드로 에러처리를 하고 싶을 때
+                        // String errorCode = errorObject.getString("errorCode");
+                        /** 메세지로 에러처리를 구분 **/
+                        String message = errorObject.getString("message");
+
+                        if(message.equals("이미 해당 소모임에 참여했습니다")) {
+                            Toast.makeText(getApplicationContext(), "이미 해당 소모임에 참여했습니다",Toast.LENGTH_SHORT).show();
+                        }
+                        else if (message.equals("만료된 토큰입니다.")) {
                             ChangeJwt.updateJwtToken(getApplicationContext());
                             putTeamUpdate(invitationCode);
-                            break;
-                        case "이미 해당 소모임에 참여했습니다":
-                            Toast.makeText(getApplicationContext(), "이미 해당 소모임에 참여했습니다",Toast.LENGTH_SHORT).show();
-                            break;
-                        case "참여코드 값이 잘못되었습니다":
+                        }
+                        else if(message.equals("참여코드 값이 잘못되었습니다")){
                             Toast.makeText(getApplicationContext(), "참여코드 값이 잘못되었습니다",Toast.LENGTH_SHORT).show();
-                            break;
+                        }
+
+                    } catch (IOException e) {
+                        // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        // JSON 객체에서 필드 추출에 실패했을 때
+                        e.printStackTrace();
                     }
+
                     tv_code.setTextColor(ContextCompat.getColorStateList(InviteTeamActivity.this, R.color.secondary_grey_black_7));
                     et_code.setBackgroundResource(R.drawable.edittext_checkcode_result_false);
                     tv4.setVisibility(View.VISIBLE);

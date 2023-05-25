@@ -24,6 +24,7 @@ import com.example.moing.Response.BoardMoimResponse;
 import com.example.moing.Response.BoardNoReadNoticeResponse;
 import com.example.moing.Response.BoardNoReadVoteResponse;
 import com.example.moing.Response.BoardVoteCommentResponse;
+import com.example.moing.Response.NoticeVoteFinishResponse;
 import com.example.moing.Response.BoardVoteInfoResponse;
 import com.example.moing.Response.BoardVoteMakeCommentResponse;
 import com.example.moing.Response.ChangeJwtResponse;
@@ -54,6 +55,7 @@ import com.example.moing.Response.TeamUpdateResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
@@ -162,6 +164,13 @@ public interface RetrofitAPI {
     @GET("/api/v1/{teamId}/vote/{voteId}/comment")
     Call<BoardVoteCommentResponse> voteCommentInfo(@Header("Authorization") String token, @Path("teamId") Long teamId, @Path("voteId") Long voteId);
 
+    /** 투표 종료 **/
+    @DELETE("/api/v1/{teamId}/vote/{voteId}")
+    Call<NoticeVoteFinishResponse> deleteVote(@Header("Authorization") String token, @Path("teamId") Long teamId, @Path("voteId") Long voteId);
+
+    /** 공지 종료 **/
+    @DELETE("/api/v1/{teamId}/notice/{noticeId}")
+    Call<NoticeVoteFinishResponse> deleteNotice(@Header("Authorization") String token, @Path("teamId") Long teamId, @Path("noticeId") Long noticeId);
     /**
      * 댓글 생성
      **/

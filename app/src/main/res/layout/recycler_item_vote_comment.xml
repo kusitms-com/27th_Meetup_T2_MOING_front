@@ -30,6 +30,17 @@
             android:fontFamily="@font/pretendard_semi_bold"
             android:textSize="16dp"/>
 
+        <Button
+            android:id="@+id/btn_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignBaseline="@+id/tv_nickname"
+            android:text="삭제"
+            android:textColor="@color/secondary_grey_black_9"
+            android:fontFamily="@font/pretendard_medium"
+            android:textSize="16dp" />
+
         <TextView
             android:id="@+id/tv_content"
             android:layout_width="match_parent"
