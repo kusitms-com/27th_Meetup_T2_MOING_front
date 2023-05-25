@@ -106,7 +106,6 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
             vH.checkBox.setButtonTintList(ColorStateList.valueOf(Color.parseColor("#959698")));
         }
 
-
         int spanCount = 4; // 열 개수를 의미
 
         /** 두번째 리싸이클러뷰 넣는 부분 **/
@@ -120,19 +119,6 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
         vH.recyclerView.addItemDecoration(voteNoReadGridSpacing);
         vH.recyclerView.setLayoutManager(llm2);
 
-        // SpanSizeLookup 설정
-        llm2.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                // 아이템의 스팬(너비)을 동적으로 조정
-                if (position % (spanCount + 1) == 0) {
-                    // 가로가 긴 아이템은 현재 열 개수만큼 스팬(너비)을 차지하도록 설정
-                    return spanCount;
-                } else return 1;
-            }
-        });
-
-
         /** 각 투표 리스트 별 사용자 항목을 구분해주기 위한 이중 리스트 생성 **/
         List<List<String>> userList2 = new ArrayList<>();
         // 2개 선택했다면 2번 반복
@@ -142,7 +128,7 @@ public class VoteInfoAdapterFirst extends RecyclerView.Adapter<RecyclerView.View
             userList2.add(tmp);
         }
 
-        second_adapter = new VoteInfoAdapterSecond(voteChoiceList, userList2);
+        second_adapter = new VoteInfoAdapterSecond(voteChoiceList, voteChoice.getVoteUserNickName(), multi);
         vH.recyclerView.setAdapter(second_adapter);
         /** Second Adapter 전달 완료 **/
 

@@ -1,5 +1,6 @@
 package com.example.moing.board;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.ImageButton;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.example.moing.MainActivity;
 import com.example.moing.R;
 import com.google.android.material.tabs.TabLayout;
 
@@ -15,6 +17,7 @@ public class BoardActivity extends AppCompatActivity {
 
     BoardGoalFragment boardGoalFragment;
     BoardMissionFragment boardMissionFragment;
+    int activityTask;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,6 +25,8 @@ public class BoardActivity extends AppCompatActivity {
 
         // teamId 값 받아오기
         long teamId = getIntent().getLongExtra("teamId", 0);
+        activityTask = getIntent().getIntExtra("activityTask", 0);
+
         Bundle bundle = new Bundle();
         bundle.putLong("teamId", teamId); // 전달할 값 설정
 
@@ -73,5 +78,14 @@ public class BoardActivity extends AppCompatActivity {
     }
 
     // 홈 버튼 클릭 시
-    View.OnClickListener homeClickListener = view -> finish();
+    View.OnClickListener homeClickListener = view ->{
+        // 소모임 초대 코드로 바로 입장한 경우
+        if(activityTask == 1) {
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
+        else
+            finish();
+    };
 }

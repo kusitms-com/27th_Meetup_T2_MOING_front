@@ -12,6 +12,12 @@ public class InviteTeamResponse {
     @SerializedName("data")
     private Data data;
 
+    public InviteTeamResponse(int statusCode, String message, Data data) {
+        this.statusCode = statusCode;
+        this.message = message;
+        this.data = data;
+    }
+
     public int getStatusCode() {
         return statusCode;
     }
@@ -28,8 +34,19 @@ public class InviteTeamResponse {
         @SerializedName("teamId")
         private Long teamId;
 
+        private String profileImg;
+
         public Long getTeamId() {
             return teamId;
+        }
+
+        public String getProfileImg() {
+            return profileImg;
+        }
+
+        public Data(Long teamId, String profileImg) {
+            this.teamId = teamId;
+            this.profileImg = profileImg;
         }
     }
 }

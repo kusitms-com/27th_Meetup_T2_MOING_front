@@ -180,7 +180,19 @@ public class MissionCreateActivity extends AppCompatActivity {
                                 // 사용자가 선택한 시간 처리
                                 // hourOfDay와 minute 변수에 선택한 시간 정보가 전달됨
                                 // 이곳에 선택한 시간에 대한 처리 코드를 작성하면 됩니다.
-                                String selectedTime = hourOfDay + ":" + minute;
+                                String hour = "";
+                                if(hourOfDay < 10) {
+                                    hour = "0" + String.valueOf(hourOfDay);
+                                } else {
+                                    hour = String.valueOf(hourOfDay);
+                                }
+                                String min = "";
+                                if (minute < 10) {
+                                    min = "0" + String.valueOf(min);
+                                } else {
+                                    min = String.valueOf(minute);
+                                }
+                                String selectedTime = hour+":"+min;
                                 et_time.setText(selectedTime);
                             }
                         }, hour, minute, false);
@@ -364,6 +376,7 @@ public class MissionCreateActivity extends AppCompatActivity {
 
                    Intent intent = new Intent(MissionCreateActivity.this, BoardActivity.class);
                    intent.putExtra("teamId", teamId);
+                   intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                    startActivity(intent);
 
                } else {

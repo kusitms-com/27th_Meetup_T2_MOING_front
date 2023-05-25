@@ -134,9 +134,11 @@ public class InviteTeamActivity extends AppCompatActivity {
                     if (response.body() != null) {
                         Log.d(TAG, response.body().toString());
                         Long teamId = response.body().getData().getTeamId();
+                        String profileImg = response.body().getData().getProfileImg();
                         // 인증 완료
                         Intent intent = new Intent(getApplicationContext(), InviteSuccessTeamActivity.class);
                         intent.putExtra("teamId", teamId);
+                        intent.putExtra("profileImg", profileImg);
                         startActivity(intent);
                     }
                 } else {

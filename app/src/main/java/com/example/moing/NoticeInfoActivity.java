@@ -211,14 +211,14 @@ public class NoticeInfoActivity extends AppCompatActivity {
 
     /** 뒤로 가기 버튼 클릭 리스너 **/
     View.OnClickListener backClickListener = v -> {
-        // 목표보드에서 투표 상세로 바로 이동했을 때
+        // 목표보드에서 공지 상세로 바로 이동했을 때
         if(activityTask == 1) {
             Intent intent = new Intent(getApplicationContext(), NoticeVoteActivity.class);
             intent.putExtra("teamId", teamId);
             intent.putExtra("NoticeOrVote", 1);
             startActivity(intent);
         }
-        // 투표 생성 후 투표 상세로 이동했거나, 투표 목록에서 투표 상세로 이동했을 때
+        // 공지 생성 후 공지 상세로 이동했거나, 공지 목록에서 공지 상세로 이동했을 때
         else {
             Intent intent = new Intent(getApplicationContext(), NoticeVoteActivity.class);
             intent.putExtra("teamId", teamId);
