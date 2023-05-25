@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="312dp"
     android:layout_height="wrap_content"
-    android:background="@color/secondary_grey_black_12"
+    android:background="@drawable/border3"
     android:id="@+id/view_all"
     android:gravity="center">
 
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_title"
         android:layout_marginTop="24dp"
-        android:background="@color/secondary_grey_black_11"
+        android:background="@drawable/border_no_btn"
         android:text="아니오"
         android:textSize="16dp"
         android:textColor="@color/secondary_grey_black_7"
@@ -39,7 +39,7 @@
         android:layout_below="@id/tv_title"
         android:layout_toRightOf="@+id/btn_delete_no"
         android:layout_marginTop="24dp"
-        android:background="@color/secondary_grey_black_1"
+        android:background="@drawable/border_yes_btn"
         android:text="예"
         android:textSize="16dp"
         android:textColor="@color/black"

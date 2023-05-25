@@ -2,9 +2,12 @@ package com.example.moing.board;
 
 import static androidx.constraintlayout.widget.ConstraintLayoutStates.TAG;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -16,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,6 +55,7 @@ public class BoardMissionFragment extends Fragment {
     private static final String PREF_NAME = "Token";
     private static final String JWT_ACCESS_TOKEN = "JWT_access_token";
     private SharedPreferences sharedPreferences;
+    private Dialog inviteDialogImpossible;
 
     // RecyclerView
     private RecyclerView mRecyclerView;
@@ -138,10 +143,8 @@ public class BoardMissionFragment extends Fragment {
                             missionIdList.add(mission.getMissionId());
                         }
 
-
                         for(Long str: missionIdList)
                             Log.d(TAG, "missionList 값: " + str);
-
 
                         MissionListAdapter adapter = new MissionListAdapter(missionList, getContext());
                         mRecyclerView.setAdapter(adapter);
@@ -160,8 +163,7 @@ public class BoardMissionFragment extends Fragment {
                             }
                         });
                     }
-                }
-                else {
+                } else {
                     try {
                         /** 작성자가 아닌 경우 **/
                         String errorJson = response.errorBody().string();
@@ -171,10 +173,14 @@ public class BoardMissionFragment extends Fragment {
                         /** 메세지로 에러처리를 구분 **/
                         String message = errorObject.getString("message");
 
-                        if (message.equals("만료된 토큰입니다.")) {
-                            ChangeJwt.updateJwtToken(requireContext());
-                            MissionList();  // 수정된 부분
+                        if(message.equals("소모임장이 아니어서 할 수 없습니다.")) {
+                            showInviteDialogImpossible();
                         }
+                        else if (message.equals("만료된 토큰입니다.")) {
+                            ChangeJwt.updateJwtToken(getContext());
+                            MissionList();
+                        }
+
                     } catch (IOException e) {
                         // 에러 응답의 JSON 문자열을 읽을 수 없을 때
                         e.printStackTrace();
@@ -190,5 +196,19 @@ public class BoardMissionFragment extends Fragment {
                 Log.d(TAG, "공지 전체 조회 실패...");
             }
         });
+
+    }
+
+    // 초대 코드 복사 불가 팝업
+    private void showInviteDialogImpossible() {
+        inviteDialogImpossible.show(); // 다이얼로그 띄우기
+        inviteDialogImpossible.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); // 투명 배경
+
+        ImageButton btnClose = inviteDialogImpossible.findViewById(R.id.board_invite_code_impossible_btn_close);
+        View llWhole = inviteDialogImpossible.findViewById(R.id.board_invite_code_impossible_ll);
+
+        // 터치시 종료
+        llWhole.setOnClickListener(v -> inviteDialogImpossible.dismiss());
+        btnClose.setOnClickListener(v -> inviteDialogImpossible.dismiss());
     }
 }

@@ -187,7 +187,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
-                android:layout_marginBottom="164dp"
+                android:layout_marginBottom="50dp"
                 android:layout_gravity="center"
                 android:fontFamily="@font/pretendard_semi_bold"
                 android:text="다시 선택하기"

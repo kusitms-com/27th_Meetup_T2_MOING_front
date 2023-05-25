@@ -31,16 +31,17 @@
                     android:id="@+id/img"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
-                    android:layout_marginVertical="16dp"
-                    android:layout_marginLeft="16dp" />
+                    android:scaleType="fitXY"
+                    android:background="@drawable/layout_round_radius12_black12"
+                    android:layout_marginVertical="30dp"
+                    android:layout_marginHorizontal="20dp"
+                    />
 
                 <TextView
                     android:id="@+id/tv_team"
-                    android:layout_width="200dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignTop="@id/img"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="4dp"
                     android:layout_toRightOf="@id/img"
                     android:fontFamily="@font/pretendard_medium"
                     android:textColor="@color/secondary_grey_black_1"
@@ -51,8 +52,7 @@
                     android:layout_width="110dp"
                     android:layout_height="35dp"
                     android:layout_below="@+id/tv_team"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="5dp"
                     android:layout_toRightOf="@id/img"
                     android:backgroundTint="#fff176"
                     android:clickable="false"
@@ -69,28 +69,38 @@
                     android:layout_marginTop="24dp"
                     android:background="@drawable/ic_dot_indicator_row" />
 
-                <ImageButton
-                    android:id="@+id/imgBtn_refresh"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:layout_below="@id/btn_dDay"
-                    android:layout_alignTop="@id/tv_date"
-                    android:layout_marginTop="2dp"
-                    android:layout_marginRight="-12dp"
-                    android:layout_toLeftOf="@id/tv_date"
-                    android:background="@drawable/ic_refresh" />
-
-                <TextView
-                    android:id="@+id/tv_date"
-                    android:layout_width="150dp"
+                <LinearLayout
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/btn_dDay"
-                    android:layout_alignLeft="@id/btn_dDay"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="12dp"
-                    android:fontFamily="@font/pretendard_semi_bold"
-                    android:textColor="@color/secondary_grey_black_7"
-                    android:textSize="16dp" />
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="7.5dp"
+                    android:gravity="center_horizontal">
+
+                    <ImageButton
+                        android:id="@+id/imgBtn_refresh"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_below="@id/btn_dDay"
+                        android:layout_alignTop="@id/tv_date"
+                        android:layout_marginTop="3dp"
+                        android:layout_marginRight="-12dp"
+                        android:layout_toLeftOf="@id/tv_date"
+                        android:background="@drawable/ic_refresh" />
+
+                    <TextView
+                        android:id="@+id/tv_date"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/btn_dDay"
+                        android:layout_alignLeft="@id/btn_dDay"
+                        android:layout_marginLeft="20dp"
+                        android:fontFamily="@font/pretendard_semi_bold"
+                        android:textColor="@color/secondary_grey_black_7"
+                        android:textSize="16dp" />
+                </LinearLayout>
+
             </RelativeLayout>
 
             <RelativeLayout
