@@ -73,7 +73,6 @@
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="28dp"
                 android:fontFamily="@font/pretendard_semi_bold"
-                android:text="4월에 같이 읽을 책 추천 댓글로 남기기"
                 android:textColor="@color/secondary_grey_black_3"
                 android:textSize="20dp" />
 
@@ -97,7 +96,6 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="8dp"
                     android:fontFamily="@font/pretendard_semi_bold"
-                    android:text="뺭뺭"
                     android:textColor="@color/secondary_grey_black_6"
                     android:textSize="16dp" />
 
@@ -132,8 +130,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="18dp"
                 android:fontFamily="@font/pretendard_medium"
-                android:text="여러분, 벌써 4월이 찾아왔어요 ..이번 달에 읽을 책을 같이 정해봅시다! 댓글로 한 권씩 책 추천 해주세요!
-                저는 ‘스즈메의 문단속'에 한 표 던지겠습니다! 하하저는 ‘스즈메의 문단속'에 한 표 던지겠습니다! 하하저는 ‘스즈메의 문단속'에 한 표 던지겠습니다! 하하"
+                android:text=""
                 android:textColor="@color/secondary_grey_black_3"
                 android:textSize="16dp" />
 

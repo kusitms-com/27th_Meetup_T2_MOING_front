@@ -10,7 +10,7 @@
         android:paddingVertical="8dp"
         android:background="@color/secondary_grey_black_14">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/iv_profile"
             android:layout_width="28dp"
             android:layout_height="28dp"
@@ -39,7 +39,8 @@
             android:text="삭제"
             android:textColor="@color/secondary_grey_black_9"
             android:fontFamily="@font/pretendard_medium"
-            android:textSize="16dp" />
+            android:textSize="16dp"
+            android:visibility="invisible"/>
 
         <TextView
             android:id="@+id/tv_content"

@@ -10,7 +10,7 @@
         android:paddingVertical="8dp"
         android:background="@color/secondary_grey_black_14">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/iv_profile"
             android:layout_width="28dp"
             android:layout_height="28dp"
@@ -29,6 +29,18 @@
             android:textColor="@color/secondary_grey_black_5"
             android:fontFamily="@font/pretendard_semi_bold"
             android:textSize="16dp"/>
+
+        <Button
+            android:id="@+id/btn_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignBaseline="@+id/tv_nickname"
+            android:text="삭제"
+            android:textColor="@color/secondary_grey_black_9"
+            android:fontFamily="@font/pretendard_medium"
+            android:textSize="16dp"
+            android:visibility="invisible"/>
 
         <TextView
             android:id="@+id/tv_content"

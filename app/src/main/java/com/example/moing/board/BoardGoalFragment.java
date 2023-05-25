@@ -174,7 +174,7 @@ public class BoardGoalFragment extends Fragment {
         /** 불 그래픽 통신 **/
         apiFire();
         /** 안 읽은 투표 API **/
-        noReadVote(); // voteDataList, noReadVote 값 변경됨!!
+        //noReadVote(); // voteDataList, noReadVote 값 변경됨!!
         /** 안 읽은 공지 API **/
         noReadNotice(); // noticeDataList, noReadNotice 값 변경됨!!
         /** 팀, 나의 위치 API **/
@@ -207,14 +207,6 @@ public class BoardGoalFragment extends Fragment {
             });
         }
         return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        // 소모임 정보 수정 후 정보 업데이트
-        getApi();
-
     }
 
     private class BtnOnClickListener implements View.OnClickListener {

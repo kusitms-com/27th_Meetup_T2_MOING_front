@@ -34,13 +34,13 @@ public class NoticeCommentListResponse {
 
     public static class NoticeComment {
         @SerializedName("noticeCommentId")
-        private int noticeCommentId;
+        private Long noticeCommentId;
 
         @SerializedName("content")
         private String content;
 
         @SerializedName("userId")
-        private int userId;
+        private Long userId;
 
         @SerializedName("nickName")
         private String nickName;
@@ -51,7 +51,7 @@ public class NoticeCommentListResponse {
         @SerializedName("createdDate")
         private String createdDate;
 
-        public int getNoticeCommentId() {
+        public Long getNoticeCommentId() {
             return noticeCommentId;
         }
 
@@ -59,7 +59,7 @@ public class NoticeCommentListResponse {
             return content;
         }
 
-        public int getUserId() {
+        public Long getUserId() {
             return userId;
         }
 
@@ -75,7 +75,7 @@ public class NoticeCommentListResponse {
             return createdDate;
         }
 
-        public NoticeComment(int noticeCommentId, String content, int userId, String nickName, String userImageUrl, String createdDate) {
+        public NoticeComment(Long noticeCommentId, String content, Long userId, String nickName, String userImageUrl, String createdDate) {
             this.noticeCommentId = noticeCommentId;
             this.content = content;
             this.userId = userId;

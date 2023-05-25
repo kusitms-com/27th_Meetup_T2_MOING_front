@@ -70,7 +70,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="28dp"
-                android:text="오프라인 모임 날짜 투표"
                 android:textColor="@color/secondary_grey_black_3"
                 android:textSize="24dp"
                 android:fontFamily="@font/pretendard_semi_bold" />
@@ -85,7 +84,7 @@
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/iv_profile"
                     android:layout_width="28dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="28dp"
                     android:background="@drawable/ic_vote_round" />
 
                 <TextView
@@ -93,12 +92,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
-                    android:text="닉네임"
                     android:textSize="16dp"
                     android:fontFamily="@font/pretendard_semi_bold"
                     android:textColor="@color/secondary_grey_black_6"
                     android:layout_gravity="center"/>
-                
+
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
@@ -129,7 +127,6 @@
                 android:layout_marginLeft="48dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="4dp"
-                android:text="투표 합니다. 해주세요."
                 android:textSize="16dp"
                 android:textColor="@color/secondary_grey_black_3"
                 android:fontFamily="@font/pretendard_medium" />
@@ -263,14 +260,14 @@
                 android:nestedScrollingEnabled="false">
 
             </androidx.recyclerview.widget.RecyclerView>
-            
+
             <!-- 댓글 작성 부분 -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="64dp"
                 android:layout_marginTop="80dp"
                 android:background="@color/secondary_grey_black_13">
-                
+
                 <EditText
                     android:id="@+id/et_comment"
                     android:layout_width="320dp"
@@ -284,16 +281,16 @@
                     android:textColor="@color/secondary_grey_black_3"
                     android:textSize="18dp"
                     android:fontFamily="@font/pretendard_medium"/>
-                
+
                 <ImageButton
                     android:id="@+id/imgbtn_send"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
-                    android:layout_alignParentEnd="true"
+                    android:layout_toRightOf="@+id/et_comment"
+                    android:layout_marginLeft="24dp"
                     android:src="@drawable/ic_send"
                     android:background="@android:color/transparent"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="18dp" />
+                    android:layout_centerVertical="true" />
             </RelativeLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
