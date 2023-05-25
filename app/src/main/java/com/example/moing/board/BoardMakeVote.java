@@ -29,6 +29,10 @@ import com.example.moing.retrofit.ChangeJwt;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClientJwt;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -326,19 +330,39 @@ public class BoardMakeVote extends AppCompatActivity implements MakeVoteAdapter.
         call.enqueue(new Callback<BoardMakeVoteResponse>() {
             @Override
             public void onResponse(Call<BoardMakeVoteResponse> call, Response<BoardMakeVoteResponse> response) {
-                BoardMakeVoteResponse voteResponse = response.body();
-                String msg = voteResponse.getMessage();
-                if(msg.equals("투표를 생성하였습니다")) {
-                    Long voteId = voteResponse.getData().getVoteId();
-                    Intent intent = new Intent(getApplicationContext(), VoteInfoActivity.class);
-                    intent.putExtra("teamId", teamId);
-                    intent.putExtra("voteId", voteId);
+                if(response.isSuccessful()) {
+                    BoardMakeVoteResponse voteResponse = response.body();
+                    String msg = voteResponse.getMessage();
+                    if(msg.equals("투표를 생성하였습니다")) {
+                        Long voteId = voteResponse.getData().getVoteId();
+                        Intent intent = new Intent(getApplicationContext(), VoteInfoActivity.class);
+                        intent.putExtra("teamId", teamId);
+                        intent.putExtra("voteId", voteId);
 
-                    startActivity(intent);
+                        startActivity(intent);
+                    }
                 }
-                else if (msg.equals("만료된 토큰입니다.")) {
-                    ChangeJwt.updateJwtToken(BoardMakeVote.this);
-                    makeVoteAPI();
+                else {
+                    try {
+                        /** 작성자가 아닌 경우 **/
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        // 에러 코드로 에러처리를 하고 싶을 때
+                        // String errorCode = errorObject.getString("errorCode");
+                        /** 메세지로 에러처리를 구분 **/
+                        String message = errorObject.getString("message");
+
+                        if (message.equals("만료된 토큰입니다.")) {
+                            ChangeJwt.updateJwtToken(BoardMakeVote.this);
+                            makeVoteAPI();
+                        }
+                    } catch (IOException e) {
+                        // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        // JSON 객체에서 필드 추출에 실패했을 때
+                        e.printStackTrace();
+                    }
                 }
             }
 

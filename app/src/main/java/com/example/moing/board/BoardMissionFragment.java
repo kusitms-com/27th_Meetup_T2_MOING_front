@@ -34,6 +34,10 @@ import com.example.moing.retrofit.ChangeJwt;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClientJwt;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,46 +114,63 @@ public class BoardMissionFragment extends Fragment {
         call.enqueue(new Callback<MissionListResponse>() {
             @Override
             public void onResponse(Call<MissionListResponse> call, Response<MissionListResponse> response) {
-                MissionListResponse missionListResponse = response.body();
-                String msg = missionListResponse.getMessage();
-                if (msg.equals("개인별 미션 리스트 조회 성공")) {
-                    // 리스트 저장
+                if(response.isSuccessful()) {
+                    MissionListResponse missionListResponse = response.body();
+                    String msg = missionListResponse.getMessage();
+                    if (msg.equals("개인별 미션 리스트 조회 성공")) {
+                        // 리스트 저장
 
-                    et_content.setVisibility(View.INVISIBLE);
+                        et_content.setVisibility(View.INVISIBLE);
 
-                    missionList = missionListResponse.getData();
-                    List<Long> missionIdList = new ArrayList<>();
-                    for (MissionListResponse.MissionData mission : missionList) {
-                        missionIdList.add(mission.getMissionId());
-                    }
-
-
-                    Log.d(TAG, "missionList 값: " + missionList);
-
-                    MissionListAdapter adapter = new MissionListAdapter(missionList, getContext());
-                    mRecyclerView.setAdapter(adapter);
-                    adapter.notifyDataSetChanged();
-
-                    if (missionList.size() == 0) {
-                        // 미션이 없는 경우 처리
-                    }
-
-                    adapter.setOnItemClickListener(new MissionListAdapter.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(int pos) {
-                            /** 해당 공지사항으로 이동 **/
-
-                            missionId = missionIdList.get(pos);
-                            Intent intent = new Intent(getContext(), MissionClickActivity.class);
-                            intent.putExtra("teamId", teamId);
-                            intent.putExtra("missionId", missionId);
-                            startActivity(intent);
-
+                        missionList = missionListResponse.getData();
+                        List<Long> missionIdList = new ArrayList<>();
+                        for (MissionListResponse.MissionData mission : missionList) {
+                            missionIdList.add(mission.getMissionId());
                         }
-                    });
-                } else if (msg.equals("만료된 토큰입니다.")) {
-                    ChangeJwt.updateJwtToken(requireContext());
-                    MissionList();  // 수정된 부분
+
+
+                        Log.d(TAG, "missionList 값: " + missionList);
+
+                        MissionListAdapter adapter = new MissionListAdapter(missionList, getContext());
+                        mRecyclerView.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+
+                        adapter.setOnItemClickListener(new MissionListAdapter.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(int pos) {
+                                /** 해당 공지사항으로 이동 **/
+
+                                missionId = missionIdList.get(pos);
+                                Intent intent = new Intent(getContext(), MissionClickActivity.class);
+                                intent.putExtra("teamId", teamId);
+                                intent.putExtra("missionId", missionId);
+                                startActivity(intent);
+
+                            }
+                        });
+                    }
+                }
+                else {
+                    try {
+                        /** 작성자가 아닌 경우 **/
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        // 에러 코드로 에러처리를 하고 싶을 때
+                        // String errorCode = errorObject.getString("errorCode");
+                        /** 메세지로 에러처리를 구분 **/
+                        String message = errorObject.getString("message");
+
+                        if (message.equals("만료된 토큰입니다.")) {
+                            ChangeJwt.updateJwtToken(requireContext());
+                            MissionList();  // 수정된 부분
+                        }
+                    } catch (IOException e) {
+                        // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        // JSON 객체에서 필드 추출에 실패했을 때
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -159,5 +180,4 @@ public class BoardMissionFragment extends Fragment {
             }
         });
     }
-
 }

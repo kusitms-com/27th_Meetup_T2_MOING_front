@@ -1,9 +1,11 @@
 package com.example.moing.board;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,6 +21,7 @@ import java.util.List;
 public class VoteCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<BoardVoteCommentResponse.VoteData> commentList;
     private Context context;
+
 
     public VoteCommentAdapter(List<BoardVoteCommentResponse.VoteData> commentList, Context context) {
         this.commentList = commentList;
@@ -47,6 +50,7 @@ public class VoteCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         } else {
             vh.line.setVisibility(View.VISIBLE);
         }
+
     }
 
 
@@ -59,6 +63,7 @@ public class VoteCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         ImageView profile;
         TextView nickname, content;
         View line;
+        Button delete;
         public VoteCommentViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -66,6 +71,7 @@ public class VoteCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             nickname = itemView.findViewById(R.id.tv_nickname);
             content = itemView.findViewById(R.id.tv_content);
             line = itemView.findViewById(R.id.view_board_line);
+            delete = itemView.findViewById(R.id.btn_delete);
         }
     }
 }

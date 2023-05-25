@@ -101,6 +101,9 @@ public class VoteInfoActivity extends AppCompatActivity {
         // Token을 사용할 SharedPreference
         sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
 
+        Long user_id = sharedPreferences.getLong(USER_ID, 0);
+        Log.d(TAG, "user id : " + user_id);
+
         // Intent로 값 전달 받기.
         teamId = getIntent().getLongExtra("teamId", 0);
         voteId = getIntent().getLongExtra("voteId", 0);
@@ -415,33 +418,6 @@ public class VoteInfoActivity extends AppCompatActivity {
                         voteNoReadAdapter = new VoteNoReadAdapter(voteNoReadList, VoteInfoActivity.this);
                         noReadRecycle.setAdapter(voteNoReadAdapter);
                         tv_noread.setText(voteNoReadList.size() + "명이 아직 안 읽었어요");
-
-//                        /** 복수투표 가능 여부 **/
-//                        // 복수 투표 가능할 때
-//                        if (infoResponse.getData().isMultiple()) {
-//                            if (voteSelected.size() >= 1) {
-//                                voteComplete.setClickable(true);
-//                                voteComplete.setTextColor(Color.parseColor("#FFFFFF"));
-//                                voteComplete.setBackgroundColor(Color.parseColor("#FF725F"));
-//                            } else {
-//                                voteComplete.setClickable(false);
-//                                voteComplete.setTextColor(Color.parseColor("#37383C"));
-//                                voteComplete.setBackgroundColor(Color.parseColor("#1A1919"));
-//                            }
-//                        }
-//                        // 복수 투표 불가능할 때
-//                        /** 복수 투표가 불가능할 때 **/
-//                        else {
-//                            if (voteSelected.size() == 1) {
-//                                voteComplete.setClickable(true);
-//                                voteComplete.setTextColor(Color.parseColor("#FFFFFF"));
-//                                voteComplete.setBackgroundColor(Color.parseColor("#FF725F"));
-//                            } else {
-//                                voteComplete.setClickable(false);
-//                                voteComplete.setTextColor(Color.parseColor("#37383C"));
-//                                voteComplete.setBackgroundColor(Color.parseColor("#1A1919"));
-//                            }
-//                        }
 
                     } else if (infoResponse.getMessage().equals("만료된 토큰입니다.")) {
                         ChangeJwt.updateJwtToken(VoteInfoActivity.this);
