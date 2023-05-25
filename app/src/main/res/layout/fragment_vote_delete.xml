@@ -12,7 +12,7 @@
         android:layout_height="80dp"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/ic_delete_notice_3x"/>
+        android:background="@drawable/ic_delete_vote_3x"/>
 
     <ImageButton
         android:id="@+id/board_dot_btn_close"
