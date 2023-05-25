@@ -43,7 +43,11 @@ import com.example.moing.s3.ImageUtils;
 import com.example.moing.s3.S3Utils;
 import com.example.moing.team.MakeTeamActivity3;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -282,8 +286,6 @@ public class MissionClickActivity extends AppCompatActivity {
                         String response_title = infoResponse.getData().getTitle();
                         String response_content = infoResponse.getData().getContent();
                         String response_dDay = infoResponse.getData().getDueTo();
-                        Log.d(TAG, "missionID" + missionId);
-                        Log.d(TAG, "d_Day : " + response_dDay);
                         String response_rule = infoResponse.getData().getRule();
                         String response_status = infoResponse.getData().getStatus();
 
@@ -291,14 +293,11 @@ public class MissionClickActivity extends AppCompatActivity {
                         title1.setText(response_title);
                         title2.setText(response_title);
                         content.setText(response_content);
-                        try {
-                            int num = Integer.parseInt(response_dDay);
-                            if (num >= 0)
+                        if(response_dDay != null){
+                            if(Integer.parseInt(response_dDay) >= 0)
                                 d_day.setText("남은 시간 D-" + response_dDay);
                             else
                                 d_day.setText("인증 시간 종료");
-                        } catch (NumberFormatException e) {
-                            e.printStackTrace();
                         }
                         rule.setText(response_rule);
 
@@ -310,9 +309,29 @@ public class MissionClickActivity extends AppCompatActivity {
                             changePending();
                         }
 
-                    } else if (infoResponse.getMessage().equals("만료된 토큰입니다.")) {
-                        ChangeJwt.updateJwtToken(MissionClickActivity.this);
-                        missionInfo();
+                    }
+                }
+                else {
+                    try {
+                        /** 작성자가 아닌 경우 **/
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        // 에러 코드로 에러처리를 하고 싶을 때
+                        // String errorCode = errorObject.getString("errorCode");
+                        /** 메세지로 에러처리를 구분 **/
+                        String message = errorObject.getString("message");
+
+                        if (message.equals("만료된 토큰입니다.")) {
+                            ChangeJwt.updateJwtToken(MissionClickActivity.this);
+                            missionInfo();
+                        }
+
+                    } catch (IOException e) {
+                        // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        // JSON 객체에서 필드 추출에 실패했을 때
+                        e.printStackTrace();
                     }
                 }
             }
@@ -356,10 +375,28 @@ public class MissionClickActivity extends AppCompatActivity {
                         }
                     }
                 }
-                 else if (response.message().equals("만료된 토큰입니다.")) {
-                    Log.d(TAG, "만료된 토큰!!!");
-                    ChangeJwt.updateJwtToken(MissionClickActivity.this);
-                    missionClear();
+                else {
+                    try {
+                        /** 작성자가 아닌 경우 **/
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        // 에러 코드로 에러처리를 하고 싶을 때
+                        // String errorCode = errorObject.getString("errorCode");
+                        /** 메세지로 에러처리를 구분 **/
+                        String message = errorObject.getString("message");
+
+                        if (message.equals("만료된 토큰입니다.")) {
+                            ChangeJwt.updateJwtToken(MissionClickActivity.this);
+                            missionClear();
+                        }
+
+                    } catch (IOException e) {
+                        // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        // JSON 객체에서 필드 추출에 실패했을 때
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -411,5 +448,4 @@ public class MissionClickActivity extends AppCompatActivity {
         smile.setVisibility(View.VISIBLE);
         title2.setPaintFlags(title2.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
     }
-
 }

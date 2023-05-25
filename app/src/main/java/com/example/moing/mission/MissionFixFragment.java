@@ -28,6 +28,11 @@ import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClientJwt;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -102,14 +107,28 @@ public class MissionFixFragment extends BottomSheetDialogFragment {
                         startActivity(intent);
                     }
                 } else {
-                    switch (response.message()) {
-                        case "만료된 토큰입니다.":
+                    try {
+                        /** 작성자가 아닌 경우 **/
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        // 에러 코드로 에러처리를 하고 싶을 때
+                        // String errorCode = errorObject.getString("errorCode");
+                        /** 메세지로 에러처리를 구분 **/
+                        String message = errorObject.getString("message");
+
+                        if(message.equals("소모임장이 아니어서 할 수 없습니다.")) {
+                            showInviteDialogImpossible();
+                        }
+                        else if (message.equals("만료된 토큰입니다.")) {
                             ChangeJwt.updateJwtToken(getContext());
                             getMissionInfo();
-                            break;
-                        case "소모임장이 아니어서 할 수 없습니다.":
-                            showInviteDialogImpossible();
-                            break;
+                        }
+                    } catch (IOException e) {
+                        // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        // JSON 객체에서 필드 추출에 실패했을 때
+                        e.printStackTrace();
                     }
                 }
             }
