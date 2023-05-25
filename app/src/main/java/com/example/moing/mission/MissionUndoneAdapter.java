@@ -101,11 +101,13 @@ public class MissionUndoneAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
         // 불 안맞은 사람 - 미완료 리사이클러뷰 클릭 리스너 설정
         else{
-            undoneViewHolder.itemView.setOnClickListener(v ->{
-                if(onMissionUndoneClickListener != null){
-                    onMissionUndoneClickListener.onItemClick(undoneViewHolder,position,mission);
-                }
-            });
+            if(position != 0){
+                undoneViewHolder.itemView.setOnClickListener(v ->{
+                    if(onMissionUndoneClickListener != null){
+                        onMissionUndoneClickListener.onItemClick(undoneViewHolder,position,mission);
+                    }
+                });
+            }
         }
 
         // 첫번째는 나 표시

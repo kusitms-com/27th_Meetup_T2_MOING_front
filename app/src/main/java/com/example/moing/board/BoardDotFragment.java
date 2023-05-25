@@ -46,6 +46,9 @@ public class BoardDotFragment extends BottomSheetDialogFragment {
     private Dialog inviteDialogImpossible;
     private Long teamId;
 
+    private  Call<TeamResponse> teamResponseCall;
+    private Call<InvitationCodeResponse> invitationCodeResponseCall;
+
     public BoardDotFragment() {
     }
 
@@ -80,6 +83,19 @@ public class BoardDotFragment extends BottomSheetDialogFragment {
         inviteDialogImpossible.setContentView(R.layout.fragment_board_invite_code_impossible); // xml 레이아웃 파일 연결
 
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if(teamResponseCall != null){
+            teamResponseCall.cancel();
+        }
+
+        if(invitationCodeResponseCall != null){
+            invitationCodeResponseCall.cancel();
+        }
     }
 
     // 뒤로 가기
@@ -140,8 +156,8 @@ public class BoardDotFragment extends BottomSheetDialogFragment {
         Log.d(TAG, jwtAccessToken);
 
         RetrofitAPI apiService = RetrofitClientJwt.getApiService(jwtAccessToken);
-        Call<TeamResponse> call = apiService.getTeam(jwtAccessToken, teamId);
-        call.enqueue(new Callback<TeamResponse>() {
+        teamResponseCall = apiService.getTeam(jwtAccessToken, teamId);
+        teamResponseCall.enqueue(new Callback<TeamResponse>() {
             @Override
             public void onResponse(@NonNull Call<TeamResponse> call, @NonNull Response<TeamResponse> response) {
 
@@ -202,8 +218,8 @@ public class BoardDotFragment extends BottomSheetDialogFragment {
         Log.d(TAG, jwtAccessToken);
 
         RetrofitAPI apiService = RetrofitClientJwt.getApiService(jwtAccessToken);
-        Call<InvitationCodeResponse> call = apiService.getInvitationCode(jwtAccessToken, teamId);
-        call.enqueue(new Callback<InvitationCodeResponse>() {
+        invitationCodeResponseCall = apiService.getInvitationCode(jwtAccessToken, teamId);
+        invitationCodeResponseCall.enqueue(new Callback<InvitationCodeResponse>() {
             @Override
             public void onResponse(@NonNull Call<InvitationCodeResponse> call, @NonNull Response<InvitationCodeResponse> response) {
                 // 연결 성공

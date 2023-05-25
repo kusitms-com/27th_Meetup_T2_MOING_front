@@ -52,9 +52,10 @@ public class MissionStatusActivity extends AppCompatActivity implements Serializ
     private Fragment fragmentUnDone;
     private TabLayout tabs;
 
-    private long teamId;
-    private long missionId;
+    private Long teamId;
+    private Long missionId;
 
+    private Call<MissionStatusListResponse> call;
 
 
     @Override
@@ -65,7 +66,7 @@ public class MissionStatusActivity extends AppCompatActivity implements Serializ
         // teamId 값 받아오기
         teamId = getIntent().getLongExtra("teamId", 0);
         // missionId 값 받아오기
-        missionId = getIntent().getLongExtra("teamId", 0);
+        missionId = getIntent().getLongExtra("missionId", 0);
         Log.d(TAG,"teamId :"+teamId+"missionId: "+missionId);
 
         // 내 인증 상태 확인 컴포넌트 - 진행 상태에 따라 다르게 나옴
@@ -94,6 +95,16 @@ public class MissionStatusActivity extends AppCompatActivity implements Serializ
         // 미션 목록 리스트 불러오고 설정
         getMissionStatusList(teamId,missionId);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(call != null){
+            call.cancel();
+        }
+    }
+
     private void getMissionStatusList(long teamId, long missionId) {
         // Token 을 가져오기 위한 SharedPreferences Token
         SharedPreferences sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
@@ -102,7 +113,7 @@ public class MissionStatusActivity extends AppCompatActivity implements Serializ
         RetrofitAPI apiService = RetrofitClientJwt.getApiService(jwtAccessToken);
 
         // 미션 현황 리스트를 가져옴
-        Call<MissionStatusListResponse> call = apiService.getMissionStatusList(jwtAccessToken,teamId, missionId);
+        call = apiService.getMissionStatusList(jwtAccessToken,teamId, missionId);
         call.enqueue(new Callback<MissionStatusListResponse>() {
             @Override
             public void onResponse(@NonNull Call<MissionStatusListResponse> call, @NonNull Response<MissionStatusListResponse> response) {

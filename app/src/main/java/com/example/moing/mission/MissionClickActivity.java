@@ -76,6 +76,8 @@ public class MissionClickActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private Long teamId, missionId;
 
+    private Call<MissionInfoResponse> missionInfoResponseCall;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -157,6 +159,15 @@ public class MissionClickActivity extends AppCompatActivity {
         });
 
         missionInfo();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(missionInfoResponseCall != null){
+            missionInfoResponseCall.cancel();
+        }
     }
 
     // dot Indicator 클릭 시
@@ -276,8 +287,8 @@ public class MissionClickActivity extends AppCompatActivity {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
         apiService = RetrofitClientJwt.getApiService(accessToken);
 
-        Call<MissionInfoResponse> call = apiService.getMission(accessToken, teamId, missionId);
-        call.enqueue(new Callback<MissionInfoResponse>() {
+        missionInfoResponseCall = apiService.getMission(accessToken, teamId, missionId);
+        missionInfoResponseCall.enqueue(new Callback<MissionInfoResponse>() {
             @Override
             public void onResponse(Call<MissionInfoResponse> call, Response<MissionInfoResponse> response) {
                 MissionInfoResponse infoResponse = response.body();

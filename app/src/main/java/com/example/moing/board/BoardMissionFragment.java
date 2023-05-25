@@ -56,10 +56,12 @@ public class BoardMissionFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private List<MissionListResponse.MissionData> missionList;  // 추가된 부분
 
-    Long teamId, missionId;
+    Long teamId;
 
     TextView et_content;
     ImageView createBtn;
+
+    private Call<MissionListResponse> call;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -98,6 +100,14 @@ public class BoardMissionFragment extends Fragment {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if(call != null)
+            call.cancel();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         MissionList();
@@ -110,7 +120,7 @@ public class BoardMissionFragment extends Fragment {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
         apiService = RetrofitClientJwt.getApiService(accessToken);
 
-        Call<MissionListResponse> call = apiService.MissionList(accessToken, teamId);
+        call = apiService.MissionList(accessToken, teamId);
         call.enqueue(new Callback<MissionListResponse>() {
             @Override
             public void onResponse(Call<MissionListResponse> call, Response<MissionListResponse> response) {
@@ -129,7 +139,9 @@ public class BoardMissionFragment extends Fragment {
                         }
 
 
-                        Log.d(TAG, "missionList 값: " + missionList);
+                        for(Long str: missionIdList)
+                            Log.d(TAG, "missionList 값: " + str);
+
 
                         MissionListAdapter adapter = new MissionListAdapter(missionList, getContext());
                         mRecyclerView.setAdapter(adapter);
@@ -139,8 +151,7 @@ public class BoardMissionFragment extends Fragment {
                             @Override
                             public void onItemClick(int pos) {
                                 /** 해당 공지사항으로 이동 **/
-
-                                missionId = missionIdList.get(pos);
+                                Long missionId = missionIdList.get(pos);
                                 Intent intent = new Intent(getContext(), MissionClickActivity.class);
                                 intent.putExtra("teamId", teamId);
                                 intent.putExtra("missionId", missionId);

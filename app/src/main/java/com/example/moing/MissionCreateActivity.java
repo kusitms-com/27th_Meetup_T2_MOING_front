@@ -59,6 +59,8 @@ public class MissionCreateActivity extends AppCompatActivity {
 
     ImageView xIcon;
 
+    private  Call<MissionCreateResponse> call;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -187,6 +189,14 @@ public class MissionCreateActivity extends AppCompatActivity {
                 timePickerDialog.show();
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if( call != null)
+            call.cancel();
     }
 
     // 취소 버튼
@@ -341,7 +351,7 @@ public class MissionCreateActivity extends AppCompatActivity {
        // 미션 생성 요청 객체 생성
        MissionCreateRequest missionCreateRequest = new MissionCreateRequest(title, dueTo, content, rule);
 
-       Call<MissionCreateResponse> call = apiService.makeMission(accessToken, teamId, missionCreateRequest);
+       call = apiService.makeMission(accessToken, teamId, missionCreateRequest);
 
        call.enqueue(new Callback<MissionCreateResponse>() {
            @Override

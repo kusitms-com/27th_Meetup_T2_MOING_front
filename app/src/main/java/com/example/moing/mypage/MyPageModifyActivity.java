@@ -1,14 +1,5 @@
 package com.example.moing.mypage;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -27,18 +18,22 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.moing.R;
 import com.example.moing.Request.ProfileUpdateRequest;
-import com.example.moing.Request.TeamUpdateRequest;
-import com.example.moing.Response.MyPageResponse;
 import com.example.moing.Response.ProfileUpdateResponse;
 import com.example.moing.Response.RegisterNameResponse;
-import com.example.moing.Response.TeamUpdateResponse;
-import com.example.moing.board.BoardFixTeamActivity;
 import com.example.moing.retrofit.ChangeJwt;
 import com.example.moing.retrofit.RetrofitAPI;
 import com.example.moing.retrofit.RetrofitClientJwt;
@@ -74,9 +69,14 @@ public class MyPageModifyActivity extends AppCompatActivity {
     private TextView tvIntroductionCnt;
     private Button btnDone;
     private ImageButton btnClose;
-    private String beforeProfile="", afterProfile="";
+    private String beforeProfile="";
     private String beforeNickname="", afterNickname="";
     private String beforeIntroduction="", afterIntroduction="";
+
+    private Call<RegisterNameResponse> registerNameResponseCall;
+
+    private Call<ProfileUpdateResponse> profileUpdateResponseCall;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -156,6 +156,19 @@ public class MyPageModifyActivity extends AppCompatActivity {
         // 수정 완료 클릭 리스너 등록
         btnDone.setOnClickListener(onDoneBtnClickListener);
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (registerNameResponseCall != null) {
+            registerNameResponseCall.cancel(); // API 요청 취소
+        }
+
+        if (profileUpdateResponseCall != null) {
+            profileUpdateResponseCall.cancel(); // API 요청 취소
+        }
     }
 
     View.OnClickListener onDoneBtnClickListener = (v -> {
@@ -304,10 +317,10 @@ public class MyPageModifyActivity extends AppCompatActivity {
         String nickName = etNickname.getText().toString();
 
         RetrofitAPI apiService = RetrofitClientJwt.getApiService(nickName);
-        Call<RegisterNameResponse> call = apiService.NameAvailable(nickName);
-        call.enqueue(new Callback<RegisterNameResponse>() {
+        registerNameResponseCall = apiService.NameAvailable(nickName);
+        registerNameResponseCall.enqueue(new Callback<RegisterNameResponse>() {
             @Override
-            public void onResponse(Call<RegisterNameResponse> call, Response<RegisterNameResponse> response) {
+            public void onResponse(@NonNull Call<RegisterNameResponse> call, @NonNull Response<RegisterNameResponse> response) {
                 if (response.isSuccessful()) {
                     RegisterNameResponse registerNameResponse = response.body();
                     String result = registerNameResponse.getData().getResult();
@@ -364,8 +377,8 @@ public class MyPageModifyActivity extends AppCompatActivity {
         Log.d(TAG, jwtAccessToken);
 
         RetrofitAPI apiService = RetrofitClientJwt.getApiService(jwtAccessToken);
-        Call<ProfileUpdateResponse> call = apiService.putProfileUpdate(jwtAccessToken,new ProfileUpdateRequest(introduction,nickname,profile));
-        call.enqueue(new Callback<ProfileUpdateResponse>() {
+        profileUpdateResponseCall = apiService.putProfileUpdate(jwtAccessToken,new ProfileUpdateRequest(introduction,nickname,profile));
+        profileUpdateResponseCall.enqueue(new Callback<ProfileUpdateResponse>() {
             @Override
             public void onResponse(@NonNull Call<ProfileUpdateResponse> call, @NonNull Response<ProfileUpdateResponse> response) {
                 // 연결 성공

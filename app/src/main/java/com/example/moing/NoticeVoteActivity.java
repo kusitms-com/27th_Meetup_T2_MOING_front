@@ -5,6 +5,8 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +19,7 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TabHost;
@@ -70,6 +73,9 @@ public class NoticeVoteActivity extends AppCompatActivity {
 
     // RecyclerView
     RecyclerView mRecyclerView, mRecyclerView2;
+
+    private  Call<AllNoticeResponse> allNoticeResponseCall;
+    private   Call<AllVoteResponse> allVoteResponseCall;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -196,6 +202,17 @@ public class NoticeVoteActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (allVoteResponseCall != null)
+            allVoteResponseCall.cancel();
+
+        if (allNoticeResponseCall != null)
+            allNoticeResponseCall.cancel();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
 
@@ -240,14 +257,14 @@ public class NoticeVoteActivity extends AppCompatActivity {
             fabVoteCreate.setVisibility(View.VISIBLE);
             fabNoticeWrite.setVisibility(View.VISIBLE);
 
-            ObjectAnimator fc_animation = ObjectAnimator.ofFloat(fabVoteCreate, "translationY", -80f);
+            ObjectAnimator fc_animation = ObjectAnimator.ofFloat(fabVoteCreate, "translationY", dpToPx(-80));
             fc_animation.start();
-            ObjectAnimator fe_animation = ObjectAnimator.ofFloat(fabNoticeWrite, "translationY", -140f);
+            ObjectAnimator fe_animation = ObjectAnimator.ofFloat(fabNoticeWrite, "translationY", dpToPx(-140));
             fe_animation.start();
 
-            ObjectAnimator fc_animation2 = ObjectAnimator.ofFloat(fabVoteCreate, "translationX", -40f);
+            ObjectAnimator fc_animation2 = ObjectAnimator.ofFloat(fabVoteCreate, "translationX", dpToPx(-40));
             fc_animation2.start();
-            ObjectAnimator fe_animation2 = ObjectAnimator.ofFloat(fabNoticeWrite, "translationX", -40f);
+            ObjectAnimator fe_animation2 = ObjectAnimator.ofFloat(fabNoticeWrite, "translationX", dpToPx(-40));
             fe_animation2.start();
 
             // 메인 플로팅 이미지 변경
@@ -257,6 +274,13 @@ public class NoticeVoteActivity extends AppCompatActivity {
         fabMain_status = !fabMain_status;
     }
 
+    private int dpToPx(int dp) {
+        float density = getResources().getDisplayMetrics().density;
+        return Math.round(dp * density);
+    }
+
+
+
     /**
      * 공지사항 모든 목록 출력 API
      **/
@@ -264,8 +288,8 @@ public class NoticeVoteActivity extends AppCompatActivity {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
         apiService = RetrofitClientJwt.getApiService(accessToken);
 
-        Call<AllNoticeResponse> call = apiService.viewNotice(accessToken, teamId);
-        call.enqueue(new Callback<AllNoticeResponse>() {
+        allNoticeResponseCall = apiService.viewNotice(accessToken, teamId);
+        allNoticeResponseCall.enqueue(new Callback<AllNoticeResponse>() {
             @Override
             public void onResponse(Call<AllNoticeResponse> call, Response<AllNoticeResponse> response) {
                 AllNoticeResponse noticeResponse = response.body();
@@ -340,8 +364,8 @@ public class NoticeVoteActivity extends AppCompatActivity {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null); // 액세스 토큰 검색
         apiService = RetrofitClientJwt.getApiService(accessToken);
 
-        Call<AllVoteResponse> call = apiService.viewVote(accessToken, teamId);
-        call.enqueue(new Callback<AllVoteResponse>() {
+        allVoteResponseCall = apiService.viewVote(accessToken, teamId);
+        allVoteResponseCall.enqueue(new Callback<AllVoteResponse>() {
             @Override
             public void onResponse(Call<AllVoteResponse> call, Response<AllVoteResponse> response) {
                 AllVoteResponse voteResponse = response.body();

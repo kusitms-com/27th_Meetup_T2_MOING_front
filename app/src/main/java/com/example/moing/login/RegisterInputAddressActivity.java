@@ -39,6 +39,8 @@ public class RegisterInputAddressActivity extends AppCompatActivity {
     private static final String FCM_TOKEN = "FCM_token";
     private SharedPreferences sharedPreferences;
 
+    private Call<RegisterAddressResponse> call;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,7 +150,7 @@ public class RegisterInputAddressActivity extends AppCompatActivity {
                 RegisterAddressRequest request = new RegisterAddressRequest(jwtAccessTokenWithoutBearer, address, nickname, fcmToken);
 
                 // API 요청을 보내기 전에 Request Header에 토큰 값을 추가
-                Call<RegisterAddressResponse> call = retrofitAPI.AdditionalInfo(access, request);
+                call = retrofitAPI.AdditionalInfo(access, request);
 
                 // API 요청을 보내고 응답을 처리하는 콜백 메서드를 정의함
                 call.enqueue(new Callback<RegisterAddressResponse>() {
@@ -185,6 +187,14 @@ public class RegisterInputAddressActivity extends AppCompatActivity {
                 });
             }
         });
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(call != null){
+            call.cancel();
+        }
     }
 }
