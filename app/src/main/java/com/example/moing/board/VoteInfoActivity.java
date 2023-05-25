@@ -46,6 +46,10 @@ import com.example.moing.retrofit.RetrofitClientJwt;
 import com.example.moing.s3.DownloadImageCallback;
 import com.example.moing.s3.S3Utils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -419,9 +423,28 @@ public class VoteInfoActivity extends AppCompatActivity {
                         noReadRecycle.setAdapter(voteNoReadAdapter);
                         tv_noread.setText(voteNoReadList.size() + "명이 아직 안 읽었어요");
 
-                    } else if (infoResponse.getMessage().equals("만료된 토큰입니다.")) {
-                        ChangeJwt.updateJwtToken(VoteInfoActivity.this);
-                        getVoteResult();
+                    } else {
+                        try {
+                            /** 작성자가 아닌 경우 **/
+                            String errorJson = response.errorBody().string();
+                            JSONObject errorObject = new JSONObject(errorJson);
+                            // 에러 코드로 에러처리를 하고 싶을 때
+                            // String errorCode = errorObject.getString("errorCode");
+                            /** 메세지로 에러처리를 구분 **/
+                            String message = errorObject.getString("message");
+
+                            if (message.equals("만료된 토큰입니다.")) {
+                                ChangeJwt.updateJwtToken(VoteInfoActivity.this);
+                                getVoteResult();
+                            }
+
+                        } catch (IOException e) {
+                            // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            // JSON 객체에서 필드 추출에 실패했을 때
+                            e.printStackTrace();
+                        }
                     }
                 } else
 
@@ -455,11 +478,30 @@ public class VoteInfoActivity extends AppCompatActivity {
                         voteCommentAdapter = new VoteCommentAdapter(voteCommentList, VoteInfoActivity.this);
                         commentRecycle.setAdapter(voteCommentAdapter);
                         voteCommentAdapter.notifyDataSetChanged();
-                    } else if (commentResponse.getMessage().equals("만료된 토큰입니다.")) {
-                        ChangeJwt.updateJwtToken(VoteInfoActivity.this);
-                        getComment();
-                    } else
-                        Log.d(TAG, "투표 댓글 목록 최신순 조회 에러 메세지 : " + response.message().toString());
+                    }
+                    else{
+                        try {
+                            /** 작성자가 아닌 경우 **/
+                            String errorJson = response.errorBody().string();
+                            JSONObject errorObject = new JSONObject(errorJson);
+                            // 에러 코드로 에러처리를 하고 싶을 때
+                            // String errorCode = errorObject.getString("errorCode");
+                            /** 메세지로 에러처리를 구분 **/
+                            String message = errorObject.getString("message");
+
+                            if (message.equals("만료된 토큰입니다.")) {
+                                ChangeJwt.updateJwtToken(VoteInfoActivity.this);
+                                getComment();
+                            }
+
+                        } catch (IOException e) {
+                            // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            // JSON 객체에서 필드 추출에 실패했을 때
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
 
@@ -493,11 +535,29 @@ public class VoteInfoActivity extends AppCompatActivity {
                         Log.d(TAG, "투표 댓글 연동 성공!");
                         Toast.makeText(getApplicationContext(), "댓글 생성이 완료되었습니다.", Toast.LENGTH_SHORT).show();
 
-                    } else if (makeCommentResponse.getMessage().equals("만료된 토큰입니다.")) {
-                        ChangeJwt.updateJwtToken(VoteInfoActivity.this);
-                        makeComment();
                     } else {
-                        Log.d(TAG, "투표 댓글 생성 에러 메세지 : " + response.message());
+                        try {
+                            /** 작성자가 아닌 경우 **/
+                            String errorJson = response.errorBody().string();
+                            JSONObject errorObject = new JSONObject(errorJson);
+                            // 에러 코드로 에러처리를 하고 싶을 때
+                            // String errorCode = errorObject.getString("errorCode");
+                            /** 메세지로 에러처리를 구분 **/
+                            String message = errorObject.getString("message");
+
+                            if (message.equals("만료된 토큰입니다.")) {
+                                ChangeJwt.updateJwtToken(VoteInfoActivity.this);
+                                makeComment();
+                            }
+
+                        } catch (IOException e) {
+                            // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            // JSON 객체에서 필드 추출에 실패했을 때
+                            e.printStackTrace();
+                        }
+
                     }
                 }
             }
@@ -560,11 +620,29 @@ public class VoteInfoActivity extends AppCompatActivity {
                         voteCount.setText(String.valueOf(voteUserNameList.size()) + "명 참여");
                     }
 
-                } else if (infoResponse.getMessage().equals("만료된 토큰입니다.")) {
-                    ChangeJwt.updateJwtToken(VoteInfoActivity.this);
-                    selectComment();
-                } else
-                    Log.d(TAG, "1번 : 오류 메세지 : " + response.message());
+                } else {
+                    try {
+                        /** 작성자가 아닌 경우 **/
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        // 에러 코드로 에러처리를 하고 싶을 때
+                        // String errorCode = errorObject.getString("errorCode");
+                        /** 메세지로 에러처리를 구분 **/
+                        String message = errorObject.getString("message");
+
+                        if (message.equals("만료된 토큰입니다.")) {
+                            ChangeJwt.updateJwtToken(VoteInfoActivity.this);
+                            selectComment();
+                        }
+
+                    } catch (IOException e) {
+                        // 에러 응답의 JSON 문자열을 읽을 수 없을 때
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        // JSON 객체에서 필드 추출에 실패했을 때
+                        e.printStackTrace();
+                    }
+                }
             }
 
             @Override
