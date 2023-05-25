@@ -98,7 +98,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/relative_first"
-                android:background="@color/secondary_grey_black_13">
+                android:background="#161616">
 
                 <ImageView
                     android:id="@+id/iv_fire"

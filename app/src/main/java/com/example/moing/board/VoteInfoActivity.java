@@ -220,6 +220,7 @@ public class VoteInfoActivity extends AppCompatActivity {
     View.OnClickListener backClickListener = v -> {
         Intent intent = new Intent(getApplicationContext(), NoticeVoteActivity.class);
         intent.putExtra("teamId", teamId);
+        intent.putExtra("NoticeOrVote", 2);
         // 목표보드에서 투표 상세로 바로 이동했을 때
         if (activityTask != 1) {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -227,7 +228,6 @@ public class VoteInfoActivity extends AppCompatActivity {
         // 투표 생성 후 투표 상세로 이동했거나, 투표 목록에서 투표 상세로 이동했을 때
         startActivity(intent);
     };
-
 
     /**
      * 모달 버튼 클릭 리스너
@@ -247,14 +247,7 @@ public class VoteInfoActivity extends AppCompatActivity {
      * 투표하기 완료 버튼 클릭 리스너
      **/
     View.OnClickListener completeClickListener = v -> {
-        if (voteComplete.getText().toString().equals("투표 수정하기")) {
-            getVoteResult();
-            voteComplete.setClickable(false);
-            selectComment();
-
-        } else
-            selectComment();
-
+        selectComment();
     };
 
     /**
@@ -330,6 +323,7 @@ public class VoteInfoActivity extends AppCompatActivity {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
         apiService = RetrofitClientJwt.getApiService(accessToken);
 
+        Log.d(TAG, "voteId : " + voteId);
         Call<BoardVoteInfoResponse> call = apiService.voteDetailInfo(accessToken, teamId, voteId);
         call.enqueue(new Callback<BoardVoteInfoResponse>() {
             @Override
@@ -394,7 +388,7 @@ public class VoteInfoActivity extends AppCompatActivity {
                         /** 익명 여부에 따른 텍스트 처리 **/
                         tvAnony.setVisibility(anonymous ? View.VISIBLE : View.INVISIBLE);
 
-                        VoteInfoAdapterFirst voteInfoAdapterFirst = new VoteInfoAdapterFirst(voteChoiceList, voteSelected, VoteInfoActivity.this);
+                        VoteInfoAdapterFirst voteInfoAdapterFirst = new VoteInfoAdapterFirst(voteChoiceList, voteSelected, VoteInfoActivity.this, false);
                         voteInfoAdapterFirst.setMultiAnony(multiple, anonymous);
                         voteRecycle.setAdapter(voteInfoAdapterFirst);
 
@@ -609,12 +603,12 @@ public class VoteInfoActivity extends AppCompatActivity {
                         boolean anonymous = infoResponse.getData().isAnonymous();
                         boolean multiple = infoResponse.getData().isMultiple();
 
-                        VoteInfoAdapterFirst adapterFirst = new VoteInfoAdapterFirst(voteChoiceList, voteSelected, VoteInfoActivity.this);
+                        VoteInfoAdapterFirst adapterFirst = new VoteInfoAdapterFirst(voteChoiceList, voteSelected, VoteInfoActivity.this, true);
                         adapterFirst.setMultiAnony(multiple, anonymous);
                         voteRecycle.setAdapter(adapterFirst);
                         adapterFirst.notifyDataSetChanged();
 
-                        voteComplete.setText("투표 수정하기");
+                        voteComplete.setText("투표 완료");
                         voteComplete.setTextColor(Color.parseColor("#37383C"));
                         voteComplete.setBackgroundColor(Color.parseColor("#1A1919"));
                         tv_noread.setText(voteNoReadList.size() + "명이 아직 안 읽었어요");
@@ -728,6 +722,6 @@ public class VoteInfoActivity extends AppCompatActivity {
                 startActivity(intent); // 현재 액티비티 재실행
                 overridePendingTransition(0, 0); // 인텐트 애니메이션 없애기
             }
-        }, 100); // 1초(1000밀리초) 딜레이
+        }, 500); // 1초(1000밀리초) 딜레이
     }
 }

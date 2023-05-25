@@ -26,9 +26,9 @@ public class InviteTeamResponse {
 
     public static class Data {
         @SerializedName("teamId")
-        private int teamId;
+        private Long teamId;
 
-        public int getTeamId() {
+        public Long getTeamId() {
             return teamId;
         }
     }

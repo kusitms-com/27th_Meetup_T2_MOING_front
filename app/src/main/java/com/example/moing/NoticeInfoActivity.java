@@ -61,7 +61,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class NoticeInfoActivity extends AppCompatActivity {
-    private static final String TAG = "VoteInfoActivity";
+    private static final String TAG = "NoticeInfoActivity";
 
     Button back;
     ImageButton modal, send;
@@ -184,13 +184,14 @@ public class NoticeInfoActivity extends AppCompatActivity {
         if(activityTask == 1) {
             Intent intent = new Intent(getApplicationContext(), NoticeVoteActivity.class);
             intent.putExtra("teamId", teamId);
+            intent.putExtra("NoticeOrVote", 1);
             startActivity(intent);
         }
         // 투표 생성 후 투표 상세로 이동했거나, 투표 목록에서 투표 상세로 이동했을 때
         else {
             Intent intent = new Intent(getApplicationContext(), NoticeVoteActivity.class);
             intent.putExtra("teamId", teamId);
-
+            intent.putExtra("NoticeOrVote", 1);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }
@@ -538,6 +539,6 @@ public class NoticeInfoActivity extends AppCompatActivity {
                 startActivity(intent); // 현재 액티비티 재실행
                 overridePendingTransition(0, 0); // 인텐트 애니메이션 없애기
             }
-        }, 100); // 1초(1000밀리초) 딜레이
+        }, 500); // 1초(1000밀리초) 딜레이
     }
 }
