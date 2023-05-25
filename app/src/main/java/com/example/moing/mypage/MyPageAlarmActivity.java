@@ -50,6 +50,11 @@ public class MyPageAlarmActivity extends AppCompatActivity {
     private boolean isRemind;
     private boolean isFire;
 
+    private Call<AlarmSettingResponse> settingAlarmResponseCall;
+    private Call<AlarmResponse> settingNewResponseCall;
+    private Call<AlarmResponse> settingRemindResponseCall;
+    private Call<AlarmResponse> settingFireResponseCall;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,13 +138,33 @@ public class MyPageAlarmActivity extends AppCompatActivity {
         }
     };
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (settingAlarmResponseCall != null) {
+            settingAlarmResponseCall.cancel(); // API 요청 취소
+        }
+
+        if (settingNewResponseCall != null) {
+            settingNewResponseCall.cancel(); // API 요청 취소
+        }
+
+        if (settingRemindResponseCall != null) {
+            settingRemindResponseCall.cancel(); // API 요청 취소
+        }
+
+        if (settingFireResponseCall != null) {
+            settingFireResponseCall.cancel(); // API 요청 취소
+        }
+    }
 
     // 사용자의 초기 알림 설정 상태를 가져와 적용하는 메소드
     private void getAlarmSetting(){
 
         RetrofitAPI apiService = RetrofitClientJwt.getApiService(jwtAccessToken);
-        Call<AlarmSettingResponse> call = apiService.getAlarmSetting(jwtAccessToken);
-        call.enqueue(new Callback<AlarmSettingResponse>() {
+        settingAlarmResponseCall = apiService.getAlarmSetting(jwtAccessToken);
+        settingAlarmResponseCall.enqueue(new Callback<AlarmSettingResponse>() {
             @Override
             public void onResponse(@NonNull Call<AlarmSettingResponse> call, @NonNull Response<AlarmSettingResponse> response) {
                 // 연결 성공
@@ -211,8 +236,8 @@ public class MyPageAlarmActivity extends AppCompatActivity {
     private void putAlarmNew(){
 
         RetrofitAPI apiService = RetrofitClientJwt.getApiService(jwtAccessToken);
-        Call<AlarmResponse> call = apiService.putAlarmNew(jwtAccessToken,new AlarmRequest(isNew));
-        call.enqueue(new Callback<AlarmResponse>() {
+        settingNewResponseCall = apiService.putAlarmNew(jwtAccessToken,new AlarmRequest(isNew));
+        settingNewResponseCall.enqueue(new Callback<AlarmResponse>() {
             @Override
             public void onResponse(@NonNull Call<AlarmResponse> call, @NonNull Response<AlarmResponse> response) {
                 // 연결 성공
@@ -255,8 +280,8 @@ public class MyPageAlarmActivity extends AppCompatActivity {
     private void putAlarmRemind(){
 
         RetrofitAPI apiService = RetrofitClientJwt.getApiService(jwtAccessToken);
-        Call<AlarmResponse> call = apiService.putAlarmRemind(jwtAccessToken, new AlarmRequest(isRemind));
-        call.enqueue(new Callback<AlarmResponse>() {
+        settingRemindResponseCall = apiService.putAlarmRemind(jwtAccessToken, new AlarmRequest(isRemind));
+        settingRemindResponseCall.enqueue(new Callback<AlarmResponse>() {
             @Override
             public void onResponse(@NonNull Call<AlarmResponse> call, @NonNull Response<AlarmResponse> response) {
                 // 연결 성공
@@ -299,8 +324,8 @@ public class MyPageAlarmActivity extends AppCompatActivity {
     private void putAlarmFire(){
 
         RetrofitAPI apiService = RetrofitClientJwt.getApiService(jwtAccessToken);
-        Call<AlarmResponse> call = apiService.putAlarmFire(jwtAccessToken, new AlarmRequest(isFire));
-        call.enqueue(new Callback<AlarmResponse>() {
+        settingFireResponseCall = apiService.putAlarmFire(jwtAccessToken, new AlarmRequest(isFire));
+        settingFireResponseCall.enqueue(new Callback<AlarmResponse>() {
             @Override
             public void onResponse(@NonNull Call<AlarmResponse> call, @NonNull Response<AlarmResponse> response) {
                 // 연결 성공

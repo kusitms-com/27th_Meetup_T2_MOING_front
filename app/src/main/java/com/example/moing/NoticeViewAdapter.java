@@ -63,15 +63,19 @@ public class NoticeViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         S3Utils.downloadImageFromS3(item.getUserImageUrl(), new DownloadImageCallback() {
             @Override
             public void onImageDownloaded(byte[] data) {
-                runOnUiThread(() ->  Glide.with(context)
-                        .load(data)
-                        .into(vh.image));
+                if(context != null){
+                    runOnUiThread(() ->  Glide.with(context)
+                            .load(data)
+                            .into(vh.image));
+                }
             }
             @Override
             public void onImageDownloadFailed() {
-                runOnUiThread(() ->  Glide.with(context)
-                        .load(item.getUserImageUrl())
-                        .into(vh.image));
+                if(context != null) {
+                    runOnUiThread(() -> Glide.with(context)
+                            .load(item.getUserImageUrl())
+                            .into(vh.image));
+                }
             }
         });
         vh.image.setBackgroundResource(R.drawable.notice_profile); // 닉네임

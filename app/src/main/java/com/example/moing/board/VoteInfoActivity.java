@@ -97,6 +97,11 @@ public class VoteInfoActivity extends AppCompatActivity {
     private Long teamId, voteId, userId, voteCommentId;
     private int activityTask;
 
+    private Call<BoardVoteInfoResponse> boardVoteInfoResponseCall;
+    private Call<BoardVoteCommentResponse> boardVoteCommentResponseCall;
+    private Call<BoardVoteMakeCommentResponse> boardVoteMakeCommentResponseCall;
+    private  Call<BoardVoteInfoResponse> getBoardVoteInfoResponseCall;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -215,6 +220,24 @@ public class VoteInfoActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+
+        if(boardVoteInfoResponseCall != null)
+            boardVoteInfoResponseCall.cancel();
+
+        if(boardVoteCommentResponseCall != null)
+            boardVoteCommentResponseCall.cancel();
+
+        if(boardVoteMakeCommentResponseCall != null)
+            boardVoteMakeCommentResponseCall.cancel();
+
+        if(getBoardVoteInfoResponseCall != null)
+            getBoardVoteInfoResponseCall.cancel();
+    }
+
     /**
      * 뒤로 가기 버튼 클릭 리스너
      **/
@@ -329,8 +352,8 @@ public class VoteInfoActivity extends AppCompatActivity {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
         apiService = RetrofitClientJwt.getApiService(accessToken);
 
-        Call<BoardVoteInfoResponse> call = apiService.voteDetailInfo(accessToken, teamId, voteId);
-        call.enqueue(new Callback<BoardVoteInfoResponse>() {
+        boardVoteInfoResponseCall = apiService.voteDetailInfo(accessToken, teamId, voteId);
+        boardVoteInfoResponseCall.enqueue(new Callback<BoardVoteInfoResponse>() {
             @Override
             public void onResponse(Call<BoardVoteInfoResponse> call, Response<BoardVoteInfoResponse> response) {
                 // 응답이 성공적일 때
@@ -466,8 +489,8 @@ public class VoteInfoActivity extends AppCompatActivity {
     private void getComment() {
         String accessToken = sharedPreferences.getString(JWT_ACCESS_TOKEN, null);
         apiService = RetrofitClientJwt.getApiService(accessToken);
-        Call<BoardVoteCommentResponse> call = apiService.voteCommentInfo(accessToken, teamId, voteId);
-        call.enqueue(new Callback<BoardVoteCommentResponse>() {
+        boardVoteCommentResponseCall = apiService.voteCommentInfo(accessToken, teamId, voteId);
+        boardVoteCommentResponseCall.enqueue(new Callback<BoardVoteCommentResponse>() {
             @Override
             public void onResponse(Call<BoardVoteCommentResponse> call, Response<BoardVoteCommentResponse> response) {
 
@@ -521,8 +544,8 @@ public class VoteInfoActivity extends AppCompatActivity {
         apiService = RetrofitClientJwt.getApiService(accessToken);
         String content = et_comment.getText().toString();
         BoardVoteMakeCommentRequest commentRequest = new BoardVoteMakeCommentRequest(content);
-        Call<BoardVoteMakeCommentResponse> call = apiService.voteMakeComment(accessToken, teamId, voteId, commentRequest);
-        call.enqueue(new Callback<BoardVoteMakeCommentResponse>() {
+        boardVoteMakeCommentResponseCall = apiService.voteMakeComment(accessToken, teamId, voteId, commentRequest);
+        boardVoteMakeCommentResponseCall.enqueue(new Callback<BoardVoteMakeCommentResponse>() {
             @Override
             public void onResponse(Call<BoardVoteMakeCommentResponse> call, Response<BoardVoteMakeCommentResponse> response) {
 
@@ -584,8 +607,8 @@ public class VoteInfoActivity extends AppCompatActivity {
         }
 
         BoardVoteDoRequest request = new BoardVoteDoRequest(voteList);
-        Call<BoardVoteInfoResponse> call = apiService.voteResult(accessToken, teamId, voteId, request);
-        call.enqueue(new Callback<BoardVoteInfoResponse>() {
+        getBoardVoteInfoResponseCall = apiService.voteResult(accessToken, teamId, voteId, request);
+        getBoardVoteInfoResponseCall.enqueue(new Callback<BoardVoteInfoResponse>() {
             @Override
             public void onResponse(Call<BoardVoteInfoResponse> call, Response<BoardVoteInfoResponse> response) {
                 BoardVoteInfoResponse infoResponse = response.body();

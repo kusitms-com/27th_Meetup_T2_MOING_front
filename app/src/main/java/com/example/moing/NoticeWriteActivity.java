@@ -51,6 +51,8 @@ public class NoticeWriteActivity extends AppCompatActivity {
 
     ImageView xIcon;
 
+    private Call<NoticeCreateResponse> call;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +101,14 @@ public class NoticeWriteActivity extends AppCompatActivity {
         upload.setOnClickListener(uploadClickListener);
         upload.setClickable(false);
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(call != null)
+            call.cancel();
     }
 
     // 취소 버튼
@@ -196,7 +206,7 @@ public class NoticeWriteActivity extends AppCompatActivity {
         // 공지 생성 요청 객체 생성
         NoticeCreateRequest noticeCreateRequest = new NoticeCreateRequest(title1, content2);
 
-        Call<NoticeCreateResponse> call = apiService.makeNotice(accessToken, teamId, noticeCreateRequest);
+        call = apiService.makeNotice(accessToken, teamId, noticeCreateRequest);
 
         call.enqueue(new Callback<NoticeCreateResponse>() {
             @Override
