@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/transparent">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/mission_undone_iv_profile"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:src="@drawable/ic_moings"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <ImageView
+        android:id="@+id/mission_undone_iv_me"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:background="@drawable/ic_mission_status_me"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/mission_undone_iv_profile"
+        app:layout_constraintLeft_toLeftOf="@+id/mission_undone_iv_profile"
+        app:layout_constraintRight_toRightOf="@+id/mission_undone_iv_profile"
+        app:layout_constraintTop_toTopOf="@+id/mission_undone_iv_profile" />
+
+    <ImageView
+        android:id="@+id/mission_undone_iv_fire"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_fire"
+        app:layout_constraintBottom_toBottomOf="@+id/mission_undone_iv_profile"
+        app:layout_constraintLeft_toLeftOf="@+id/mission_undone_iv_profile"
+        app:layout_constraintRight_toRightOf="@+id/mission_undone_iv_profile"
+        app:layout_constraintTop_toTopOf="@+id/mission_undone_iv_profile"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/mission_undone_tv_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/pretendard_semi_bold"
+        android:text="닉네임"
+        android:textColor="@color/secondary_grey_black_5"
+        android:textSize="18dp"
+        app:layout_constraintTop_toBottomOf="@+id/mission_undone_iv_profile"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

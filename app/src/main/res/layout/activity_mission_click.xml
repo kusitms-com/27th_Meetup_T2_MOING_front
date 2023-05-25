@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/secondary_grey_black_14"
+    tools:context=".mission.MissionClickActivity">
+
+    <LinearLayout
+        android:id="@+id/lin_nav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.widget.Button
+            android:id="@+id/btn_close"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginVertical="12dp"
+            android:layout_marginLeft="16dp"
+            android:background="@drawable/arrow_left"
+            android:backgroundTint="#A2A4A9" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="12.5dp"
+            android:layout_marginLeft="32dp"
+            android:fontFamily="@font/pretendard_semi_bold"
+            android:text="제목"
+            android:textColor="@color/secondary_grey_black_3"
+            android:textSize="18dp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/imgbtn_dotIndicator"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/ic_dot_indicator_col" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lin_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:background="@drawable/layout_top_round_black12"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="32dp"
+            android:fontFamily="@font/pretendard_semi_bold"
+            android:text="모임 인증현황"
+            android:textColor="@color/secondary_grey_black_3"
+            android:textSize="20dp" />
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="80dp"
+            android:background="@drawable/button_round_black1"
+            android:backgroundTint="@color/secondary_grey_black_5"
+            android:fontFamily="@font/pretendard_semi_bold"
+            android:gravity="center"
+            android:text="보러가기"
+            android:textColor="@color/secondary_grey_black_9"
+            android:textSize="16dp" />
+    </LinearLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/lin_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lin_nav">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/relative_first"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/layout_top_round_black12"
+                android:backgroundTint="@color/secondary_grey_black_10">
+
+                <TextView
+                    android:id="@+id/tv_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/secondary_grey_black_10"
+                    android:fontFamily="@font/pretendard_semi_bold"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:text="아직 인증하지 않았어요!"
+                    android:textColor="@color/secondary_grey_black_8"
+                    android:textSize="20dp" />
+                
+                <ImageView
+                    android:id="@+id/iv_smile"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_toRightOf="@+id/tv_state"
+                    android:layout_marginLeft="10dp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_mission_clear"
+                    android:visibility="invisible"/>
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:background="@color/secondary_grey_black_12">
+
+                <TextView
+                    android:id="@+id/tv_dDay"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="24dp"
+                    android:singleLine="true"
+                    android:background="@drawable/layout_round_radius8_black10"
+                    android:fontFamily="@font/pretendard_semi_bold"
+                    android:gravity="center"
+                    android:text="남은 기간 D-3"
+                    android:textColor="@color/secondary_grey_black_5"
+                    android:textSize="16dp" />
+
+                <ImageView
+                    android:id="@+id/iv_fire"
+                    android:layout_width="20dp"
+                    android:layout_height="34dp"
+                    android:layout_below="@id/tv_dDay"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/mission_fire" />
+
+                <TextView
+                    android:id="@+id/tv_title2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_dDay"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginTop="11dp"
+                    android:layout_toRightOf="@+id/iv_fire"
+                    android:fontFamily="@font/pretendard_semi_bold"
+                    android:gravity="left|center"
+                    android:text="책 10페이지 읽고 요약 갈기기"
+                    android:textColor="@color/secondary_grey_black_1"
+                    android:textSize="20dp" />
+
+                <ImageView
+                    android:id="@+id/iv_pic"
+                    android:layout_width="match_parent"
+                    android:layout_height="240dp"
+                    android:layout_below="@+id/tv_title2"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="24dp"
+                    android:background="@drawable/layout_round_radius8_black12"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/btn_fix"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/iv_pic"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="32dp"
+                    android:backgroundTint="@color/secondary_grey_black_10"
+                    android:fontFamily="@font/pretendard_semi_bold"
+                    android:text="인증사진 수정하기"
+                    android:textColor="@color/secondary_grey_black_5"
+                    android:textSize="18dp"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/btn_auth"
+                    android:layout_width="160dp"
+                    android:layout_height="60dp"
+                    android:layout_below="@+id/tv_title2"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="24dp"
+                    android:backgroundTint="@color/main_dark_500"
+                    android:fontFamily="@font/pretendard_semi_bold"
+                    android:text="미션 인증하기"
+                    android:textColor="@color/secondary_grey_black_1"
+                    android:textSize="18dp" />
+
+                <Button
+                    android:id="@+id/btn_across"
+                    android:layout_width="160dp"
+                    android:layout_height="60dp"
+                    android:layout_below="@+id/tv_title2"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_toRightOf="@+id/btn_auth"
+                    android:backgroundTint="@color/secondary_grey_black_10"
+                    android:fontFamily="@font/pretendard_semi_bold"
+                    android:text="미션 건너뛰기"
+                    android:textColor="@color/secondary_grey_black_1"
+                    android:textSize="18dp" />
+
+                <TextView
+                    android:id="@+id/tv_reason"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/btn_across"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="32dp"
+                    android:fontFamily="@font/pretendard_medium"
+                    android:text="단, 사유를 제출해야 미션을 건너뛸 수 있어요."
+                    android:textColor="@color/secondary_grey_black_8"
+                    android:textSize="14dp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                android:layout_marginHorizontal="16dp"
+                android:background="@color/secondary_grey_black_13"></RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:background="@color/secondary_grey_black_12">
+
+                <ImageView
+                    android:id="@+id/iv_pastel"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="32dp"
+                    android:background="@drawable/ic_mission_pastel" />
+
+                <TextView
+                    android:id="@+id/tv_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="28dp"
+                    android:layout_toRightOf="@id/iv_pastel"
+                    android:fontFamily="@font/pretendard_semi_bold"
+                    android:text="미션 내용"
+                    android:textColor="@color/secondary_grey_black_6"
+                    android:textSize="16dp" />
+
+                <TextView
+                    android:id="@+id/tv_mission_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="12dp"
+                    android:fontFamily="@font/pretendard_medium"
+                    android:text="미션 내용"
+                    android:textColor="@color/secondary_grey_black_3"
+                    android:textSize="16dp" />
+
+                <ImageView
+                    android:id="@+id/iv_pastel2"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_below="@id/tv_mission_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="32dp"
+                    android:background="@drawable/ic_mission_pastel" />
+
+                <TextView
+                    android:id="@+id/tv_rule"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_mission_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="28dp"
+                    android:layout_toRightOf="@id/iv_pastel2"
+                    android:fontFamily="@font/pretendard_semi_bold"
+                    android:text="인증 규칙"
+                    android:textColor="@color/secondary_grey_black_6"
+                    android:textSize="16dp" />
+
+                <TextView
+                    android:id="@+id/tv_mission_rule"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_rule"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="32dp"
+                    android:fontFamily="@font/pretendard_medium"
+                    android:text="규칙입니다."
+                    android:textColor="@color/secondary_grey_black_3"
+                    android:textSize="16dp" />
+            </RelativeLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

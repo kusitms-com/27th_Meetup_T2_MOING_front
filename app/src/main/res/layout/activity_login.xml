@@ -5,42 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#111110"
-    tools:context=".LoginActivity">
+    tools:context=".login.LoginActivity">
 
     <ImageView
         android:id="@+id/rectangleImg"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="600dp"
         android:adjustViewBounds="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/rectangle_img" />
-
-    <TextView
-        android:id="@+id/tv1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/pretendard_semi_bold"
-        android:text="간편하게 로그인하고"
-        android:textColor="@color/secondary_grey_black_3"
-        android:layout_marginTop="40dp"
-        android:layout_marginLeft="15dp"
-        android:textSize="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rectangleImg" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/pretendard_semi_bold"
-        android:text="우리 모임의 열정을 키워보세요"
-        android:textColor="@color/secondary_grey_black_3"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="15dp"
-        android:textSize="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv1" />
+        app:srcCompat="@drawable/register" />
 
     <FrameLayout
         android:layout_width="match_parent"

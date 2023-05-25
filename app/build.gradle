@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.moing"
-        minSdk 21
+        minSdk 23
         targetSdk 32
         versionCode 1
         versionName "1.0"
@@ -27,13 +27,22 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'com.google.android.material:material:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
+    // SharedPreference
+    implementation "androidx.security:security-crypto:1.0.0"
+
+    // 플러팅
+    implementation 'com.google.android.material:material:1.1.0-beta01'
 
     // 카카오 SDK 모듈 - 카카오 로그인
     implementation "com.kakao.sdk:v2-user:2.8.3"
@@ -43,6 +52,9 @@ dependencies {
 
     // Glide - 이미지 로딩
     implementation 'com.github.bumptech.glide:glide:4.12.0'
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
+    implementation 'androidx.navigation:navigation-fragment:2.4.1'
+    implementation 'androidx.navigation:navigation-ui:2.4.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 
     // Retrofit - Network 통신
@@ -53,4 +65,24 @@ dependencies {
 
     // Firebase - push 알림
     implementation 'com.google.firebase:firebase-messaging:21.1.0'
+
+    // CardView
+    //implementation 'androidx.cardView:cardView:1.0.0'
+
+    // Amazon S3 - image upload
+    implementation 'com.amazonaws:aws-android-sdk-mobile-client:2.13.5'
+    implementation 'com.amazonaws:aws-android-sdk-cognito:2.13.5'
+    implementation 'com.amazonaws:aws-android-sdk-s3:2.13.5'
+
+    // ViewPager2, Dot Indicator
+    implementation "androidx.viewpager2:viewpager2:1.0.0"
+    implementation 'com.tbuonomo:dotsindicator:4.2'
+
+    implementation 'com.squareup.okhttp3:okhttp:4.9.1'
+
+    // Circle ImageView
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+    // Picture Finch Zoom
+    implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
 }

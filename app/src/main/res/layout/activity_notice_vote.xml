@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/secondary_grey_black_14"
+    tools:context=".NoticeVoteActivity">
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tv_nothing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="아직 게시글이 없어요"
+            android:textSize="16dp"
+            android:textColor="@color/secondary_grey_black_7"
+            android:fontFamily="@font/pretendard_medium"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginTop="40dp"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/lin_nav"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageButton
+                    android:id="@+id/btn_back"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@color/secondary_grey_black_14"
+                    android:padding="16dp"
+                    android:src="@drawable/arrow_left" />
+
+                <TextView
+                    android:id="@+id/topTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginTop="11dp"
+                    android:fontFamily="@font/pretendard_semi_bold"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="공지사항"
+                    android:textColor="@color/secondary_grey_black_3"
+                    android:textSize="18dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_toggle_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="32dp"
+                        android:textColor="@color/secondary_grey_black_3"
+                        android:fontFamily="@font/pretendard_medium"
+                        android:textSize="24dp"/>
+
+                </LinearLayout>
+
+
+                <TextView
+                    android:id="@+id/tv3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="36dp"
+                    android:fontFamily="@font/pretendard_medium"
+                    android:lineSpacingExtra="11sp"
+                    android:text="기다리고 있을 소모임원들을 위해, 빠르게 확인해주세요!"
+                    android:textColor="#959698"
+                    android:textSize="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv2" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TabHost
+                    android:id="@+id/tabHost1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <!-- TabWidget의 id값이 반드시 "tabs"로 지정되어야 함. -->
+                        <TabWidget
+                            android:id="@android:id/tabs"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginHorizontal="70dp"
+                            android:layout_marginBottom="40dp"
+                            android:tabStripEnabled="false" />
+
+                        <!-- FrameLayout의 id값이 반드시 "tabcontent"로 지정되어야 함. -->
+                        <FrameLayout
+                            android:id="@android:id/tabcontent"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <!-- 공지사항. content1 -->
+                            <LinearLayout
+                                android:id="@+id/content1"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:id="@+id/recycler"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:clipToPadding="false"
+                                    android:overScrollMode="never"
+                                    android:paddingHorizontal="16dp"
+                                    android:scrollbars="none" />
+
+                            </LinearLayout>
+
+                            <!-- 투표. content2 -->
+                            <LinearLayout
+                                android:id="@+id/content2"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:id="@+id/recycler2"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:clipToPadding="false"
+                                    android:overScrollMode="never"
+                                    android:paddingHorizontal="16dp"
+                                    android:scrollbars="none" />
+
+                            </LinearLayout>
+                        </FrameLayout>
+                    </LinearLayout>
+                </TabHost>
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/vote_create"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/vote_create"
+        app:tint="@null"
+        android:visibility="invisible"
+        app:backgroundTint="@android:color/transparent"
+        app:layout_constraintTop_toTopOf="@id/fabMain"
+        app:layout_constraintBottom_toBottomOf="@id/fabMain"
+        app:layout_constraintStart_toStartOf="@id/fabMain"
+        app:layout_constraintEnd_toEndOf="@id/fabMain"
+        />
+
+    <ImageView
+        android:id="@+id/notice_write"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:src="@drawable/notice_write"
+        app:backgroundTint="@android:color/transparent"
+        app:tint="@null"
+        app:layout_constraintTop_toTopOf="@id/fabMain"
+        app:layout_constraintBottom_toBottomOf="@id/fabMain"
+        app:layout_constraintStart_toStartOf="@id/fabMain"
+        app:layout_constraintEnd_toEndOf="@id/fabMain"
+        />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabMain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:src="@drawable/floating"
+        app:backgroundTint="@android:color/transparent"
+        app:tint="@null"
+        app:useCompatPadding="true"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

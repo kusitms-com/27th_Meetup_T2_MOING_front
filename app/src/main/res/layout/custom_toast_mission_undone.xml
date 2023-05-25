@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/layout_round_radius12_black1">
+
+    <TextView
+        android:id="@+id/custom_toast_tv_nickname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:paddingVertical="12dp"
+        android:paddingHorizontal="20dp"
+        android:text="모임원들의 사진을 누르면 불을 던져 독려할 수 있어요"
+        android:textColor="@color/secondary_grey_black_12"
+        android:textSize="12dp"
+        android:fontFamily="@font/pretendard_medium"
+        android:gravity="center"
+        />
+</LinearLayout>

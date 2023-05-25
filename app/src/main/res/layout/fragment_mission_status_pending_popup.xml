@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="308dp"
+    android:layout_height="382dp"
+    android:paddingHorizontal="16dp"
+    android:background="@drawable/button_round_black12">
+
+    <LinearLayout
+        android:id="@+id/mission_status_pending_popup_ll_none1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageButton
+            android:id="@+id/mission_status_pending_popup_btn_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/x_icon" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/pretendard_semi_bold"
+            android:gravity="center"
+            android:text="사유 인증"
+            android:textColor="@color/secondary_grey_black_3"
+            android:textSize="20dp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/mission_status_pending_popup_tv_reason"
+        android:layout_width="match_parent"
+        android:layout_height="256dp"
+        android:padding="16dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/textview_round_black11"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mission_status_pending_popup_ll_none1"
+        android:fontFamily="@font/pretendard_medium"
+        android:text="사유"
+        android:textColor="@color/secondary_grey_black_2"
+        android:textSize="12dp" />
+
+    <LinearLayout
+        android:id="@+id/mission_status_pending_popup_ll_none2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="20dp"
+        android:background="@drawable/layout_round_radius8_black12"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mission_status_pending_popup_tv_reason"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintVertical_bias="0">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/mission_status_pending_popup_iv_profile"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_moings"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/mission_status_pending_popup_tv_nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/pretendard_semi_bold"
+            android:text="닉네임"
+            android:textColor="@color/secondary_grey_black_5"
+            android:textSize="14dp" />
+
+
+        <TextView
+            android:id="@+id/mission_status_pending_popup_tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:fontFamily="@font/pretendard_semi_bold"
+            android:text="날짜"
+            android:textColor="@color/secondary_grey_black_8"
+            android:textSize="12dp" />
+    </LinearLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
